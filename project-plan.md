@@ -74,6 +74,7 @@ This section describes the structure of the Jupyter Notebook (`model_training.ip
   - Linear Regression (Baseline)
   - Random Forest Regressor
   - XGBoost Regressor
+  - CatBoost Regressor
   - Support Vector Regression (SVR)
 - **Training Loop:**
   - Train each model on the training set.
