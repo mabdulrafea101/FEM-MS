@@ -167,7 +167,7 @@ A mesh convergence study was performed to determine the optimal number of elemen
 
 Figure 4.1 illustrates the relationship between corrosion level and the fundamental natural frequency for a representative beam configuration.
 
-![Frequency vs. Corrosion Level](/Users/mabdulrafea/.gemini/antigravity/brain/b4190d85-7d94-430b-85ca-9f96a7f65cd5/freq_vs_corrosion.png)
+![Frequency vs. Corrosion Level](simulation/outputs/figures/freq_vs_corrosion.png)
 
 **Figure 4.1:** Impact of uniform corrosion on the first two natural frequencies of a fixed-fixed RC beam (L=3.0m, b=0.3m, h=0.45m, f'c=30 MPa).
 
@@ -191,7 +191,7 @@ Figure 4.1 illustrates the relationship between corrosion level and the fundamen
 
 Figure 4.2 presents the comparison of mode shapes between pristine and corroded beams.
 
-![Mode Shape Comparison](/Users/mabdulrafea/.gemini/antigravity/brain/b4190d85-7d94-430b-85ca-9f96a7f65cd5/mode_shape_comparison.png)
+![Mode Shape Comparison](simulation/outputs/figures/mode_shape_comparison.png)
 
 **Figure 4.2:** Comparison of the first two mode shapes for pristine and corroded (20% corrosion) beams.
 
@@ -207,7 +207,7 @@ Figure 4.2 presents the comparison of mode shapes between pristine and corroded 
 
 Figure 4.3 demonstrates the impact of crack severity on natural frequencies for a mid-span crack.
 
-![Severity Impact on Frequency](/Users/mabdulrafea/.gemini/antigravity/brain/b4190d85-7d94-430b-85ca-9f96a7f65cd5/severity_impact.png)
+![Severity Impact on Frequency](simulation/outputs/figures/severity_impact.png)
 
 **Figure 4.3:** Influence of crack severity (0-90% stiffness loss) at mid-span on natural frequencies.
 
@@ -250,7 +250,7 @@ The dataset composition:
 
 Figure 4.4 shows the statistical distribution of natural frequencies in the generated dataset.
 
-![Dataset Distribution](/Users/mabdulrafea/.gemini/antigravity/brain/b4190d85-7d94-430b-85ca-9f96a7f65cd5/dataset_distribution.png)
+![Dataset Distribution](simulation/outputs/figures/dataset_distribution.png)
 
 **Figure 4.4:** Histogram of Mode 1 and Mode 2 frequencies across the entire dataset, showing separate distributions for pristine and damaged beams.
 
