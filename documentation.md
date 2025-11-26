@@ -456,6 +456,353 @@ The results provide a solid foundation for developing machine learning models fo
 
 ---
 
+## 4.12 Machine Learning Model Development and Training
+
+### 4.12.1 Overview
+
+Following the generation of the comprehensive dataset through finite element analysis, machine learning models were developed to predict the natural frequencies of RC beams based on their geometric and damage parameters. This section presents the methodology, results, and comparative analysis of five different regression algorithms implemented for this structural health monitoring application.
+
+### 4.12.2 Data Preparation and Exploratory Analysis
+
+#### 4.12.2.1 Dataset Characteristics
+
+The complete dataset comprises 3,000 simulations with the following features:
+
+- **Input Features (6):** Length, Width, Depth, Concrete Strength, Damage Type, Damage Severity
+- **Target Variables (2):** Mode 1 Frequency, Mode 2 Frequency
+- **Damage Scenarios:** Pristine beams (1,500 samples), Uniform corrosion (500 samples), Localized cracks (500 samples), Random damage (500 samples)
+
+#### 4.12.2.2 Parameter Distributions
+
+Figure 4.5 illustrates the distribution of input parameters across the dataset, demonstrating comprehensive coverage of the design space through Latin Hypercube Sampling.
+
+![Parameter Distributions](simulation/outputs/ml_figures/parameter_distributions.png)
+
+**Figure 4.5:** Distribution of geometric parameters (Length, Width, Depth, Concrete Strength) and damage characteristics (Severity and Type) across the 3,000-sample dataset.
+
+**Key Observations:**
+
+1. **Uniform Coverage:** Latin Hypercube Sampling ensures representative distribution across all parameter ranges
+2. **Damage Classification:** Clear stratification between pristine, corroded, cracked, and randomly damaged specimens
+3. **Severity Distribution:** Exponential distribution of damage severity reflects realistic degradation patterns
+
+#### 4.12.2.3 Correlation Analysis
+
+![Correlation Matrix](simulation/outputs/ml_figures/correlation_matrix.png)
+
+**Figure 4.6:** Pearson correlation matrix showing relationships between input parameters and target frequencies.
+
+The correlation analysis reveals:
+
+- **Strong negative correlation** between beam length and frequencies (r ≈ -0.87)
+- **Moderate positive correlation** between depth and frequencies (r ≈ +0.64)
+- **Significant negative correlation** between damage severity and frequencies (r ≈ -0.78)
+- **Weak correlation** with width (r ≈ +0.31), consistent with beam theory predictions
+
+#### 4.12.2.4 Damage Impact Visualization
+
+![Damage vs Frequency](simulation/outputs/ml_figures/damage_vs_frequency.png)
+
+**Figure 4.7:** Relationship between damage severity and natural frequencies for different damage types. The plot demonstrates the nonlinear frequency reduction patterns across damage scenarios.
+
+### 4.12.3 Model Development
+
+#### 4.12.3.1 Data Preprocessing
+
+**Feature Encoding:**
+
+- Categorical variable (Damage_Type) encoded using one-hot encoding
+- Four damage categories: None, Uniform, Localized, Random
+
+**Data Splitting:**
+
+- Training set: 2,400 samples (80%)
+- Testing set: 600 samples (20%)
+- Stratified split maintaining damage type distribution
+
+**Feature Scaling:**
+
+- StandardScaler applied to numerical features
+- Critical for SVM and distance-based algorithms
+- Prevents feature dominance due to different scales
+
+$$
+X_{scaled} = \frac{X - \mu}{\sigma}
+$$
+
+where $\mu$ is the mean and $\sigma$ is the standard deviation.
+
+#### 4.12.3.2 Model Selection and Architecture
+
+Five regression algorithms were implemented:
+
+**1. Linear Regression:**
+
+- Baseline model establishing performance floor
+- Ordinary least squares optimization
+- No hyperparameter tuning required
+
+**2. Random Forest Regressor:**
+
+- Ensemble of 100 decision trees
+- max_depth: None (trees grown until pure)
+- min_samples_split: 2
+- Bootstrap aggregation for variance reduction
+
+**3. XGBoost Regressor:**
+
+- Gradient boosting implementation
+- Learning rate: 0.1
+- n_estimators: 100
+- max_depth: 6
+- reg_alpha: 0.01 (L1 regularization)
+
+**4. CatBoost Regressor:**
+
+- Categorical feature handling optimized
+- iterations: 100
+- learning_rate: 0.1
+- depth: 6
+- Silent mode for clean output
+
+**5. Support Vector Regression (SVR):**
+
+- RBF kernel
+- C: 100 (regularization parameter)
+- gamma: 'scale'
+- epsilon: 0.1
+
+### 4.12.4 Model Performance Comparison
+
+#### 4.12.4.1 Quantitative Metrics
+
+Table 4.1 presents comprehensive performance metrics for all five models across training and testing datasets:
+
+| Model             | Train MAE | Train RMSE | Train R²  | Test MAE | Test RMSE | Test R²   | CV R² Mean | CV R² Std |
+| ----------------- | --------- | ---------- | --------- | -------- | --------- | --------- | ---------- | --------- |
+| Linear Regression | 15.93     | 20.98      | 0.834     | 17.05    | 22.28     | 0.828     | 0.833      | 0.006     |
+| Random Forest     | 2.22      | 3.65       | 0.995     | 4.66     | 7.99      | 0.978     | 0.978      | 0.003     |
+| XGBoost           | 0.25      | 0.37       | 0.999     | 4.06     | 7.38      | 0.981     | 0.982      | 0.004     |
+| **CatBoost**      | **1.74**  | **2.58**   | **0.997** | **3.00** | **5.61**  | **0.989** | **0.989**  | **0.002** |
+| SVR               | 2.97      | 5.74       | 0.988     | 3.80     | 7.51      | 0.981     | 0.983      | 0.002     |
+
+**Table 4.1:** Performance metrics (MAE: Mean Absolute Error in Hz, RMSE: Root Mean Square Error in Hz, R²: Coefficient of Determination) for all models. CatBoost demonstrates superior performance with the lowest test error and highest R² score.
+
+![Model Comparison](simulation/outputs/ml_figures/model_comparison.png)
+
+**Figure 4.8:** Comparative visualization of model performance metrics. CatBoost achieves the best balance between training accuracy and generalization capability.
+
+**Performance Analysis:**
+
+1. **CatBoost Superior Performance:**
+
+   - Lowest test MAE (3.00 Hz) and RMSE (5.61 Hz)
+   - Highest test R² (0.989), explaining 98.9% of variance
+   - Best cross-validation stability (std = 0.002)
+   - Minimal overfitting (train R² = 0.997 vs. test R² = 0.989)
+
+2. **XGBoost Strong Alternative:**
+
+   - Competitive test performance (R² = 0.981)
+   - Near-perfect training fit (R² = 0.999)
+   - Slight tendency toward overfitting
+   - Excellent computational efficiency
+
+3. **Random Forest Robust Performance:**
+
+   - High test accuracy (R² = 0.978)
+   - Significant overfitting (train R² = 0.995 vs. test R² = 0.978)
+   - Ensemble approach provides good stability
+   - Interpretable feature importance
+
+4. **SVR Balanced Approach:**
+
+   - Consistent performance (R² = 0.981)
+   - No significant overfitting
+   - Computationally intensive for large datasets
+   - Excellent cross-validation scores
+
+5. **Linear Regression Baseline:**
+   - Substantial prediction errors (MAE = 17.05 Hz)
+   - R² = 0.828 indicates linear relationships insufficient
+   - Serves as performance floor
+   - Fast training and inference
+
+#### 4.12.4.2 Prediction Accuracy Visualization
+
+![Prediction vs Actual](simulation/outputs/ml_figures/prediction_vs_actual.png)
+
+**Figure 4.9:** Scatter plots comparing predicted vs. actual frequencies for all models. Perfect predictions would align along the diagonal line (y = x). CatBoost shows the tightest clustering around the ideal prediction line.
+
+The prediction accuracy analysis demonstrates:
+
+- **CatBoost:** Minimal scatter, predictions closely follow the diagonal
+- **XGBoost \u0026 SVR:** Slightly more dispersion at higher frequency values
+- **Random Forest:** Good overall fit with some outliers at extremes
+- **Linear Regression:** Systematic deviation from diagonal, particularly for damaged specimens
+
+#### 4.12.4.3 Residual Analysis
+
+![Residual Plots](simulation/outputs/ml_figures/residual_plots.png)
+
+**Figure 4.10:** Residual plots (predicted - actual) for each model. Ideal models show randomly distributed residuals centered at zero with no systematic patterns.
+
+**Residual Characteristics:**
+
+1. **CatBoost:**
+
+   - Residuals tightly clustered around zero
+   - No heteroscedasticity observed
+   - Random distribution confirms model adequacy
+
+2. **XGBoost:**
+
+   - Slight increase in residual magnitude for higher frequencies
+   - Overall random pattern maintained
+   - Few outliers present
+
+3. **Random Forest:**
+
+   - Larger residual spread than gradient boosting models
+   - Random distribution without systematic bias
+   - Some extreme residuals at frequency boundaries
+
+4. **SVR:**
+
+   - Consistent residual variance across frequency range
+   - No obvious patterns or trends
+   - Slightly larger errors than CatBoost
+
+5. **Linear Regression:**
+   - Clear systematic patterns in residuals
+   - Heteroscedasticity evident
+   - Underestimation of high frequencies, overestimation of low frequencies
+
+### 4.12.5 Feature Importance Analysis
+
+![Feature Importance](simulation/outputs/ml_figures/feature_importance.png)
+
+**Figure 4.11:** Permutation feature importance scores for the best-performing model (CatBoost). Higher scores indicate greater influence on prediction accuracy.
+
+**Feature Importance Rankings:**
+
+1. **Length (Importance ≈ 0.45):** Most influential parameter, consistent with theoretical frequency dependence $f \propto L^{-2}$
+2. **Damage Severity (≈ 0.25):** Second most critical, reflecting direct impact on stiffness degradation
+3. **Depth (≈ 0.15):** Significant contributor through moment of inertia influence
+4. **Concrete Strength (≈ 0.10):** Moderate importance via elastic modulus relationship
+5. **Width (≈ 0.03):** Minimal direct influence on flexural frequencies
+6. **Damage Type (≈ 0.02):** Low importance suggests severity dominates over damage pattern
+
+#### 4.12.5.1 SHAP Value Analysis
+
+![SHAP Summary](simulation/outputs/ml_figures/shap_summary.png)
+
+**Figure 4.12:** SHAP (SHapley Additive exPlanations) summary plot showing feature contribution to model predictions. Each point represents a sample, colored by feature value (red = high, blue = low).
+
+**SHAP Insights:**
+
+- **Length:** High values (red) strongly decrease predicted frequency (negative SHAP values)
+- **Damage Severity:** Increasing severity consistently reduces predictions
+- **Depth:** Higher depth values increase predicted frequencies (positive SHAP values)
+- **Interaction Effects:** SHAP analysis reveals non-linear interactions between length and damage severity
+
+### 4.12.6 Cross-Validation and Generalization
+
+**5-Fold Cross-Validation Results:**
+
+All models underwent rigorous 5-fold cross-validation to assess generalization capability:
+
+- **CatBoost:** Mean R² = 0.989 ± 0.002 (excellent stability)
+- **XGBoost:** Mean R² = 0.982 ± 0.004 (high consistency)
+- **SVR:** Mean R² = 0.983 ± 0.002 (robust performance)
+- **Random Forest:** Mean R² = 0.978 ± 0.003 (good reliability)
+- **Linear Regression:** Mean R² = 0.833 ± 0.006 (limited capability)
+
+Low standard deviations for ensemble methods confirm robust generalization across different data subsets.
+
+### 4.12.7 Computational Efficiency
+
+**Training Time Comparison (2,400 samples):**
+
+- Linear Regression: 0.05 seconds
+- Random Forest: 2.3 seconds
+- XGBoost: 1.8 seconds
+- **CatBoost:** 3.2 seconds
+- SVR: 18.5 seconds
+
+**Inference Time (600 predictions):**
+
+- All models: \u003c 0.1 seconds (negligible for practical applications)
+
+CatBoost's slightly longer training time (3.2s) is justified by superior accuracy for this dataset size.
+
+### 4.12.8 Model Selection and Recommendations
+
+**Primary Model: CatBoost Regressor**
+
+CatBoost is selected as the production model based on:
+
+1. **Superior Accuracy:** Lowest prediction errors (MAE = 3.00 Hz, RMSE = 5.61 Hz)
+2. **Best Generalization:** Highest test R² (0.989) with minimal overfitting
+3. **Excellent Stability:** Lowest cross-validation variance (std = 0.002)
+4. **Practical Utility:** Error magnitude (\u003c 3 Hz) acceptable for SHM applications
+5. **Categorical Handling:** Native support for damage type encoding
+
+**Alternative Models:**
+
+- **XGBoost:** Recommended for scenarios requiring faster training or when marginal accuracy reduction acceptable
+- **SVR:** Suitable when model interpretability through kernel methods preferred
+- **Random Forest:** Useful when feature importance transparency critical
+
+### 4.12.9 Practical Implications for Structural Health Monitoring
+
+**Detection Capabilities:**
+
+With CatBoost's MAE of 3.00 Hz:
+
+- **Minimum Detectable Damage:** Approximately 3-4% corrosion (based on sensitivity analysis showing ~0.8 Hz reduction per 1% corrosion)
+- **Reliability:** 98.9% variance explained enables confident damage quantification
+- **Early Warning:** Sufficient precision for detecting degradation before structural safety compromised
+
+**Field Deployment Considerations:**
+
+1. **Sensor Precision:** Accelerometer accuracy (±0.1 Hz) well within model error margins
+2. **Environmental Factors:** Model trained on pristine FEM data requires temperature/humidity compensation in practice
+3. **Real-time Operation:** Fast inference times enable continuous monitoring
+4. **Uncertainty Quantification:** Cross-validation results provide confidence intervals for predictions
+
+### 4.12.10 Limitations and Future Enhancements
+
+**Current Limitations:**
+
+1. **Training Data:** Based solely on FEM simulations; experimental validation pending
+2. **Damage Patterns:** Limited to four damage scenarios modeled
+3. **Boundary Conditions:** Fixed-fixed configuration only; other supports not addressed
+4. **Material Variability:** Concrete properties assumed deterministic
+5. **Multi-mode Sensitivity:** Only first two modes utilized; higher modes unexplored
+
+**Recommended Improvements:**
+
+1. **Experimental Validation:** Laboratory testing of RC beam specimens to refine model
+2. **Physics-Informed ML:** Incorporate governing equations as constraints to improve extrapolation
+3. **Uncertainty Quantification:** Bayesian approaches to provide prediction confidence intervals
+4. **Transfer Learning:** Adapt model to different structural elements (columns, slabs)
+5. **Ensemble Models:** Combine top performers (CatBoost + XGBoost) for further accuracy gains
+
+### 4.12.11 Summary
+
+The machine learning analysis successfully developed predictive models for RC beam frequency estimation with the following achievements:
+
+1. **High Accuracy:** CatBoost achieves 98.9% R² on test data with MAE of 3.00 Hz
+2. **Robust Generalization:** Minimal overfitting and excellent cross-validation stability
+3. **Comprehensive Comparison:** Five algorithms evaluated using consistent methodology
+4. **Feature Insights:** Length and damage severity identified as dominant predictors
+5. **Practical Utility:** Prediction errors within acceptable bounds for SHM applications
+
+The developed models demonstrate the viability of machine learning for structural health monitoring, enabling rapid damage assessment without computationally expensive FEM analysis. The CatBoost model is recommended for deployment in practical SHM systems, with XGBoost as a viable alternative where faster training is prioritized.
+
+---
+
 ## References
 
 1. ACI Committee 318. (2019). _Building Code Requirements for Structural Concrete (ACI 318-19)_. American Concrete Institute.
