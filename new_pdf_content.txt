@@ -1,0 +1,792 @@
+Natural frequencies identiﬁcation of a reinforced concrete beam using
+carbon nanotube cement-based sensors
+Filippo Ubertinia,⇑, Annibale Luigi Materazzia, Antonella D’Alessandroa, Simon Laﬂammeb,c
+a Department of Civil and Environmental Engineering, University of Perugia, Perugia, Italy
+b Department of Civil, Construction, and Environmental Engineering, Iowa State University, Ames, IA 50011, USA
+c Department of Electrical and Computer Engineering, Iowa State University, Ames, IA 50011, USA
+article info
+Article history:
+Received 23 July 2013
+Revised 17 December 2013
+Accepted 28 December 2013
+Available online 25 January 2014
+Keywords:
+Smart concrete
+Nanotechnology
+Carbon nanotubes
+Cement-based transducers
+Multifunctional materials
+Concrete structures
+Operational modal analysis
+Structural health monitoring
+abstract
+Cementitious materials doped with carbon nanoparticles are robust materials capable of transducing
+strain into changes in electrical resistance. These properties encourage the development of spatially dis-
+tributed sensors for structural health monitoring of concrete structures. Yet, very few applications of
+transducers made of cement-based nanocomposites to structural elements have been documented.
+The majority of applications are limited to measurement of static responses.
+The authors have recently proposed the novel application of cement-based nanocomposite technolo-
+gies for vibration-based structural health monitoring of concrete structures. To this aim, prismatic sen-
+sors made of cement paste doped with carbon nanotubes have been proposed as embedded sensors
+for concrete structures. Prior results have shown the promise of these sensors at vibration measurements.
+In this paper, the authors further the understanding of the dynamic behavior of cement-based carbon
+nanotube sensors by conducting experiments on a full-scale reinforced concrete beam for output-only
+identiﬁcation of natural frequencies. The performance of the novel sensor is benchmarked against off-
+the-shelf strain gauges and accelerometers. Results show that the proposed sensor compares well against
+existing technologies at vibration monitoring. Also, the nanocomposite sensor is capable of detecting high
+frequencies, which is made possible by a very low level of noise and an excellent signal-to-noise ratio
+obtained from shielded wire connections and proper tailoring of the fabrication process.
+/C2112014 Elsevier Ltd. All rights reserved.
+1. Introduction
+Continuous assessment of structural health through vibration
+measurements has become one of the key issues of structural
+health monitoring (SHM). This online monitoring is typically con-
+ducted through an automated investigation of modal parameters
+estimates and of their temporal variations[1,2], using multivariate
+statistical analysis tools[3]. Recent ﬁeld applications of continuous
+vibration-based monitoring include long-span bridges [4], foot-
+bridges [5] and historic structures[6].
+It is recognized that SHM of civil structures has the potential to
+enable timely inspection and maintenance, consequently enhanc-
+ing structural safety and structural life expectancy[7,8]. However,
+practical SHM applications are still limited. One factor impeding
+the wide applicability of SHM solutions is associated with the
+inherent size of the structures to be monitored. Most existing sens-
+ing solutions are hardly scalable without necessitating substantial
+costs and complex signal processing algorithms, making SHM
+ﬁnancially unattractive to infrastructure owners due to their
+apparent low return on investment.
+The rapid growth of nanotechnologies has opened new possibil-
+ities in sensor developments[9,10], including new multifunctional
+materials that enable substantial improvements in the cost-
+effectiveness of SHM solutions for geometrically large systems
+[11,12]. Building on these technological advances, the authors have
+recently developed a strain sensor fabricated from a multifunc-
+tional cement-based composite material, with the objective to
+provide an innovative solution to the large scale monitoring chal-
+lenge of concrete structures.
+The material consists of a self-sensing cement paste doped with
+carbon nanotubes[13]. The resulting sensor, termed carbon nano-
+tube cement-based sensor (CNTCS), transduces local strain into a
+change in electrical resistance. CNTCSs can be applied over large
+linear segments or embedded prior to casting to enable monitoring
+of concrete structures. When embedded, CNTCS forms a mechani-
+cally strong bond with the monitored structure, and creates a con-
+tinuously distributed set of strain sensors within the structure.
+CNTCS also have a durability similar to the structure, which allows
+long-term applications with limited maintenance.
+0141-0296/$ - see front matter/C2112014 Elsevier Ltd. All rights reserved.
+http://dx.doi.org/10.1016/j.engstruct.2013.12.036
+⇑ Corresponding author. Tel.: +39 075 585 3954; fax: +39 075 585 3897.
+E-mail address: ﬁlippo.ubertini@unipg.it (F. Ubertini).
+Engineering Structures 60 (2014) 265–275
+Contents lists available atScienceDirect
+Engineering Structures
+journal homepage: www.elsevier.com/locate/engstruct
+
+In a prior work [13], the authors investigated the electrical
+response of CNTCS when subjected to sinusoidal compression
+loads at various frequencies. Although only a limited frequency
+range was investigated (up to 5 Hz), results suggested that CNTCSs
+were promising at dynamic measurements, and encouraged more
+extensive investigations devoted to assessing their performances
+at vibration-based SHM.
+In this paper, the authors further the understanding of CNTCS
+by examining its capability to perform output-only modal identiﬁ-
+cation. This veriﬁcation is conducted through laboratory vibration
+tests on a reinforced concrete (RC) beam, where a signiﬁcantly lar-
+ger range of frequencies is investigated in comparison to prior
+work. For the ﬁrst time, the performance of the CNTCS is bench-
+marked against mature, off-the-shelf sensors. Also, efforts are
+made to enhance the CNTCS signal-to-noise ratio to improve the
+resolution in dynamic identiﬁcation. These include modiﬁcations
+to the fabrication process and to the data acquisition procedures.
+The paper is organized as follows. Section2 presents the back-
+ground theory on CNTCS, including the state-of-the-art summary,
+fabrication process, and sensing principle. The sensor’s improve-
+ments in comparison to prior work are discussed. Section3 describes
+the methodology used for dynamic identiﬁcation of a full-scale con-
+crete beam through CNTCS. A discussion on the improvements in the
+data acquisition procedure is provided. Section4 shows and dis-
+cusses the experimental results. Section5 concludes the paper.
+2. Description of nanotube cement-based sensors
+2.1. State-of-the-art summary
+Earliest studies on self-sensing cementitious materials ap-
+peared in the 90s[14]. The physical principle of strain sensing in
+these materials is based on a change in their electrical resistivity.
+A strain in the materials provokes a change in piezoresistivity
+caused by the slight pull-out of the ﬁbers passing through micro-
+cracks [15]. This occurs if the nanoparticles are properly dispersed
+in the matrix and their amount reaches a critical fraction termed
+percolation threshold.
+Following these ﬁrst publications on multifunctional cement-
+based composites, different dopants have been investigated,
+including carbon ﬁbers[15,16], nanocarbon black[17] and, more
+recently, carbon nanotubes (CNTs)[18,19]. It has been shown that
+CNTs possess excellent electrical and mechanical properties, which
+are now exploited in different types of nanocomposites (e.g.[20]).
+While these properties make CNTs promising dopants, their dis-
+persion within the cementitious matrix is signiﬁcantly compli-
+cated by their low solubility in water solutions[21]. In particular,
+the development of appropriate physical and chemical procedures
+is necessary to produce bundle-free three-dimensional CNTs
+networks.
+In sensing applications, the vast majority of literature has
+focused on the static response of nanotechnology-modiﬁed
+cement-based materials, while vibration-based SHM has been
+almost unexplored. The authors have developed the CNTCS, specif-
+ically tailored to dynamic measurements. For this purpose, the fab-
+rication process of CTNCS has been reﬁned to optimize the
+sensitivity. This reﬁnement includes enhanced physical and chem-
+ical methods for dispersing the CNTs to obtain an homogeneous
+composite material. Unlike traditional strain gauges, CNTCS are
+fabricated with a cementitious material, which allows embedde-
+ment within an external cover of concrete structures and provides
+a strong mechanical bond. This results in a life expectancy of the
+sensing hardware similar to the one of the monitored structure,
+and opens the possibility to cost-effectively monitor large struc-
+tural surfaces via a continuous distributed sensor network.
+The following subsections describe the CNTCS physical proper-
+ties, its fabrication process, and the sensing principle.
+2.2. Physical properties of CNTCS
+The specimens fabricated for the experimental campaign con-
+sist of square-base prisms made of nanomodiﬁed cementitious
+material with embedded electrodes.
+The specimens dimensions are 40/C2 40 /C2 160 mm3. The elec-
+trodes consist of copper wires of 1 mm diameter, disposed sym-
+metrically with respect to the center of the specimens, equally
+spaced at a distance of 10 mm and embedded in approximately
+3=4 of the width of the specimens. Eight electrodes are embedded
+with the purpose of allowing measurements in different conﬁgura-
+tions (e.g. two-probe, four-probe, etc.), with various distances
+between active electrodes.
+The matrix of the CNTCS consists of a cement paste fabricated
+with Portland cement type 42 :5 and a water/cement ratio of
+0:40. This material provides a suitable homogeneity and enhances
+strain sensitivity in comparison to mortar or concrete. Conductive
+nanoparticles are dispersed in the matrix, consisting of multi
+walled carbon nanotubes (MWCNTs) type Graphistrength C100
+from Arkema. The particular structure of MWCNTs, made of con-
+centric cylinders of graphene sheets, makes them more sensitive
+than Single Walled CNTs. The physical properties of the particular
+MWCNTs selected in the fabrication process are reported inTable 1.
+The composite material mix design is summarized inTable 2, also
+reporting quantities used for a single specimen.
+2.3. Fabrication process
+The fabrication process of CNTCS is schematically described in
+Fig. 1. First, a Sky 521 plasticizer based on second-generation poly-
+carboxylate ether polymers is added to deionized water at a con-
+centration of 5% by volume of water (Fig. 1(a)). Second, MWCNTs
+are added to the mix in the amount of 2% by weight content of
+cement (Fig. 1(b)). Since nanotubes are not hydrophile, a speciﬁc
+sequence of mixing processes with different devices is adopted to
+disperse the MWCNTs within the mix before the addition of
+cement powder. This dispersion technique aims at preventing
+CNTs from agglomerating into bundles, which would result in a
+lack of homogeneity in the composite material, and is conducted
+as follows. The MWCNTs solution is ﬁrst mixed with a magnetic
+stirrer for 10 min (Fig. 1(c)). It is followed by 15 min of sonication
+with a 225 W ultrasound device equipped with a probe series Vibra
+Cell Bioblock Scientiﬁc model 75043. (Fig. 1(d)). During sonication
+the beaker containing the nanomodiﬁed solution is soaked in a cool
+water bath, in order to limit evaporation. Lastly, the solution is
+mixed for 15 min with a mechanical agitator with a speed of rota-
+tion of 1500 rev/min (Fig. 1(e)). Sonication has been recognized as
+the key step in the manufacturing process, which mostly affects
+strain sensitivity of CNTCS. For this reason, the duration of the
+Table 1
+Physical properties of the MWCNTs used in the experiment.
+Property Description/Value
+Appearance Black powder
+Apparent density 50—150 kg=m3
+Mean agglomerate size 200—500 lm
+Weight loss at 105/C176C <1%
+Carbon content >90% in weight
+Free amorphous carbon Undetectable (SEM)
+Mean number of walls 5–15
+Outer mean diameter 10–15 nm
+Length 0.1–10
+lm
+266 F. Ubertini et al. / Engineering Structures 60 (2014) 265–275
+whole dispersion process is increased from 15 to 40 min in com-
+parison to prior work[13], with a longer sonication time.
+The nanomodiﬁed aqueous solution resulting from the mixing
+procedure is added to cement powder (Fig. 1(f)), and manually
+mixed to obtain the nanocomposite cement paste. The material is
+then poured into oiled molds (Fig. 1(g)) and the copper electrodes
+are embedded in the paste (Fig. 1(h)). After settling, the sample is
+unmolded for curing (Fig. 1(i)).
+The effective dispersion of nanoparticles in the aqueous solu-
+tion and in the cement paste is controlled using a scanning electron
+microscope (SEM) (type FESEM, model Supra 25, Zeiss) with a ﬁeld
+emission cathode. SEM analyses are reported inFig. 2(a) for the
+water solution with MWCNT after the mixing procedure and in
+Fig. 2(b) for a fragment of hardened nanocomposite cement paste.
+Both ﬁgures demonstrate the good dispersion of nanotubes and the
+effectiveness of the mixing process.
+2.4. Sensing principle
+The resulting CNTCS is a strain transducer. A strain in the
+cementitious materials (or even a crack) alters the contact between
+the nanoparticles, which in turn changes the materials electrical
+resistivity, which can be measured via a data acquisition system.
+The relation between incremental variation in electrical resistance,
+DR, measured by CNTCS and the variation in axial strain,D/C15,i s
+written:
+DR
+R0ðtÞ ¼ kð/C15; _/C15ÞD/C15 ð1Þ
+where R0 is the unstrained electrical resistance andk is a gauge fac-
+tor. Unlike for conventional strain gauges, Eq.(1) is nonlinear ask
+depends on the axial strain/C15 as well as on the strain rate_/C15 [19]. This
+dependance ofk on /C15 is explained by a closer interaction between
+nanoparticles following an applied stress, while its dependency
+with _/C15 is due to speciﬁc electrical behavior of the composite mate-
+rial. Literature suggests that the electrical behavior of the sensor
+could be modeled at a ﬁrst level of approximation by a resistor
+and a capacitor in parallel with some contact resistance[22]. The
+capacitor is used to model the rate dependency ofk. Also, due to
+the presence of non-negligible electrical capacitance in the sensor,
+its electrical response and, consequently, its unstrained electrical
+resistance, R0, vary with time because of the material polarization
+under the application of a constant electrical ﬁeld.
+Remark: from Eq.(1), the sensitivity of the CNTCS,DR=D/C15, is pro-
+portional to R0. While an increase in the content of nanoparticles
+would result in a largerk, it would also provoke an overall decrease
+in the sensitivity of the sensor. It follows that an optimal content of
+nanoparticles exists. For the sensor described in this section, this
+optimal content is approximately 2% by weight of cement. A side
+effect of an increase inR0 is the increase in the power voltage nec-
+essary to obtain a measurable level of current intensity.
+In this paper, linearity of Eq.(1) is assumed for output-only fre-
+quency identiﬁcation. As it will be demonstrated in the experi-
+ments, this assumption is justiﬁed by the observation that
+natural frequencies of vibration can be identiﬁed from standard
+spectral analysis of CNTCS’s output, as it is commonly done with
+linear transducers.
+3. Experimental procedures
+3.1. Experimental setup
+The laboratory setup comprises (seeFig. 3): (i) a simply sup-
+ported RC beam; (ii) carbon-nanotube cement-based sensors, off-
+the-shelf accelerometers, an impulse hammer, and electric strain
+gauges; (iii) a chassis for data acquisition with ﬁve slots; (iv) a
+power source module for providing stabilized electrical input to
+the CNTCS; (v) a digital multimeter module for measuring the elec-
+trical response of the CNTCS; (vi) a data acquisition module and
+A/D converter for strain gauges; and (vii) a data acquisition module
+and A/D converter for accelerometers and impulse hammer. These
+components are described in what follows.
+The RC beam has a total length of 430 cm and a rectangular
+cross-section of dimensions 20/C2 30 cm2. The beam is equipped
+with two steel plates partially embedded at its extremities prior
+to casting serving as vertical supports. The plates are inserted into
+steel supports to allow end rotations in the vertical plane while ﬁx-
+ing rotations in the horizontal plane. The distance between the
+supports is 400 cm. Longitudinal and transverse steel reinforce-
+ments of the RC beam are shown inFig. 3.
+Table 2
+Cement paste mix design.
+Components Content/m 3 Content/specimen
+MWCNTs 32.4 kg 8.3 g
+Portland cement 42.5 1620 kg 415 g
+Superplasticizer 32.4 dm
+3 8.3 cm3
+Water 650 kg 166 g
+w/c 0.4 0.4
+Fig. 1. Fabrication process of a CNTCS.
+F. Ubertini et al. / Engineering Structures 60 (2014) 265–275 267
+CNTCS, described in Section2, are attached on the top surface of
+the RC beam at mid- and quarter-span by means of mechanical
+connection devices. Each connection device is made from two
+L-shaped steel elements each one connected to the RC beam by
+four bolts. A screw is installed in one of the two L-shaped elements
+to apply an initial prestress to the sensor, whose level is manually
+adjusted using a load cell with a digital display. This prestress is
+used to simulate embedment. The sensors are electrically isolated
+from the connection devices using thin plastic sheets.
+Seven equally spaced seismic accelerometers are mounted on
+the bottom of the RC beam to measure its vertical vibrations.
+Accelerometers (model PCB393C) have a sensitivity of 1 V/g,
+measurement range of /C6 2:5 g, and have a frequency range of
+0.025–800 Hz with associated dynamic error of/C6 5%. They are
+wired to the central unit by means of short coaxial cables, and
+attached through permanent magnets on 4 /C2 4 cm steel bases,
+0:8 cm thick, which are glued on the beam. Seven electric strain
+gauges for concrete (model KC-60-120-A1-11-L1M2R) are attached
+at the same locations of the accelerometers, but on the top
+concrete surface of the beam. These strain gauges have vinyl-
+coated ﬂat 2-wire cable, gage factor of 2:1, length of 60 mm and
+a nominal electric resistance of 120X.
+The data acquisition chassis is a NI PXIe-1073 and hosts four
+modules: one for power source generation, one for measuring the
+electrical output of the cementitious sensors, one for acquisition
+and A/D conversion of the signals provided by the strain gauges,
+and one for acquisition and A/D conversion of the signals provided
+by the accelerometers. The chassis is connected to a PC, model Dell
+Latitude E6530, through the NI Express card interface. A Labview
+code is developed to simultaneously manage power generation
+(a) (b)
+Fig. 2. SEM pictures of the CNTCS: (a) water suspension with CNTs; and (b) hardened composite cement paste.
+Fig. 3. Layout of the experimental setup and plans of the investigated RC beam (dimensions in cm).
+268 F. Ubertini et al. / Engineering Structures 60 (2014) 265–275
+and signal acquisitions from the different sensors. The stabilized
+potential difference sent to the CNTCS is provided by a NI PXI-
+4130 capable of providing a four-quadrant/C6 20 V and/C6 2 A output
+in a single isolated channel.
+The high speed digital multimeter, model NI PXI-4071, is also
+installed in the chassis and used to perform electrical measure-
+ments. The module allows voltage, current and electrical resistance
+measurements. The current measurement range used for the
+experiment is /C6 100 lA with resolution of 100 pA /C6 1 pA. An
+18-bit A/D conversion is used with a sampling rate tuned to 1 kHz.
+The impulse hammer used for the dynamic excitation, model
+PCB 086D20C41 with ICP quartz force sensor, has a 0:23 mV/N sen-
+sitivity and/C6 22; 240 N measurement range.
+Strain gauges measurements are acquired through a data acqui-
+sition bridge input module, model PXIe-4330, 8 channels, 24-bit
+resolution, 25 kHz maximum sampling rate, anti-aliasing ﬁlters.
+The accelerometers and hammer outputs are acquired through a
+data acquisition module, model PXIe-4492, 8 channels, 24-bit res-
+olution, 204.8 kHz maximum sampling rate, anti aliasing ﬁlters.
+The current intensity outputted by the CNTCS under application
+of a stabilized power voltage is measured, and the conversion to
+electrical resistance is performed by diving applied voltage by
+the measured current intensity. In order to minimize the electro-
+magnetic interference with the high sampling rate, shielding is im-
+proved on the electrical circuit connecting power source unit,
+sensors and digital multimeter. This is done by means of a single
+coaxial cable, where the internal copper wire connects the positive
+probe of the multimeter, through the sensor, and to the positive
+pole of the power generator, while the mesh shield connects the
+negative probe of the multimeter, through the sensor, and to the
+negative pole of the power generator, as shown inFig. 3. This im-
+proved shielded connection has shown substantial reduction in
+measurement noise.
+In this laboratory setup, a two-probe measurement conﬁgura-
+tion is adopted providing good quality of the measurements. In this
+particular conﬁguration, an increase in the distance between active
+electrodes results in increasingR0 and decreasing the output cur-
+rent intensity level. Consequently, the strain sensitivity of the sen-
+sor is increased, and signal-to-noise ratio decreased. An optimal
+balance exists, and it depends on the sampling rate which directly
+affects accuracy of current measurements. With the sampling rate
+utilized in this setup (1 kHz), a distance of 10 mm between the
+electrodes has shown to provide a good balance.
+3.2. Vibration tests
+Vibration tests are conducted by exciting the RC beam using the
+impulse hammer. Hammer hits are random in space and time. The
+response of the beam is measured and recorded simultaneously with
+the CNTCS, accelerometers and strain gauges. The electrical current
+outputted by the cementitious sensors under application of a stabi-
+lized potential difference of 15 V between electrodes placed at a dis-
+tance of 10 mm is measured by the multimeter. In the vibration tests,
+CNTCS are prestressed with compression loads equal to 1:5 kN and
+are subjected to a constant electrical ﬁeld during 30 min prior to
+testing at a potential difference of 15 V to minimize the effects of
+polarization. Pictures of the experimental setup are shown inFig. 4.
+Six data acquisitions periods are performed, each one having a
+duration of 150 s, with the accelerometers placed in the vertical
+direction. This duration is limited by the memory of the digital
+multimeter. For the ﬁrst three data acquisition periods, one CNTCS
+is placed at the mid-span of the beam, while for the remaining
+acquisition periods, the CNTCS is placed at quarter-span of the
+beam. Data processing is conducted by concatenating collected
+data in a single data set. A highpass ﬁlter is used on the CNTCS out-
+put above 10 Hz to eliminate residual polarization effects.
+A second set of experiments with only accelerometers placed in
+the lateral direction is performed to identify the horizontal modal
+characteristics of the beam. Data are acquired over a period of
+430 s in this case.
+The natural frequenciesf v
+n and f h
+n of vertical and lateral modes,
+respectively, are analytically computed using the vibration theory
+for continuous beams with simply supported (vertical) and ﬁxed-
+ﬁxed (lateral) boundary conditions. The characteristic equation
+for the natural frequencies of vertical modes is
+sinðbv
+n LÞ¼ 0 ð2Þ
+and for lateral modes is
+cosðbh
+nLÞ coshðbh
+nLÞ¼ 1 ð3Þ
+with
+b2
+n ¼ 2pfn
+ﬃﬃﬃﬃ ﬃ
+l
+EI
+r
+ð4Þ
+where L is the span length,l ﬃ 2500 kg/m3 the material density,
+E ﬃ 30; 000 N/mm2 the Young modulus of concrete, and I the
+(a) (b)
+(c)
+Fig. 4. Experimental setup: overview (a); hardware for power source generation and data acquisition (b); CNTCS mounted on the RC beam (c).
+F. Ubertini et al. / Engineering Structures 60 (2014) 265–275 269
+moment of inertia taken asIv ¼ 200 /C2 3003=12 mm4 and Ih ¼ 300/C2
+2003=12 mm4 in vertical and lateral directions, respectively.
+From Eq.(2), the analytical frequency for the ﬁrst vertical mode
+is f v
+1 ¼ 25:2 Hz. From Eq.(3), the analytical frequency of the ﬁrst
+lateral mode isf h
+1 ¼ 38:1.
+Note that the data acquisition lengths largely satisfy the condi-
+tion of being 1000–2000 times the fundamental natural period,
+which is necessary for performing an accurate output only modal
+identiﬁcation.
+3.3. Data processing techniques
+The Choi-Williams time-frequency distribution is used for
+investigating the energy content of signals in the time-frequency
+domain. The choice of this mathematical tool is justiﬁed by its
+known robustness characteristics against noise and effectiveness
+in reducing interference terms[23].
+Time-frequency distributions can be generalized as follows:
+Pðt; xÞ¼ 1
+4p2
+ZZ þ1
+/C01
+Wðt /C0 uÞe/C0 isxRs;1ðt; sÞduds ð5Þ
+where Wðt /C0 uÞ is the Fourier transform of the Kernel function
+Uðh; sÞ that acts as a ﬁlter of the local autocorrelation function
+Rs;1ðt; sÞ¼ xðu þ s=2Þx/C3 ðu /C0 s=2Þ, xðtÞ is the input signal,t denotes
+time, s is a time lag parameter,u ¼ t þ s=2 and * denotes the com-
+plex conjugate operator. The inspection of Eq.(5) shows that the
+choice of the kernel function determines the characteristics of the
+time frequency distribution. The kernel function of the Choi-
+Williams distribution is deﬁned as
+Uðh; sÞ¼ e/C0 h2s2
+r ð6Þ
+where r is a user-deﬁned scalar parameter. For more details on
+Choi-Williams distribution, the interested reader is referred to
+Ref. [23].
+The modal parameters of the RC beam are extracted in the range
+of 0–500 Hz using the Frequency Domain Decomposition (FDD)
+(a)
+(b)
+(c) (d)
+Fig. 5. Vibration monitoring of the RC beam using CNTCS placed at mid-span: sensor output before high-pass ﬁltering (a); sensor output after high-pass ﬁltering (b); blow up
+on sensor output (c); detailed window plot of the output of the strain gauge placed at the location of the CNTCS (d).
+270 F. Ubertini et al. / Engineering Structures 60 (2014) 265–275
+method. The FDD is based on the evaluation of the matrix of
+cross-spectral densities of the output dataGðf Þ, where f denotes
+the frequency. MatrixGðf Þ contains the (real valued) auto-spectral
+densities along the main diagonal and the (complex) cross-spectral
+densities elsewhere.Gðf Þ is computed by using the modiﬁed peri-
+odogram method yielding average spectra by subdividing the
+recorded signals into windows and overlapping frames containing
+2n points. This approach results in a frequency resolution equal to
+fs=2nþ1, fs being the sampling frequency. Modal parameters esti-
+mates are extracted from output data by decomposing matrixGðf Þ
+(a) (c)
+(b)
+Fig. 6. Hysteretic behavior of the CNTCS: window plot of strain response at mid-span during hammer test (a); corresponding CNTCS output (b); CNTCS output vs.strain
+variation (c).
+(a) (b)
+(c) (d)
+Fig. 7. Time-frequency analysis of strain measurement and corresponding CNTCS output at quarter-span: strain gauge output (a); CNTCS output (b); time-frequency plot of
+strain gauge output (c); time-frequency plot of CNTCS output (d).
+F. Ubertini et al. / Engineering Structures 60 (2014) 265–275 271
+through singular value decomposition at discrete frequencies.
+Assuming the input to be a white noise and damping to be small,
+natural frequencies are identiﬁed as those that correspond to the
+peaks of the curves representing the singular values ofGðf Þ. Mode
+shapes are approximated by taking the corresponding singular
+vectors.
+4. Results and comparisons
+4.1. Analysis of CNTCS outputs
+Fig. 5(a) shows a time history of the data recorded from the
+CNTCS placed at mid-span during vibration tests. Hammer impacts
+can be recognized by the multiple peaks in the data. The signal
+exhibits a drift in the time domain. Examining the blow up of a sin-
+gle hammer hit response (shown inFig. 5(a)), the signal is not sym-
+metric around the steady state value, but mostly remains below.
+Both effects are conceivably associated to polarization. The time
+drift originates from a decrease in current intensity due to increas-
+ing charge in the dielectric material. The second effect is explained
+by a slow response to an impulsive compressive load superim-
+posed to the dynamic response. As shown inFig. 5(b), both effects
+are removed by a high-pass ﬁlter, but at the expense of low fre-
+quencies information.
+A blow up on the response to a single hammer hit after ﬁltering
+is shown inFig. 5(c). The noise level of the signal is very low com-
+pared with literature on nanocomposite cement-based sensors.
+This demonstrates the success of the two major improvements in
+the sensing solution with respect to previous studies by the
+authors. First, the use of a coaxial cable in the electrical circuit con-
+nection to the CNTCS, power source, and multimeter (Fig. 3) has
+substantially reduced the electromagnetic noise. Second, the mate-
+rial preparation and type and position of active electrodes are
+optimized and contributed to improving the sensitivity of the
+transducer. Speciﬁcally, design for CNTCS in this work has resulted
+after comparison between different mix procedures, including the
+use of two types of dispersing additives (BYK 154 and BYK 190) and
+various distances between active electrodes. It was found that the
+use of dispersing additives can reduce unstrained electrical resis-
+tance R
+0, Eq. (1), up to about one-third. Therefore, no dispersing
+additive is used here, but, in comparison with previous work
+[13], a longer sonication process is used for improving CNTs net-
+work. Fig. 5(a) shows a value forR0 to be of the order of 170 kX.
+The signal-to-noise ratio achieved in the experiments allows to
+use sensor’s outputs for output-only frequency identiﬁcation in a
+wide frequency range.
+Fig. 5(d) is a plot of a portion of signal measured by the strain
+gauge placed at the same location as the CNTCS. The comparison
+between Fig. 5(c) and (d) conﬁrms the nonlinearity of Eq.(1): the
+CNTCS provides a signal which is quite evidently non-proportional
+to the one outputted by the strain gauge. An immediate conse-
+quence is a faster decay which prevents damping estimation from
+raw data recorded through the CNTCS.
+(a)
+(b)
+Fig. 8. Peaks and singular value lines of the data recorded by accelerometers placed in lateral (a) and vertical (b) directions.
+272 F. Ubertini et al. / Engineering Structures 60 (2014) 265–275
+Fig. 6(a) and (b) show the blow up of the CNTCS and strain
+gauge signals, in which compression and decompression are
+shown using different1 colors. Fig. 6(c) is a plot of CNTCS output
+against strain gauge output for a longer period. These results show
+a hysteresis in the CNTCS response, with larger hysteresis during
+compression. No signiﬁcant variation in sensitivity of the sensor
+with strain is observed, because the variations of strain with respect
+to the initial value from prestress force is relatively small.
+Fig. 7shows time-frequency plots in the range 0–300 Hz using
+the Choi-Williams distribution (Eq.(5)) for the CNTCS and strain
+gauge outputs placed at quarter-span. The signal from the strain
+gauge shows a single frequency around 27 Hz. The time-frequency
+plot of the strain gauge does not exhibit higher frequencies,
+because of a more signiﬁcant level of noise in the measurements.
+The signal outputted by the CNTCS shows the same fundamental
+frequency around 27 Hz, with a much shorter decay time. The
+CNTCS exhibits higher frequency components. Signiﬁcant energy
+of the signal is concentrated around 90 Hz, 110 Hz, and 220 Hz.
+As it will be shown in next section, some of these components
+(90 Hz and 110 Hz) are associated with vibration modes of the
+RC beam, while others (220 Hz) are spurious frequencies of uncer-
+tain origin, probably related to the non-white nature of the input.
+Some small amount of energy of the signal is also concentrated
+around 54 Hz. This spurious frequency is the double of the main
+frequency at 27 Hz, and could be a superharmonic component
+due to the harmonic distortion of the sensor’s output caused by
+its nonlinearity.
+4.2. Identiﬁcation of natural frequencies of the RC beam from CNTCS
+outputs
+Fig. 8shows the ﬁrst three normalized singular value (SV) lines
+of the data recorded by the accelerometers placed in vertical
+(Fig. 8(a)) and lateral (Fig. 8(b)) directions. FDD results identify a
+total of 12 natural modes of vibration in the range between 0
+and 500 Hz. These modes correspond to the peaks shown in
+Fig. 8. Identiﬁed modes are ﬁve vertical modes, denoted V1, V2A,
+V2B, V3 and V4, ﬁve lateral modes, denoted L1 to L5, and two addi-
+tional lateral modes, denoted LS1 and LS2. The meaning of modes
+V2A and V2B will be clariﬁed below. Identiﬁed mode shapes are
+reported in Fig. 9. Other peaks, visible in the SV plots ofFig. 8,
+are not associated to vibrational modes of the beam because their
+Fig. 9. Mode shapes identiﬁed using signals recorded by accelerometers and associated polar plots. Vertical and lateral modal components are shown in vertical and lateral
+modes, respectively.
+Table 3
+Identiﬁed (ID) natural frequencies of the RC beam (Hz) using Frequency Domain
+Decomposition and traditional sensors (the relative difference,
+D, is calculated
+between analytical natural frequencies and frequencies identiﬁed from acceleration
+data).
+Mode Analytical ID (accel.) ID (strain g.) D ð%Þ
+LS1 /C0 5:13 /C0/C0
+LS2 /C0 19:78 19 :78 /C0
+V1 25 :22 27 :10 27 :10 7 :4
+L1 38 :11 32 :71 37 :35 14 :2
+V2A 100 :98 2 :52 81 :79 18 :2
+L2 105 :19 3 :75 93 :75 10 :8
+V2B 100 :9 113 :5 113 :51 2 :5
+V3 227 :0 171 :1 171 :12 4 :6
+L3 206 :0 192 :1 192 :66 :7
+L4 340 :5 322 :8 /C0 5:2
+V4 403 :5 431 :4 /C0 6:9
+L5 508 :6 477 :3 /C0 6:1
+1 For interpretation of color in Fig. 6, the reader is referred to the web version of
+this article.
+F. Ubertini et al. / Engineering Structures 60 (2014) 265–275 273
+corresponding eigenvectors are irregular and conceivably not cor-
+responding to mode shapes of the beam. These peaks can be attrib-
+uted to the non-white nature of the input in the vibration tests.
+The comparison between identiﬁed and analytical frequencies
+is reported in Table 3. Results show a very good agreement for
+modes V1, V3, V4, L1, L2, L3, L4 and L5. Natural frequencies iden-
+tiﬁed from data recorded using strain gauges are also reported in
+Table 3. Almost exact agreement exists with results from acceler-
+ometers. However, no clear peaks can be detected at frequencies
+higher than about 200 Hz due to a signiﬁcant level of measurement
+noise.
+The identiﬁed mode shapes are similar to theoretical modes
+from simply supported (vertical modes) and ﬁxed-ﬁxed (lateral
+modes) elastic beams. Two antisymmetric vertical modes, denoted
+as V2A and V2B, with very similar mode shapes are identiﬁed in-
+stead of a single mode V2. This is probably a splitting of the modal
+frequency, a phenomenon often documented in literature for dam-
+aged RC elements[24]. The RC beam under investigation was sub-
+ject to artiﬁcial damage in previous work, consisting of deep cracks
+at mid-span.
+Mode shapes LS1 and LS2 are associated with the rolling motion
+of the supports over their bases. In particular, mode LS1 involves in
+phase lateral motions of the supports, while mode LS2 involves out
+of phase lateral motions of the supports. These motions were visu-
+ally observable during the experiments.
+Fig. 10 shows the normalized power spectral density (PSD) of
+the data recorded from CNTCS and compared against the normal-
+ized ﬁrst singular value lines of the spectral matrices of the accel-
+eration measurements in the two (vertical and lateral) setups.
+Results show that all vertical modal peaks visible in the SV lines
+of acceleration data are also evident in the PSD of the CNTCS out-
+put. Although the CNTCS was expected to measure only vertical
+vibration, peaks related to lateral modes are also observable in
+its output spectrum. While the peak associated with mode LS1 is
+not visible because it falls into the ﬁltered region, two bumps
+around the main peak of mode V1 are visible, which could be asso-
+ciated with modes LS2 and L1. The output spectrum of the CNTCS
+also shows the peaks associated to modes L2, L3, L4 and L5. The
+presence of the superharmonic peak associated to twice the fre-
+quency of mode V1 is evident in the PSD of the CNTCS output sig-
+nal, and conﬁrms to observation from Section 4.1 about the
+harmonic distortion characterizing the CNTCS.
+The comparison between the frequencies of vertical modes
+identiﬁed through acceleration data and those corresponding to
+(a)
+(b)
+(c)
+Fig. 10. Identiﬁcation of natural frequencies with CNTCS: ﬁrst normalized singular value of lateral acceleration data (a); ﬁrst normalized singular value line of vertical
+acceleration data (b); peaks of the normalized PSD of the output of CNTCS (c) (the gray area denotes ﬁltered region).
+Table 4
+Identiﬁed (ID) natural frequencies of the RC beam (Hz) using accelerometers and
+CNTCS.
+Mode V1 V2A V2B V3 V4
+ID (accel.) 27 :10 82 :52 113 :5 171 :1 431 :4
+CNTCS 27 :10 81 :05 113 :3 172 :9 423 :6
+D ð%Þ 0:01 :80 :21 :01 :8
+274 F. Ubertini et al. / Engineering Structures 60 (2014) 265–275
+the peaks of the output spectrum of the CNCTS is reported in
+Table 4. A similar comparison for lateral modes is not possible
+because the CNTCS was not placed in a position apt to accurately
+measure lateral vibrations. Results presented inTable 4show that
+the frequencies identiﬁed from the peaks of the PSD function of the
+CNTCS output correspond to the vertical modal frequencies of the
+beam.
+5. Conclusions
+In this paper, the use of composite cementitious sensors with
+carbon-nanotubes has been proposed for vibration monitoring of
+RC structures. Prismatic transducers made of multifunctional
+strain-sensing cement paste doped with carbon nanotubes have
+been prepared with an optimized fabrication process to ameliorate
+the dispersion of MWCNTs. Vibration experiments covered a fre-
+quency range to an extent never investigated in previous work.
+The interest in measuring relatively high frequency responses is
+motivated by possible applications of cement-based sensors to rel-
+atively rigid structures, such as low-rise buildings and precast con-
+crete girder bridges, as well as by possible applications of
+structural health monitoring techniques based on high frequency
+responses. Results from the experiments were benchmarked
+against mature, off-the-shelf accelerometers and strain gauges.
+Overall results have shown that the novel nanocomposite ce-
+ment-based sensors are promising for output-only identiﬁcation
+of natural frequencies, with signiﬁcant advantages with respect
+to traditional sensors, including the possibility to build self-sensing
+structures equipped with an arbitrarily large number of durable
+sensors arranged in a network conﬁguration. Speciﬁc conclusions
+of this work are as follows:
+/C15The CNTCS outputs very small levels of current intensities, and
+thus requires the use of high precision multimeters for mea-
+surements. The tailored fabrication process of CNTCS resulted
+in an enhanced sensitivity associated to a high unstrained
+electrical resistance. Also, improved shielding of the electrical
+circuit connecting the sensor, data acquisition and power mod-
+ules using a coaxial cable has almost eliminated electromag-
+netic noise, and enabled modal identiﬁcation over a frequency
+range up to 500 Hz.
+/C15CNTCS exhibit a non-linear input-output behavior, with some
+hysteresis that is larger during compression than during decom-
+pression. An electromechanical model of the sensor needs to be
+developed to account for this non-linearity.
+/C15Electrical polarization of CNTCS results in signal distortions at
+low-frequencies that can be eliminated using high-pass ﬁltering
+(in this paper, above 10 Hz). This may limit applications of the
+sensing solution to signals with energy concentrated at rela-
+tively high frequencies. Here, it was possible to identify a funda-
+mental frequency located around 27 Hz.
+/C15Results of the experimental tests have demonstrated that the
+output of the cementitious sensors contains the spectral com-
+ponents of all vertical vibration modes identiﬁed by off-the-
+shelf sensors. Non-signiﬁcant differences were observed
+between results from the CNTCS and accelerometers.
+/C15The non-linear behavior of the nanocomposite sensors results in
+harmonic distortion effects that produced a spurious superhar-
+monic frequency equal to the double of the fundamental. This
+effect could be ﬁltered out via post signal processing.
+Acknowledgements
+The authors would like to gratefully acknowledge the support
+provided to this research by the Group of Materials Science and
+Technology of University of Perugia, coordinated by Professor
+José M. Kenny, for sharing their knowledge and expertise and for
+providing materials and equipment for the preparation and analy-
+sis of CNTCS. A particular appreciation goes to Dr. Marco Monti, Dr.
+Maurizio Natali and Dr. Marco Rallini, from the same Research
+Group, who participated in the development of the CNTCS and in
+related physical and chemical investigations.
+References
+[1] Magalhes F, Cunha A, Caetano E. Vibration based structural health monitoring
+of an arch bridge: from automated oma to damage detection. Mech Syst Signal
+Process 2012;28:212–28.
+[2] Cross E, Manson G, Worden K, Pierce S. Features for damage detection with
+insensitivity to environmental and operational variations. Proc R Soc A 2012.
+[3] Santos JP, Crémona C, Orcesi AD, Silveira P. Multivariate statistical analysis for
+early damage detection. Eng Struct 2013;56:273–85.
+[4] Peeters B, De Roeck G. One-year monitoring of the z24-bridge: environmental
+effects versus damage events. Earthquake Eng Struct Dyn 2001;30:149–71.
+[5] Moaveni B, Behmanesh I. Effects of changing ambient temperature on ﬁnite
+element model updating of the dowling hall footbridge. Eng Struct
+2012;43:58–68.
+[6] Gentile C, Saisi A. Ambient vibration testing and condition assessment of the
+paderno iron arch bridge (1889). Constr Build Mater 2011;25:3709–20.
+[7] Brownjohn J. Structural health monitoring of civil infrastructure. Philos Trans R
+Soc A 2007;365:589–622.
+[8] Karbhari VM. Encyclopedia of structural health monitoring. Wiley; 2009. p.
+1467–76.
+[9] Monti M, Natali M, Petrucci R, Kenny J, Torre L. Impact damage sensing in glass
+ﬁber reinforced composites based on carbon nanotubes by electrical resistance
+measurements. J Appl Polym Sci 2011;122:2829–36.
+[10] Chiacchiarelli L, Rallini M, Monti M, Puglia D, Kenny J, Torre L. The role of
+irreversible and reversible phenomena in the piezoresistive behavior of
+graphene epoxy nanocomposites applied to structural health monitoring.
+Compos Sci Technol 2013;80:73–9
+.
+[11] Laﬂamme S, Saleem H, Vasan B, Geiger R, Chen D, Kessler M, Rajan K.
+Elastomeric capacitor network for strain sensing over large surfaces. IEEE/
+ASME Trans Mech 2013;18:1647–54.
+[12] Laﬂamme S, Kollosche M, Connor JJ, Kofod G. Robust ﬂexible capacitive surface
+sensor for structural health monitoring applications. ASCE J Eng Mech
+2012;139:879–85.
+[13] Materazzi A, Ubertini F, D’Alessandro A. Carbon nanotube cement-based
+transducers for dynamic sensing of strain. Cem Concr Compos 2013;37:2–11.
+[14] Fu X, Chung D. Self-monitoring of fatigue damage in carbon ﬁber reinforced
+cement. Cem Concr Res 1996;26:15–20.
+[15] Wen S, Chung D. Model of piezoresistivity in carbon ﬁber cement. Cem Concr
+Res 2006;36:1879–85.
+[16] Meehan D, Wang S, Chung D. Electrical-resistance-based sensing of impact
+damage in carbon ﬁber reinforced cement-based materials. J Intell Mater Syst
+Struct 2010;21:83–105.
+[17] Li H, Xiao H, Ou J. Smart concrete, sensors and self-sensing concrete structures.
+Key Eng Mater 2009;400-402:69–80.
+[18] Li G, Wang P, Zhao X. Pressure-sensitive properties and microstructure of
+carbon nanotube reinforced cement composites. Cem Concr Compos
+2007;29:377–82.
+[19] Azhari F, Banthia N. Cement-based sensors with carbon ﬁbers and carbon
+nanotubes for piezoresistive sensing. Cem Concr Compos 2012;34:866–73.
+[20] Heeder N, Shukla A, Chalivendra V, Yang S, Park K. Electrical response of
+carbon nanotube reinforced nanocomposites under static and dynamic
+loading. Exp Mech 2012;52:315–22.
+[21] Konsta-Gdoutos M, Metexa Z, Shah S. Highly dispersed carbon nanotube
+reinforced cement-based materials. Cem Concr Res 2010;40:1052–9.
+[22] Azhari. Cement-based sensors for structural health monitoring, Ph.D. thesis.
+The University of British Columbia; 2008.
+[23] Le K. Time-frequency distributions for crack detection in rotors-a fundamental
+note. J Sound Vib 2006;294:397–409.
+[24] Zonta D, Modena C. Observations on the appearence of dispersive phenomena
+in damaged structures. J Sound Vib 2001;241:925–33.
+F. Ubertini et al. / Engineering Structures 60 (2014) 265–275 275
+
