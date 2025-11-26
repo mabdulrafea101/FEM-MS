@@ -2,3 +2,7 @@
 __pycache__
 .venv
 .venv12
+extract_new_pdf.py
+help.pdf
+new_pdf_content.txt
+project_guideline.pdf
