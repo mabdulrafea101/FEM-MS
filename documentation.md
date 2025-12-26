@@ -68,6 +68,8 @@ The methodology supports design decisions and preventive measures against resona
 
 This study is restricted to fixed-fixed RC beams, considering the first two vibration modes (fundamental and second natural frequency) using validated finite element simulations. The scope boundaries are:
 
+**Table 1.1: Scope and Parametric Boundaries for FEM Simulations**
+
 | Parameter | Minimum | Maximum | Unit |
 |-----------|---------|---------|------|
 | Beam Length | 3.0 | 8.0 | m |
@@ -203,6 +205,8 @@ Recent advances in computational power and algorithm development have enabled ML
 
 Das (2023) conducted the most comprehensive study to date on ML prediction of natural frequencies for beam structures. Using FEM-generated datasets for aluminum and steel beams under various boundary conditions, Das compared four regression algorithms:
 
+**Table 2.1: Literature Comparison - ML Algorithm Performance for Beam Frequency Prediction (Das 2023)**
+
 | Algorithm | Average Accuracy |
 |-----------|------------------|
 | Support Vector Machine (Puk kernel) | 98.78% |
@@ -250,6 +254,8 @@ Steel corrosion is a major factor deteriorating the durability of RC structures 
 
 Zhang et al. (2020) quantified corrosion-frequency relationships through laboratory experiments:
 
+**Table 2.2: Experimental Corrosion Effects on Natural Frequency (Zhang et al. 2020)**
+
 | Corrosion Level (%) | Approximate Frequency Reduction (%) |
 |--------------------|-------------------------------------|
 | 1-5 | 2-5 |
@@ -281,6 +287,8 @@ Dimarogonas (1996) and Chondros et al. (1998) developed theoretical frameworks f
 ## 2.6 Research Gaps and Thesis Positioning
 
 Despite significant advances in machine learning for structural dynamics, several research gaps remain:
+
+**Table 2.3: Research Gaps Addressed by This Thesis**
 
 | Gap | Literature Status | This Thesis Contribution |
 |-----|------------------|-------------------------|
@@ -322,27 +330,43 @@ The following flowchart outlines the systematic research methodology adopted in 
 
 ```mermaid
 graph TD
-    A[Start] --> B["📚 LITERATURE REVIEW<br/>Natural Frequency Fundamentals<br/>FEM Methods<br/>Machine Learning Algorithms<br/>Damage Modeling"]
-    B --> C{Research<br/>Gaps<br/>Identified?}
-    C -- Fixed RC Beams Gap --> D["✓ Theoretical Foundation<br/>FEM is Validated Method<br/>ML Achieves 98% Accuracy<br/>Damage Models Established"]
-    D --> E[Define Beam Parameters]
-    E --> F[Finite Element Modeling<br/>Euler-Bernoulli Beam Theory<br/>Element Matrices Formulation]
-    F --> G{Damage Scenario?}
-    G -- Pristine --> H[Modal Analysis<br/>Solve Eigenvalue Problem]
-    G -- Corrosion --> I[Uniform Stiffness Reduction<br/>Apply Damage Factor]
-    G -- Cracks --> J[Localized Stiffness Reduction<br/>Piecewise Model]
+    A["START"] --> B["CHAPTER 2:<br/>LITERATURE REVIEW<br/>Natural Frequency Fundamentals<br/>FEM Methods | ML Algorithms<br/>Damage Modeling"]
+
+    B --> C{Research<br/>Gaps?}
+    C -- "Fixed RC Beams Gap" --> D["THEORETICAL FOUNDATION<br/>FEM Validated | ML 98% Accurate<br/>Damage Models Established"]
+
+    D --> E["CHAPTER 3: METHODOLOGY"]
+    E --> F1["Define Beam Parameters<br/>L, b, h, f'c, Damage Level"]
+
+    F1 --> F2["FEM MODELING<br/>Euler-Bernoulli Theory<br/>Element Matrices Eq. 9-10"]
+
+    F2 --> G{Damage<br/>Type?}
+    G -->|Pristine| H["Modal Analysis<br/>Eigenvalue Problem Eq. 5"]
+    G -->|Corrosion| I["Stiffness Reduction<br/>Damage Factor Eq. 11"]
+    G -->|Cracks| J["Localized Reduction<br/>Piecewise Model"]
+
     I --> H
     J --> H
-    H --> K[Extract Natural Frequencies<br/>f = ω/2π]
-    K --> L[Generate Dataset<br/>3000 FEM Samples<br/>Latin Hypercube Sampling]
-    L --> M[Data Preprocessing<br/>Feature Scaling Eq. 12<br/>Train-Test Split]
-    M --> N[Machine Learning Models<br/>Linear Regression<br/>Random Forest, XGBoost<br/>CatBoost, SVR]
-    N --> O[Model Evaluation<br/>Cross-Validation<br/>Performance Metrics]
-    O --> P[Validation Against<br/>Theoretical Solutions<br/>Literature Data]
-    P --> Q{Acceptable<br/>Performance?}
-    Q -- Yes --> R[End: Models Ready<br/>for SHM Applications]
-    Q -- No --> N
+
+    H --> K["Extract Natural Frequencies<br/>f = ω/2π Eq. 7"]
+    K --> L["DATASET GENERATION<br/>3000 FEM Samples<br/>Latin Hypercube Sampling"]
+
+    L --> M["PREPROCESSING<br/>Feature Scaling Eq. 12<br/>80-20 Train-Test Split"]
+
+    M --> N["MACHINE LEARNING<br/>Linear Regression<br/>Random Forest | XGBoost<br/>CatBoost | SVR"]
+
+    N --> O["MODEL EVALUATION<br/>Cross-Validation<br/>R² | MAE | RMSE"]
+
+    O --> P["VALIDATION<br/>vs Theory Eq. 2,5<br/>vs Literature Data"]
+
+    P --> Q{Performance<br/>Acceptable?}
+    Q -->|No| N
+    Q -->|Yes| R["FINAL MODELS<br/>Ready for SHM"]
+
+    R --> S["END"]
 ```
+
+**Figure 3.1: Research Workflow - Vertical Snake Layout for A4 Page Fit**
 
 **Flowchart Components:**
 - **Literature Review (Chapter 2):** Establishes theoretical foundation and identifies research gap in fixed RC beam modeling
@@ -482,6 +506,8 @@ where $\beta_i$ is randomly sampled from a uniform distribution $\mathcal{U}(\be
 A comprehensive dataset of 3,000 simulations was generated using Latin Hypercube Sampling (LHS) via the scipy.stats.qmc module (Virtanen et al., 2020) to ensure uniform coverage of the five-dimensional parameter space. LHS is preferred over Monte Carlo sampling for engineering simulations due to its superior convergence properties (Helton & Davis, 2003).
 
 The parameter ranges were selected based on typical RC beam dimensions in building construction (ACI 318-19) and practical concrete grades (Eurocode 2, 2004):
+
+**Table 3.1: FEM Simulation Parameter Ranges and Sampling Strategy**
 
 | Parameter | Symbol | Minimum | Maximum | Unit |
 |-----------|--------|---------|---------|------|
@@ -678,6 +704,8 @@ A mesh convergence study was performed to determine the optimal number of elemen
 
 To validate the corrosion-frequency relationship, the FEM predictions were compared with experimental data from Zhang et al. (2020), who studied RC beams (2000 × 150 × 50 mm) with steel corrosion levels up to 15%:
 
+**Table 4.1: Validation of Corrosion-Frequency Relationship Against Literature Experimental Data**
+
 | Corrosion Level | Zhang et al. (2020) Trend | Our FEM Trend | Consistency |
 |-----------------|---------------------------|---------------|-------------|
 | 0-5% | 2-5% frequency reduction | 3-4% reduction | Consistent |
@@ -760,7 +788,7 @@ Figure 4.4 shows the statistical distribution of natural frequencies in the gene
 
 **Figure 4.4:** Histogram of Mode 1 and Mode 2 frequencies across the entire dataset, showing separate distributions for pristine and damaged beams.
 
-**Statistical Summary:**
+**Table 4.2: Statistical Summary of FEM-Generated Natural Frequency Dataset (3,000 Samples)**
 
 | Statistic | Mode 1 (Pristine) | Mode 1 (Damaged) | Mode 2 (Pristine) | Mode 2 (Damaged) |
 |-----------|-------------------|------------------|-------------------|------------------|
@@ -781,7 +809,7 @@ Figure 4.4 shows the statistical distribution of natural frequencies in the gene
 
 The Pearson correlation coefficients between input parameters and output frequencies reveal important physical relationships:
 
-**Correlations with Mode 1 Frequency:**
+**Table 4.3: Parameter Sensitivity - Pearson Correlation with Mode 1 Natural Frequency**
 
 | Parameter | Correlation Coefficient | Interpretation |
 |-----------|-------------------------|----------------|
@@ -808,6 +836,8 @@ A comparative study was conducted to evaluate the differential effects of unifor
 - Beam: L=4.0m, b=0.3m, h=0.5m, f'\_c=35 MPa
 - Uniform damage: 15% corrosion
 - Localized damage: Mid-span crack with 50% severity, width=0.4m
+
+**Table 4.4: Damage Type Comparison - Frequency Response for Different Damage Scenarios**
 
 **Results:**
 
@@ -1137,6 +1167,8 @@ Systematic hyperparameter optimization was performed using RandomizedSearchCV wi
 
 *Figure 4.8.6.1a: Feature importance visualization showing the impact of each hyperparameter on model performance across 50 RandomizedSearchCV iterations. The scatter plots reveal that learning rate and depth have the most pronounced effects on CV R² score, while border_count shows moderate influence. The distributions demonstrate that the search space covers a sufficient range to identify near-optimal configurations.*
 
+**Table 4.5: Hyperparameter Search Space for RandomizedSearchCV Optimization**
+
 **Optimization Search Space:**
 
 | Parameter | Range | Purpose | Rationale |
@@ -1148,6 +1180,8 @@ Systematic hyperparameter optimization was performed using RandomizedSearchCV wi
 | border_count | 32-255 | Splits for numerical features | Affects quantization of continuous variables |
 | random_strength | 0-10 | Randomness for scoring splits | Introduces stochasticity for robustness |
 
+**Table 4.6: Optimized Parameters vs. Default Configuration**
+
 **Optimized vs. Default Parameters:**
 
 | Parameter | Default | Optimized | Direction | Implication |
@@ -1158,6 +1192,8 @@ Systematic hyperparameter optimization was performed using RandomizedSearchCV wi
 | l2_leaf_reg | 1.0 | 4.01 | ↑ | Enhanced regularization improves generalization |
 | border_count | 254 | 70 | ↓ | Simplified binning reduces complexity |
 | random_strength | 1.0 | 0.37 | ↓ | Reduced randomness increases determinism |
+
+**Table 4.7: ML Model Performance Comparison - Default vs. Optimized Parameters**
 
 **Performance Comparison - Default vs. Optimized:**
 
@@ -1197,6 +1233,8 @@ With CatBoost's MAE of 3.00 Hz:
 To illustrate the practical utility of the developed ML model, consider a typical bridge inspection scenario where rapid preliminary assessment is required.
 
 **Scenario**: A bridge inspector needs to assess the natural frequencies of 100 different RC beam configurations during a preliminary structural survey. Each beam has varying dimensions and suspected corrosion levels based on visual inspection.
+
+**Table 4.8: Computational Efficiency - Real-World Application Scenario Analysis**
 
 **Time Comparison Analysis**:
 
