@@ -325,35 +325,42 @@ def main():
     print("=" * 80)
 
     # Check if required files exist
-    train_path = Path('simulation/data/train_data.csv')
-    test_path = Path('simulation/data/test_data.csv')
+    data_path = Path('simulation/data/beam_vibration_dataset.csv')
 
-    if not train_path.exists():
-        print(f"\n⚠ Warning: Training data not found at {train_path}")
-        print("This script requires training data.")
-        print("\nPlease save your training data to simulation/data/train_data.csv")
-        return
-
-    if not test_path.exists():
-        print(f"\n⚠ Warning: Test data not found at {test_path}")
-        print("This script requires test data.")
-        print("\nPlease save your test data to simulation/data/test_data.csv")
+    if not data_path.exists():
+        print(f"\n⚠ Warning: Data file not found at {data_path}")
+        print("This script requires the beam vibration dataset.")
+        print("\nPlease ensure the dataset exists at simulation/data/"
+              "beam_vibration_dataset.csv")
         return
 
     try:
         # Load data
         print("\nLoading data...")
-        train_data = pd.read_csv(train_path)
-        test_data = pd.read_csv(test_path)
+        data = pd.read_csv(data_path)
+
+        print(f"  Dataset shape: {data.shape}")
+
+        # Split into train/test
+        from sklearn.model_selection import train_test_split
+        train_data, test_data = train_test_split(
+            data, test_size=0.2, random_state=42, shuffle=True
+        )
 
         print(f"  Training data shape: {train_data.shape}")
         print(f"  Test data shape: {test_data.shape}")
 
-        # Prepare features and targets
-        X_train = train_data.drop(['Mode_1_Freq', 'Mode_2_Freq'], axis=1, errors='ignore')
-        X_test = test_data.drop(['Mode_1_Freq', 'Mode_2_Freq'], axis=1, errors='ignore')
+        # Prepare features and targets - use only numeric features
+        feature_cols = ['Length', 'Width', 'Depth', 'Conc_Strength',
+                        'Damage_Severity']
+        X_train = train_data[feature_cols].copy()
+        X_test = test_data[feature_cols].copy()
 
-        if 'Mode_1_Freq' in train_data.columns:
+        # Determine target column
+        if 'Freq_Mode_1' in train_data.columns:
+            y_train = train_data['Freq_Mode_1'].values
+            y_test = test_data['Freq_Mode_1'].values
+        elif 'Mode_1_Freq' in train_data.columns:
             y_train = train_data['Mode_1_Freq'].values
             y_test = test_data['Mode_1_Freq'].values
         else:

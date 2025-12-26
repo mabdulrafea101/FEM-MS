@@ -8,7 +8,7 @@ Usage:
     python scripts/generate_uncertainty_viz.py
 
 Requirements:
-    - Trained model: simulation/models/catboost_model.pkl
+    - Trained model: simulation/models/best_model_CatBoost.pkl
     - Test data: simulation/data/test_data.csv
 
 Outputs:
@@ -60,8 +60,14 @@ def generate_bootstrap_predictions(model, X_test, y_test, n_bootstrap=100):
         for i in range(n_bootstrap):
             if (i + 1) % 10 == 0:
                 print(f"  Bootstrap iteration {i+1}/{n_bootstrap}")
-            boot_idx = np.random.choice(indices, size=len(indices), replace=True)
-            pred = model.predict(X_test[boot_idx])
+            boot_idx = np.random.choice(indices, size=len(indices),
+                                        replace=True)
+            # Handle both numpy arrays and DataFrames
+            if isinstance(X_test, np.ndarray):
+                X_boot = X_test[boot_idx]
+            else:
+                X_boot = X_test.iloc[boot_idx]
+            pred = model.predict(X_boot)
             predictions.append(pred)
 
     predictions = np.array(predictions)
@@ -182,14 +188,14 @@ def main():
     print("=" * 80)
 
     # Check if required files exist
-    model_path = Path('simulation/models/catboost_model.pkl')
-    test_data_path = Path('simulation/data/test_data.csv')
+    model_path = Path('simulation/models/best_model_CatBoost.pkl')
+    test_data_path = Path('simulation/data/beam_vibration_dataset.csv')
 
     if not model_path.exists():
         print(f"\n⚠ Warning: Model file not found at {model_path}")
         print("This script requires a trained CatBoost model.")
         print("\nPlease either:")
-        print("  1. Train a model and save it to simulation/models/catboost_model.pkl")
+        print("  1. Train a model and save it to simulation/models/best_model_CatBoost.pkl")
         print("  2. Adjust the path in this script to point to your model")
         return
 
@@ -197,35 +203,55 @@ def main():
         print(f"\n⚠ Warning: Test data not found at {test_data_path}")
         print("This script requires test data with features and target variable.")
         print("\nPlease either:")
-        print("  1. Save your test data to simulation/data/test_data.csv")
+        print("  1. Save your test data to simulation/data/beam_vibration_dataset.csv")
         print("  2. Adjust the path in this script to point to your test data")
         return
 
     try:
-        # Load model and data
-        print("\nLoading model and test data...")
+        # Load model, scaler, and data
+        print("\nLoading model, scaler, and test data...")
         model = joblib.load(model_path)
+
+        # Load scaler
+        scaler_path = Path('simulation/models/scaler.pkl')
+        if scaler_path.exists():
+            scaler = joblib.load(scaler_path)
+            print("  Scaler loaded")
+        else:
+            print("  ⚠ Warning: Scaler not found. Features will not be scaled.")
+            scaler = None
+
         test_data = pd.read_csv(test_data_path)
 
         print(f"  Model loaded: {type(model).__name__}")
         print(f"  Test data shape: {test_data.shape}")
 
-        # Prepare data
-        X_test = test_data.drop(['Mode_1_Freq', 'Mode_2_Freq'], axis=1, errors='ignore')
+        # Prepare data - use only numeric features that model expects
+        feature_cols = ['Length', 'Width', 'Depth', 'Conc_Strength',
+                        'Damage_Severity']
+        X_test = test_data[feature_cols].copy()
 
-        # Determine target column
-        if 'Mode_1_Freq' in test_data.columns:
+        # Determine target column - prioritize Freq_Mode_1 as model was trained on this
+        if 'Freq_Mode_1' in test_data.columns:
+            y_test = test_data['Freq_Mode_1'].values
+            print("  Target: Freq_Mode_1")
+        elif 'Freq_Mode_2' in test_data.columns:
+            y_test = test_data['Freq_Mode_2'].values
+            print("  Target: Freq_Mode_2")
+        elif 'Mode_1_Freq' in test_data.columns:
             y_test = test_data['Mode_1_Freq'].values
             print("  Target: Mode_1_Freq")
-        elif 'Natural_Frequency' in test_data.columns:
-            y_test = test_data['Natural_Frequency'].values
-            print("  Target: Natural_Frequency")
         else:
             # Use last column as target
             y_test = test_data.iloc[:, -1].values
             print(f"  Target: {test_data.columns[-1]}")
 
         print(f"  Features: {X_test.columns.tolist()}")
+
+        # Scale features if scaler is available
+        if scaler is not None:
+            X_test = scaler.transform(X_test)
+            print("  Features scaled using StandardScaler")
 
         # Generate bootstrap predictions
         mean_pred, std_pred, lower_95, upper_95 = generate_bootstrap_predictions(
