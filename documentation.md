@@ -24,7 +24,7 @@ This research contributes methodologically through systematic comparison of five
 
 Natural frequency represents the inherent vibration rate of a structure when it is disturbed from its equilibrium position and allowed to oscillate freely, making it one of the fundamental dynamic properties serving as a governing parameter in structural engineering (Clough & Penzien, 2003). Mathematically, natural frequency is defined as:
 
-$$f_n = \frac{1}{2\pi}\sqrt{\frac{k}{m}} \tag{Eq. 1}$$
+$$f_n = \frac{1}{2\pi}\sqrt{\frac{k}{m}} \quad \quad \quad \quad \quad (Eq. 1)$$
 
 where $k$ is the structural stiffness and $m$ is the mass. This property is crucial in understanding the phenomenon of resonance—when a system is subjected to an external force matching its natural frequency, such as wind loads or seismic excitation, the vibrations are amplified, increasing stress and displacement which may lead to structural damage or catastrophic failure (Chopra, 2012). Historical failures, including the collapse of the Tacoma Narrows Bridge in 1940, highlight the catastrophic risks when resonance is not adequately accounted for in design (Miller et al., 2000).
 
@@ -129,13 +129,13 @@ This chapter presents a comprehensive review of existing literature relevant to 
 
 Natural frequency, defined as the rate at which a structure vibrates when disturbed and allowed to oscillate freely, is one of the most fundamental dynamic properties in structural engineering (Clough & Penzien, 2003; Rao, 2019). For beam structures, the natural frequency is governed by the interplay between stiffness and mass distribution, expressed mathematically as:
 
-$$f_n = \frac{\lambda_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \tag{Eq. 2}$$
+$$f_n = \frac{\lambda_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \quad \quad \quad \quad (Eq. 2)$$
 
 where $\lambda_n$ represents the eigenvalue for mode $n$ (with $\lambda_1 = 4.730$ for the first mode of a fixed-fixed beam), $L$ is the beam length, $E$ is the elastic modulus, $I$ is the moment of inertia, $\rho$ is the material density, and $A$ is the cross-sectional area (Chopra, 2012).
 
 For reinforced concrete, the elastic modulus is typically estimated from compressive strength using the empirical relationship specified in ACI 318-19:
 
-$$E_c = 4700\sqrt{f'_c} \text{ MPa} \tag{Eq. 3}$$
+$$E_c = 4700\sqrt{f'_c} \text{ MPa} \quad \quad \quad \quad (Eq. 3)$$
 
 This relationship has been validated extensively against experimental data and is widely adopted in structural engineering practice (MacGregor & Wight, 2012).
 
@@ -147,7 +147,7 @@ Structural Health Monitoring (SHM) has emerged as a critical discipline for ensu
 
 The fundamental principle underlying frequency-based SHM is that any change in structural properties—whether due to damage, deterioration, or modification—will alter the natural frequencies. This relationship can be expressed as:
 
-$$\frac{\Delta f}{f} \approx \frac{1}{2}\frac{\Delta K}{K} \tag{Eq. 4}$$
+$$\frac{\Delta f}{f} \approx \frac{1}{2}\frac{\Delta K}{K} \quad \quad \quad \quad (Eq. 4)$$
 
 for small stiffness changes, where damage-induced stiffness reduction directly manifests as frequency reduction.
 
@@ -173,7 +173,7 @@ The Finite Element Method (FEM) has become the standard numerical technique for 
 
 The governing equation for free vibration analysis is the generalized eigenvalue problem:
 
-$$[K]\{u\} = \omega^2[M]\{u\} \tag{Eq. 5}$$
+$$[K]\{u\} = \omega^2[M]\{u\} \quad \quad \quad (Eq. 5)$$
 
 where $[K]$ is the global stiffness matrix, $[M]$ is the global mass matrix, and $\omega$ represents the angular natural frequencies. The element stiffness and mass matrices for beam elements are derived from variational principles using appropriate shape functions (Cook, 2007).
 
@@ -262,7 +262,7 @@ These findings provide experimental validation for the stiffness reduction appro
 
 The stiffness reduction method is widely used for simulating damage effects in FEM analysis. The effective stiffness is reduced proportionally to damage severity:
 
-$$EI_{damaged} = EI_{original} \times (1 - \alpha) \tag{Eq. 6}$$
+$$EI_{damaged} = EI_{original} \times (1 - \alpha) \quad \quad (Eq. 6)$$
 
 where $\alpha$ is the damage factor. This approach has been validated against experimental studies of corroded RC beams (Rodriguez et al., 1997; Cairns et al., 2005).
 
@@ -384,7 +384,7 @@ This generalized eigenvalue problem is solved using the scipy.linalg.eigh functi
 
 The natural frequency $f$ in Hertz is obtained from the angular frequency:
 
-$$f = \frac{\omega}{2\pi} = \frac{\sqrt{\lambda}}{2\pi} \tag{Eq. 7}$$
+$$f = \frac{\omega}{2\pi} = \frac{\sqrt{\lambda}}{2\pi} \quad \quad \quad (Eq. 7)$$
 
 where $\lambda$ represents the eigenvalue from the generalized eigenvalue problem.
 
@@ -392,13 +392,13 @@ where $\lambda$ represents the eigenvalue from the generalized eigenvalue proble
 
 The elastic modulus of concrete is calculated using the empirical relationship specified in ACI 318-19 (ACI Committee 318, 2019):
 
-$$E_c = 4700\sqrt{f'_c} \text{ MPa} \tag{Eq. 3}$$
+$$E_c = 4700\sqrt{f'_c} \text{ MPa} \quad \quad \quad \quad (Eq. 3)$$
 
 where $f'_c$ is the compressive strength of concrete in MPa. This relationship has been validated extensively against experimental data and is widely adopted in structural engineering practice (MacGregor & Wight, 2012).
 
 The moment of inertia for a rectangular cross-section is:
 
-$$I = \frac{bh^3}{12} \tag{Eq. 8}$$
+$$I = \frac{bh^3}{12} \quad \quad \quad \quad \quad (Eq. 8)$$
 
 where $b$ is the width and $h$ is the depth of the beam cross-section.
 
@@ -411,7 +411,7 @@ $$[k]_e = \frac{EI}{L_e^3} \begin{bmatrix}
 6L_e & 4L_e^2 & -6L_e & 2L_e^2 \\
 -12 & -6L_e & 12 & -6L_e \\
 6L_e & 2L_e^2 & -6L_e & 4L_e^2
-\end{bmatrix} \tag{Eq. 9}$$
+\end{bmatrix} \quad (Eq. 9)$$
 
 The consistent mass matrix for each element is:
 
@@ -420,7 +420,7 @@ $$[m]_e = \frac{\rho A L_e}{420} \begin{bmatrix}
 22L_e & 4L_e^2 & 13L_e & -3L_e^2 \\
 54 & 13L_e & 156 & -22L_e \\
 -13L_e & -3L_e^2 & -22L_e & 4L_e^2
-\end{bmatrix} \tag{Eq. 10}$$
+\end{bmatrix} \quad (Eq. 10)$$
 
 where $\rho$ is the material density (2400 kg/m³ for reinforced concrete) and $A$ is the cross-sectional area.
 
@@ -434,7 +434,7 @@ $$I_{corroded} = I_{original} \times (1 - \alpha) \tag{Eq. 6}$$
 
 The damage factor $\alpha$ is related to the corrosion level through:
 
-$$\alpha = \min\left(1.6 \times \frac{C}{100}, 0.9\right) \tag{Eq. 11}$$
+$$\alpha = \min\left(1.6 \times \frac{C}{100}, 0.9\right) \quad \quad (Eq. 11)$$
 
 where $C$ is the corrosion level expressed as a percentage (0-100%). The factor 1.6 accounts for the nonlinear relationship between corrosion level and stiffness degradation observed in laboratory tests, and the upper limit of 0.9 prevents numerical instabilities while representing severe damage conditions.
 
@@ -513,7 +513,7 @@ The 80-20 train-test split ratio follows established practices in machine learni
 **Feature Scaling:**
 StandardScaler normalization transforms features to zero mean and unit variance:
 
-$$X_{scaled} = \frac{X - \mu}{\sigma} \tag{Eq. 12}$$
+$$X_{scaled} = \frac{X - \mu}{\sigma} \quad \quad \quad \quad (Eq. 12)$$
 
 where $\mu$ is the mean and $\sigma$ is the standard deviation. This preprocessing step is critical for SVR, which uses RBF kernels sensitive to feature magnitudes (Cortes & Vapnik, 1995). While tree-based methods (Random Forest, XGBoost, CatBoost) are invariant to monotonic transformations, scaling ensures consistent preprocessing across all models for fair comparison.
 
