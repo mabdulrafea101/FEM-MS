@@ -318,25 +318,39 @@ Chapter 2 established the theoretical foundation for this research: natural freq
 
 ## 3.1 Research Workflow Flowchart
 
-The following flowchart outlines the systematic research methodology adopted in this study, illustrating the integration of Finite Element Method (FEM) simulations with Machine Learning (ML) analysis. This integration follows established practices in computational structural dynamics as demonstrated in recent literature (Das, 2023; Saha & Yang, 2023).
+The following flowchart outlines the systematic research methodology adopted in this study, illustrating the complete research workflow from literature review through methodology implementation. The workflow integrates literature findings (Chapter 2) with the finite element method (FEM) simulations and machine learning (ML) analysis, following established practices in computational structural dynamics as demonstrated in recent literature (Das, 2023; Saha & Yang, 2023).
 
 ```mermaid
 graph TD
-    A[Start] --> B[Define Beam Parameters]
-    B --> C[Finite Element Modeling]
-    C --> D{Damage Scenario?}
-    D -- Pristine --> E[Modal Analysis]
-    D -- Corrosion --> F[Uniform Stiffness Reduction]
-    D -- Cracks --> G[Localized Stiffness Reduction]
-    F --> E
-    G --> E
-    E --> H[Extract Natural Frequencies]
-    H --> I[Generate Dataset]
-    I --> J[Data Preprocessing]
-    J --> K[Machine Learning Models]
-    K --> L[Model Evaluation]
-    L --> M[End]
+    A[Start] --> B["📚 LITERATURE REVIEW<br/>Natural Frequency Fundamentals<br/>FEM Methods<br/>Machine Learning Algorithms<br/>Damage Modeling"]
+    B --> C{Research<br/>Gaps<br/>Identified?}
+    C -- Fixed RC Beams Gap --> D["✓ Theoretical Foundation<br/>FEM is Validated Method<br/>ML Achieves 98% Accuracy<br/>Damage Models Established"]
+    D --> E[Define Beam Parameters]
+    E --> F[Finite Element Modeling<br/>Euler-Bernoulli Beam Theory<br/>Element Matrices Formulation]
+    F --> G{Damage Scenario?}
+    G -- Pristine --> H[Modal Analysis<br/>Solve Eigenvalue Problem]
+    G -- Corrosion --> I[Uniform Stiffness Reduction<br/>Apply Damage Factor]
+    G -- Cracks --> J[Localized Stiffness Reduction<br/>Piecewise Model]
+    I --> H
+    J --> H
+    H --> K[Extract Natural Frequencies<br/>f = ω/2π]
+    K --> L[Generate Dataset<br/>3000 FEM Samples<br/>Latin Hypercube Sampling]
+    L --> M[Data Preprocessing<br/>Feature Scaling Eq. 12<br/>Train-Test Split]
+    M --> N[Machine Learning Models<br/>Linear Regression<br/>Random Forest, XGBoost<br/>CatBoost, SVR]
+    N --> O[Model Evaluation<br/>Cross-Validation<br/>Performance Metrics]
+    O --> P[Validation Against<br/>Theoretical Solutions<br/>Literature Data]
+    P --> Q{Acceptable<br/>Performance?}
+    Q -- Yes --> R[End: Models Ready<br/>for SHM Applications]
+    Q -- No --> N
 ```
+
+**Flowchart Components:**
+- **Literature Review (Chapter 2):** Establishes theoretical foundation and identifies research gap in fixed RC beam modeling
+- **FEM Implementation:** Applies Euler-Bernoulli theory with validated element matrices (Eq. 9-10)
+- **Damage Modeling:** Implements stiffness reduction approach (Eq. 6, 11) validated against experimental studies
+- **Dataset Generation:** Creates 3,000 samples using Latin Hypercube Sampling (LHS) for comprehensive parameter coverage
+- **ML Development:** Trains five regression algorithms with feature scaling (Eq. 12) and stratified splitting
+- **Validation:** Verifies results against theoretical solutions (Eq. 2, 5) and literature experimental benchmarks
 
 ## 3.2 Introduction
 
@@ -371,7 +385,7 @@ The sample size of 3,000 simulations was determined following power analysis gui
 
 The dynamic behavior of the RC beam is governed by the Euler-Bernoulli beam theory, which assumes that plane sections remain plane and perpendicular to the neutral axis during deformation (Clough & Penzien, 2003; Chopra, 2012). The equation of motion for free vibration analysis is expressed as:
 
-$$[K]\{u\} = \omega^2 [M]\{u\} \tag{Eq. 5}$$
+$$[K]\{u\} = \omega^2 [M]\{u\} \quad \quad \quad (Eq. 5)$$
 
 where:
 
@@ -430,7 +444,7 @@ where $\rho$ is the material density (2400 kg/m³ for reinforced concrete) and $
 
 Corrosion-induced damage is simulated using the stiffness reduction method, validated against experimental studies of corroded RC beams (Zhang et al., 2020; Rodriguez et al., 1997; Cairns et al., 2005). The effective moment of inertia is reduced uniformly across all elements:
 
-$$I_{corroded} = I_{original} \times (1 - \alpha) \tag{Eq. 6}$$
+$$I_{corroded} = I_{original} \times (1 - \alpha) \quad \quad (Eq. 6)$$
 
 The damage factor $\alpha$ is related to the corrosion level through:
 
