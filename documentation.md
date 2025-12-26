@@ -2,13 +2,29 @@
 
 ---
 
+## Abstract
+
+This thesis addresses the challenge of rapidly predicting natural frequencies of fixed reinforced concrete (RC) beams using machine learning validated against finite element analysis. While traditional FEM modal analysis requires 2-5 minutes per beam configuration, accurate and efficient frequency prediction is essential for structural design, health monitoring, and damage assessment. Previous studies have demonstrated that machine learning can achieve prediction accuracies exceeding 98% for metallic beams; however, no comprehensive models exist specifically for RC fixed beams—a common configuration in building frames and bridge structures.
+
+This research develops and validates predictive models trained on 3,000 FEM-generated datasets covering a wide parametric space: beam lengths from 3.0-8.0 m, cross-section widths from 0.2-0.5 m, depths from 0.3-0.7 m, concrete strengths from 25-50 MPa, and corrosion levels from 0-20%. Five regression algorithms (Linear Regression, Random Forest, XGBoost, CatBoost, and Support Vector Regression) were evaluated, with CatBoost achieving the best performance at 98.9% R² and 3.00 Hz mean absolute error for the fundamental frequency prediction.
+
+The methodology integrates Euler-Bernoulli beam theory with stiffness reduction damage models to simulate uniform corrosion, localized cracks, and random damage scenarios. Feature scaling and stratified train-test splitting ensured fair model evaluation. Beyond point predictions, bootstrap confidence interval analysis demonstrated 93.2% coverage with mean prediction intervals of 185.47 Hz, validating the model's reliability for structural health monitoring applications. Parameter sensitivity analysis identified beam length and depth as primary influences on natural frequency, consistent with theoretical expectations.
+
+Practical implications are significant: trained ML models provide predictions in less than 0.1 seconds, enabling real-time SHM systems and rapid parametric studies. Hyperparameter optimization analysis confirmed that default model parameters are near-optimal, with modest improvement gains offset by longer training times. The developed framework provides a template for extending ML-based structural dynamics to other beam configurations and element types.
+
+This research contributes methodologically through systematic comparison of five ML algorithms, practically through validated prediction models for RC beams, and theoretically through quantified parameter sensitivity coefficients enabling early damage detection. The work supports both structural engineers and researchers in developing efficient, accurate assessment methods for reinforced concrete structures.
+
+**Keywords:** Machine Learning, Natural Frequency, Reinforced Concrete, Finite Element Method, Structural Health Monitoring, Damage Detection, CatBoost, Parameter Sensitivity, FEM Validation
+
+---
+
 # Chapter 1: Introduction
 
 ## 1.1 Study Background
 
 Natural frequency represents the inherent vibration rate of a structure when it is disturbed from its equilibrium position and allowed to oscillate freely, making it one of the fundamental dynamic properties serving as a governing parameter in structural engineering (Clough & Penzien, 2003). Mathematically, natural frequency is defined as:
 
-$$f_n = \frac{1}{2\pi}\sqrt{\frac{k}{m}}$$
+$$f_n = \frac{1}{2\pi}\sqrt{\frac{k}{m}} \tag{Eq. 1}$$
 
 where $k$ is the structural stiffness and $m$ is the mass. This property is crucial in understanding the phenomenon of resonance—when a system is subjected to an external force matching its natural frequency, such as wind loads or seismic excitation, the vibrations are amplified, increasing stress and displacement which may lead to structural damage or catastrophic failure (Chopra, 2012). Historical failures, including the collapse of the Tacoma Narrows Bridge in 1940, highlight the catastrophic risks when resonance is not adequately accounted for in design (Miller et al., 2000).
 
@@ -79,9 +95,29 @@ This research creates and validates one of the first comprehensive machine learn
 
 This work sets a precedent for efficient vibration analysis, enhanced structural design efficiency, and future integration with SHM systems in structural engineering practice.
 
+## 1.8 Summary of Chapter
+
+This introductory chapter has established the context and significance of the research:
+
+1. **Problem Definition:** While machine learning has achieved >98% accuracy for predicting natural frequencies of metallic beams, no comprehensive models exist for fixed RC beams—a critical gap in structural engineering.
+
+2. **Research Scope:** This study focuses on fixed-fixed reinforced concrete beams under pristine and damaged conditions, with predictions for the first two vibration modes using geometric and material parameters.
+
+3. **Methodology Preview:** The research combines FEM (for generating validated training data) with machine learning (for rapid, accurate frequency prediction), achieving results aligned with established structural dynamics theory.
+
+4. **Significance:** The resulting models enable real-time SHM applications and reduce computational time from minutes to seconds, with clear applications for structural design optimization and damage detection.
+
+5. **Contributions:** The research provides methodological, practical, and theoretical contributions through systematic algorithm comparison, validated prediction models, and quantified parameter sensitivity analysis.
+
+The following chapter reviews relevant literature to establish the theoretical foundation for these contributions.
+
 ---
 
 # Chapter 2: Literature Review
+
+## 2.0 Bridge from Chapter 1
+
+Chapter 1 identified a critical research gap: the absence of comprehensive machine learning models specifically designed for predicting natural frequencies of fixed RC beams. This chapter reviews the existing literature across four intersecting domains—natural frequency fundamentals, finite element methods, machine learning algorithms, and damage modeling approaches—to establish the theoretical and practical foundation for addressing this gap. Understanding how these domains have evolved individually and intersected in previous research provides the context for the integrated methodology presented in Chapter 3.
 
 ## 2.1 Introduction
 
@@ -93,13 +129,13 @@ This chapter presents a comprehensive review of existing literature relevant to 
 
 Natural frequency, defined as the rate at which a structure vibrates when disturbed and allowed to oscillate freely, is one of the most fundamental dynamic properties in structural engineering (Clough & Penzien, 2003; Rao, 2019). For beam structures, the natural frequency is governed by the interplay between stiffness and mass distribution, expressed mathematically as:
 
-$$f_n = \frac{\lambda_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}}$$
+$$f_n = \frac{\lambda_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \tag{Eq. 2}$$
 
 where $\lambda_n$ represents the eigenvalue for mode $n$ (with $\lambda_1 = 4.730$ for the first mode of a fixed-fixed beam), $L$ is the beam length, $E$ is the elastic modulus, $I$ is the moment of inertia, $\rho$ is the material density, and $A$ is the cross-sectional area (Chopra, 2012).
 
 For reinforced concrete, the elastic modulus is typically estimated from compressive strength using the empirical relationship specified in ACI 318-19:
 
-$$E_c = 4700\sqrt{f'_c} \text{ MPa}$$
+$$E_c = 4700\sqrt{f'_c} \text{ MPa} \tag{Eq. 3}$$
 
 This relationship has been validated extensively against experimental data and is widely adopted in structural engineering practice (MacGregor & Wight, 2012).
 
@@ -111,7 +147,7 @@ Structural Health Monitoring (SHM) has emerged as a critical discipline for ensu
 
 The fundamental principle underlying frequency-based SHM is that any change in structural properties—whether due to damage, deterioration, or modification—will alter the natural frequencies. This relationship can be expressed as:
 
-$$\frac{\Delta f}{f} \approx \frac{1}{2}\frac{\Delta K}{K}$$
+$$\frac{\Delta f}{f} \approx \frac{1}{2}\frac{\Delta K}{K} \tag{Eq. 4}$$
 
 for small stiffness changes, where damage-induced stiffness reduction directly manifests as frequency reduction.
 
@@ -137,7 +173,7 @@ The Finite Element Method (FEM) has become the standard numerical technique for 
 
 The governing equation for free vibration analysis is the generalized eigenvalue problem:
 
-$$[K]\{u\} = \omega^2[M]\{u\}$$
+$$[K]\{u\} = \omega^2[M]\{u\} \tag{Eq. 5}$$
 
 where $[K]$ is the global stiffness matrix, $[M]$ is the global mass matrix, and $\omega$ represents the angular natural frequencies. The element stiffness and mass matrices for beam elements are derived from variational principles using appropriate shape functions (Cook, 2007).
 
@@ -226,7 +262,7 @@ These findings provide experimental validation for the stiffness reduction appro
 
 The stiffness reduction method is widely used for simulating damage effects in FEM analysis. The effective stiffness is reduced proportionally to damage severity:
 
-$$EI_{damaged} = EI_{original} \times (1 - \alpha)$$
+$$EI_{damaged} = EI_{original} \times (1 - \alpha) \tag{Eq. 6}$$
 
 where $\alpha$ is the damage factor. This approach has been validated against experimental studies of corroded RC beams (Rodriguez et al., 1997; Cairns et al., 2005).
 
@@ -256,19 +292,29 @@ Despite significant advances in machine learning for structural dynamics, severa
 
 This thesis addresses these gaps by developing a comprehensive ML benchmark specifically for fixed RC beams, comparing five regression algorithms, and providing validated accuracy metrics against both theoretical solutions and literature experimental data.
 
-## 2.7 Summary
+## 2.7 Summary and Bridge to Methodology
 
-This literature review has established the theoretical and empirical foundation for ML-based natural frequency prediction:
+This literature review has established the theoretical and empirical foundation for ML-based natural frequency prediction of fixed RC beams. Key findings include:
 
-1. **Natural frequency** is a reliable SHM indicator, with well-established relationships to structural damage
-2. **FEM** provides a validated approach for generating training data, with Euler-Bernoulli theory appropriate for typical RC beam proportions
-3. **Machine learning** (especially ensemble methods) achieves high prediction accuracy (>98%) for beam frequency prediction
-4. **Corrosion damage** significantly affects frequency response, with approximately 0.8% frequency reduction per 1% corrosion level
-5. **Research gaps** exist for fixed RC beam ML models, which this thesis addresses
+1. **Theoretical Foundation:** Natural frequency is a well-understood physical property governed by the balance of stiffness and mass (Eq. 2), with documented relationships to structural damage through frequency shifts (Eq. 4).
+
+2. **Validated Methods:** Finite Element Method provides accurate predictions through eigenvalue solutions (Eq. 5), with Euler-Bernoulli theory appropriate for typical RC beam proportions.
+
+3. **ML Capability:** Ensemble methods (Random Forest, XGBoost, CatBoost) have demonstrated >98% accuracy for beam frequency prediction in previous studies, suggesting high potential for RC applications.
+
+4. **Damage Relationships:** Corrosion and cracking produce measurable frequency changes through stiffness reduction, with quantifiable relationships for developing predictive models.
+
+5. **Research Gap:** Despite these advances, no study has systematically developed, validated, and compared ML models specifically for fixed RC beams with integrated damage modeling.
+
+The following chapter (Chapter 3: Methodology) describes how this research addresses these gaps through an integrated FEM+ML framework, applying the theoretical concepts and proven methods reviewed herein to the specific problem of RC beam frequency prediction.
 
 ---
 
 # Chapter 3: Methodology
+
+## 3.0 Bridge from Chapter 2
+
+Chapter 2 established the theoretical foundation for this research: natural frequency relationships are well-documented, FEM is a validated method for generating training data, machine learning algorithms have proven effective for similar prediction tasks, and damage modeling techniques are established in the literature. However, no study has comprehensively integrated these elements for the specific case of fixed RC beams. This chapter presents the detailed methodology addressing this gap, describing (1) the finite element model formulation, (2) damage modeling approaches, (3) dataset generation strategy, and (4) machine learning development and validation procedures. The methodology systematically applies the theoretical knowledge from Chapter 2 to create a practical, validated framework for rapid frequency prediction.
 
 ## 3.1 Research Workflow Flowchart
 
@@ -325,7 +371,7 @@ The sample size of 3,000 simulations was determined following power analysis gui
 
 The dynamic behavior of the RC beam is governed by the Euler-Bernoulli beam theory, which assumes that plane sections remain plane and perpendicular to the neutral axis during deformation (Clough & Penzien, 2003; Chopra, 2012). The equation of motion for free vibration analysis is expressed as:
 
-$$[K]\{u\} = \omega^2 [M]\{u\}$$
+$$[K]\{u\} = \omega^2 [M]\{u\} \tag{Eq. 5}$$
 
 where:
 
@@ -338,7 +384,7 @@ This generalized eigenvalue problem is solved using the scipy.linalg.eigh functi
 
 The natural frequency $f$ in Hertz is obtained from the angular frequency:
 
-$$f = \frac{\omega}{2\pi} = \frac{\sqrt{\lambda}}{2\pi}$$
+$$f = \frac{\omega}{2\pi} = \frac{\sqrt{\lambda}}{2\pi} \tag{Eq. 7}$$
 
 where $\lambda$ represents the eigenvalue from the generalized eigenvalue problem.
 
@@ -346,13 +392,13 @@ where $\lambda$ represents the eigenvalue from the generalized eigenvalue proble
 
 The elastic modulus of concrete is calculated using the empirical relationship specified in ACI 318-19 (ACI Committee 318, 2019):
 
-$$E_c = 4700\sqrt{f'_c} \text{ MPa}$$
+$$E_c = 4700\sqrt{f'_c} \text{ MPa} \tag{Eq. 3}$$
 
 where $f'_c$ is the compressive strength of concrete in MPa. This relationship has been validated extensively against experimental data and is widely adopted in structural engineering practice (MacGregor & Wight, 2012).
 
 The moment of inertia for a rectangular cross-section is:
 
-$$I = \frac{bh^3}{12}$$
+$$I = \frac{bh^3}{12} \tag{Eq. 8}$$
 
 where $b$ is the width and $h$ is the depth of the beam cross-section.
 
@@ -365,7 +411,7 @@ $$[k]_e = \frac{EI}{L_e^3} \begin{bmatrix}
 6L_e & 4L_e^2 & -6L_e & 2L_e^2 \\
 -12 & -6L_e & 12 & -6L_e \\
 6L_e & 2L_e^2 & -6L_e & 4L_e^2
-\end{bmatrix}$$
+\end{bmatrix} \tag{Eq. 9}$$
 
 The consistent mass matrix for each element is:
 
@@ -374,7 +420,7 @@ $$[m]_e = \frac{\rho A L_e}{420} \begin{bmatrix}
 22L_e & 4L_e^2 & 13L_e & -3L_e^2 \\
 54 & 13L_e & 156 & -22L_e \\
 -13L_e & -3L_e^2 & -22L_e & 4L_e^2
-\end{bmatrix}$$
+\end{bmatrix} \tag{Eq. 10}$$
 
 where $\rho$ is the material density (2400 kg/m³ for reinforced concrete) and $A$ is the cross-sectional area.
 
@@ -384,11 +430,11 @@ where $\rho$ is the material density (2400 kg/m³ for reinforced concrete) and $
 
 Corrosion-induced damage is simulated using the stiffness reduction method, validated against experimental studies of corroded RC beams (Zhang et al., 2020; Rodriguez et al., 1997; Cairns et al., 2005). The effective moment of inertia is reduced uniformly across all elements:
 
-$$I_{corroded} = I_{original} \times (1 - \alpha)$$
+$$I_{corroded} = I_{original} \times (1 - \alpha) \tag{Eq. 6}$$
 
 The damage factor $\alpha$ is related to the corrosion level through:
 
-$$\alpha = \min\left(1.6 \times \frac{C}{100}, 0.9\right)$$
+$$\alpha = \min\left(1.6 \times \frac{C}{100}, 0.9\right) \tag{Eq. 11}$$
 
 where $C$ is the corrosion level expressed as a percentage (0-100%). The factor 1.6 accounts for the nonlinear relationship between corrosion level and stiffness degradation observed in laboratory tests, and the upper limit of 0.9 prevents numerical instabilities while representing severe damage conditions.
 
@@ -467,7 +513,7 @@ The 80-20 train-test split ratio follows established practices in machine learni
 **Feature Scaling:**
 StandardScaler normalization transforms features to zero mean and unit variance:
 
-$$X_{scaled} = \frac{X - \mu}{\sigma}$$
+$$X_{scaled} = \frac{X - \mu}{\sigma} \tag{Eq. 12}$$
 
 where $\mu$ is the mean and $\sigma$ is the standard deviation. This preprocessing step is critical for SVR, which uses RBF kernels sensitive to feature magnitudes (Cortes & Vapnik, 1995). While tree-based methods (Random Forest, XGBoost, CatBoost) are invariant to monotonic transformations, scaling ensures consistent preprocessing across all models for fair comparison.
 
@@ -563,9 +609,17 @@ This chapter presented a rigorous methodological framework integrating finite el
 
 The machine learning pipeline follows established best practices (Hastie et al., 2009; Pedregosa et al., 2011), with comprehensive model comparison across five regression algorithms. Ethical considerations including reproducibility, transparency, and limitation acknowledgment ensure the research meets academic standards.
 
+## 3.11 Bridge to Results
+
+With the methodology established in Chapter 3, the following chapter (Chapter 4: Results and Discussion) applies this framework to generate and analyze results. The FEM implementation described here produces a validated dataset of 3,000 samples covering diverse geometric and material properties. Machine learning models trained on this dataset are evaluated using multiple performance metrics, with results validated against theoretical predictions and literature experimental data. Chapter 4 demonstrates the practical application of the methodology developed here, showing the accuracy achievable through careful integration of physics-based simulation (FEM) with data-driven prediction (ML).
+
 ---
 
 # Chapter 4: Results and Discussion
+
+## 4.0 Bridge from Chapter 3
+
+Chapter 3 presented a comprehensive methodology for generating FEM-validated datasets and training machine learning models for RC beam frequency prediction. This chapter applies that methodology to generate results, evaluate model performance, and assess the practical viability of ML-based frequency prediction. The results validate the theoretical framework established in Chapters 1 and 2, demonstrating that machine learning can achieve >98% accuracy for fixed RC beam frequency prediction. This chapter is organized into validation studies, parametric analyses, dataset characterization, and comparative model evaluation, providing both statistical evidence of model performance and physical interpretation of results.
 
 ## 4.1 Introduction
 
@@ -1273,70 +1327,84 @@ The results provide a solid foundation for developing machine learning models fo
 
 4. Bathe, K. J. (2014). *Finite Element Procedures* (2nd ed.). Klaus-Jürgen Bathe.
 
-5. Breiman, L. (2001). Random Forests. *Machine Learning*, 45(1), 5-32.
+5. Bergstra, J., & Bengio, Y. (2012). Random search for hyper-parameter optimization. *Journal of Machine Learning Research*, 13(10), 281-305.
 
-6. Cai, Y., Zhang, K., Ye, Z., Liu, C., Lu, K., & Wang, L. (2021). Influence of temperature on the natural vibration characteristics of simply supported reinforced concrete beam. *Sensors*, 21, 4242.
+6. Breiman, L. (2001). Random Forests. *Machine Learning*, 45(1), 5-32.
 
-7. Cairns, J., Plizzari, G. A., Du, Y., Law, D. W., & Franzoni, C. (2005). Mechanical properties of corrosion-damaged reinforcement. *ACI Materials Journal*, 102(4), 256-264.
+7. Cai, Y., Zhang, K., Ye, Z., Liu, C., Lu, K., & Wang, L. (2021). Influence of temperature on the natural vibration characteristics of simply supported reinforced concrete beam. *Sensors*, 21, 4242.
 
-8. Chen, T., & Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. *Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*, 785-794.
+8. Cairns, J., Plizzari, G. A., Du, Y., Law, D. W., & Franzoni, C. (2005). Mechanical properties of corrosion-damaged reinforcement. *ACI Materials Journal*, 102(4), 256-264.
 
-9. Chondros, T. G., Dimarogonas, A. D., & Yao, J. (1998). A continuous cracked beam vibration theory. *Journal of Sound and Vibration*, 215(1), 17-34.
+9. Chen, T., & Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. *Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*, 785-794.
 
-10. Chopra, A. K. (2012). *Dynamics of Structures: Theory and Applications to Earthquake Engineering* (4th ed.). Pearson.
+10. Chondros, T. G., Dimarogonas, A. D., & Yao, J. (1998). A continuous cracked beam vibration theory. *Journal of Sound and Vibration*, 215(1), 17-34.
 
-11. Clough, R. W., & Penzien, J. (2003). *Dynamics of Structures* (3rd ed.). Computers & Structures, Inc.
+11. Chopra, A. K. (2012). *Dynamics of Structures: Theory and Applications to Earthquake Engineering* (4th ed.). Pearson.
 
-12. Cohen, J. (1992). A power primer. *Psychological Bulletin*, 112(1), 155-159.
+12. Clough, R. W., & Penzien, J. (2003). *Dynamics of Structures* (3rd ed.). Computers & Structures, Inc.
 
-13. Cook, R. D. (2007). *Concepts and Applications of Finite Element Analysis* (4th ed.). Wiley.
+13. Cohen, J. (1992). A power primer. *Psychological Bulletin*, 112(1), 155-159.
 
-14. Cortes, C., & Vapnik, V. (1995). Support-vector networks. *Machine Learning*, 20(3), 273-297.
+14. Cook, R. D. (2007). *Concepts and Applications of Finite Element Analysis* (4th ed.). Wiley.
 
-15. Das, O. (2023). Prediction of the natural frequencies of various beams using regression machine learning models. *Sigma Journal of Engineering and Natural Sciences*, 41(2), 302-321.
+15. Cortes, C., & Vapnik, V. (1995). Support-vector networks. *Machine Learning*, 20(3), 273-297.
 
-16. Dimarogonas, A. D. (1996). Vibration of cracked structures: A state of the art review. *Engineering Fracture Mechanics*, 55(5), 831-857.
+16. Das, O. (2023). Prediction of the natural frequencies of various beams using regression machine learning models. *Sigma Journal of Engineering and Natural Sciences*, 41(2), 302-321.
 
-17. Doebling, S. W., Farrar, C. R., Prime, M. B., & Shevitz, D. W. (1996). Damage identification and health monitoring of structural and mechanical systems from changes in their vibration characteristics: A literature review. *Los Alamos National Laboratory Report* LA-13070-MS.
+17. Dimarogonas, A. D. (1996). Vibration of cracked structures: A state of the art review. *Engineering Fracture Mechanics*, 55(5), 831-857.
 
-18. Eurocode 2. (2004). *Design of Concrete Structures - Part 1-1: General Rules and Rules for Buildings*. EN 1992-1-1.
+18. Doebling, S. W., Farrar, C. R., Prime, M. B., & Shevitz, D. W. (1996). Damage identification and health monitoring of structural and mechanical systems from changes in their vibration characteristics: A literature review. *Los Alamos National Laboratory Report* LA-13070-MS.
 
-19. Farrar, C. R., & Worden, K. (2013). *Structural Health Monitoring: A Machine Learning Perspective*. John Wiley & Sons.
+19. Efron, B., & Tibshirani, R. (1993). *An Introduction to the Bootstrap*. Chapman and Hall.
 
-20. Harris, C. R., et al. (2020). Array programming with NumPy. *Nature*, 585, 357-362.
+20. Eurocode 2. (2004). *Design of Concrete Structures - Part 1-1: General Rules and Rules for Buildings*. EN 1992-1-1.
 
-21. Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.). Springer.
+21. Farrar, C. R., & Worden, K. (2013). *Structural Health Monitoring: A Machine Learning Perspective*. John Wiley & Sons.
 
-22. Helton, J. C., & Davis, F. J. (2003). Latin hypercube sampling and the propagation of uncertainty in analyses of complex systems. *Reliability Engineering & System Safety*, 81(1), 23-69.
+22. Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press.
 
-23. Laory, I., Trinh, T. N., Smith, I. F., & Brownjohn, J. M. (2018). Methodologies for predicting natural frequency variation of a suspension bridge. *Engineering Structures*, 80, 211-221.
+23. Guo, C., Pleiss, G., Sun, Y., & Weinberger, K. Q. (2017). On calibration of modern neural networks. In *International Conference on Machine Learning* (pp. 1321-1330). PMLR.
 
-24. Luu, X.-B. (2024). Finite element modelling of reinforced concrete beam strengthening using ultra-high performance fiber-reinforced shotcrete. *Structures*, 60, 105794.
+24. Harris, C. R., et al. (2020). Array programming with NumPy. *Nature*, 585, 357-362.
 
-25. MacGregor, J. G., & Wight, J. K. (2012). *Reinforced Concrete: Mechanics and Design* (6th ed.). Pearson.
+25. Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.). Springer.
 
-26. McKay, M. D., Beckman, R. J., & Conover, W. J. (1979). A comparison of three methods for selecting values of input variables in the analysis of output from a computer code. *Technometrics*, 21(2), 239-245.
+26. Helton, J. C., & Davis, F. J. (2003). Latin hypercube sampling and the propagation of uncertainty in analyses of complex systems. *Reliability Engineering & System Safety*, 81(1), 23-69.
 
-27. McKinney, W. (2010). Data Structures for Statistical Computing in Python. *Proceedings of the 9th Python in Science Conference*, 51-56.
+27. Hughes, T. J. R. (2000). *The Finite Element Method: Linear Static and Dynamic Finite Element Analysis*. Dover Publications.
 
-28. Miller, J., et al. (2000). The Tacoma Narrows Bridge collapse: A review of the causes. *Engineering History and Heritage*, 153(1), 25-30.
+28. Inman, D. J. (2014). *Engineering Vibration* (4th ed.). Pearson.
 
-29. Nikoo, M., Zarfam, P., & Sayahpour, H. (2018). Determination of natural frequency of Euler-Bernoulli beam using artificial neural network. *Engineering Structures*, 157, 154-166.
+29. Laory, I., Trinh, T. N., Smith, I. F., & Brownjohn, J. M. (2018). Methodologies for predicting natural frequency variation of a suspension bridge. *Engineering Structures*, 80, 211-221.
 
-30. Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. *Journal of Machine Learning Research*, 12, 2825-2830.
+30. Luu, X.-B. (2024). Finite element modelling of reinforced concrete beam strengthening using ultra-high performance fiber-reinforced shotcrete. *Structures*, 60, 105794.
 
-31. Prokhorenkova, L., Gusev, G., Vorobev, A., Dorogush, A. V., & Gulin, A. (2018). CatBoost: Unbiased Boosting with Categorical Features. *Advances in Neural Information Processing Systems*, 31.
+31. MacGregor, J. G., & Wight, J. K. (2012). *Reinforced Concrete: Mechanics and Design* (6th ed.). Pearson.
 
-32. Rao, S. S. (2019). *Mechanical Vibrations* (6th ed.). Pearson.
+32. McKay, M. D., Beckman, R. J., & Conover, W. J. (1979). A comparison of three methods for selecting values of input variables in the analysis of output from a computer code. *Technometrics*, 21(2), 239-245.
 
-33. Rodriguez, J., Ortega, L. M., & Casal, J. (1997). Load carrying capacity of concrete structures with corroded reinforcement. *Construction and Building Materials*, 11(4), 239-248.
+33. McKinney, W. (2010). Data Structures for Statistical Computing in Python. *Proceedings of the 9th Python in Science Conference*, 51-56.
 
-34. Saha, P., & Yang, M. (2023). A neural network approach to estimate the frequency of a cantilever beam with random multiple damages. *Sensors*, 23, 7867.
+34. Meirovitch, L. (2001). *Fundamentals of Vibrations*. McGraw-Hill.
 
-35. Sohn, H., Farrar, C. R., Hemez, F. M., Shunk, D. D., Stinemates, D. W., Nadler, B. R., & Czarnecki, J. J. (2004). A review of structural health monitoring literature: 1996-2001. *Los Alamos National Laboratory Report* LA-13976-MS.
+35. Miller, J., et al. (2000). The Tacoma Narrows Bridge collapse: A review of the causes. *Engineering History and Heritage*, 153(1), 25-30.
 
-36. Virtanen, P., et al. (2020). SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. *Nature Methods*, 17, 261-272.
+36. Nikoo, M., Zarfam, P., & Sayahpour, H. (2018). Determination of natural frequency of Euler-Bernoulli beam using artificial neural network. *Engineering Structures*, 157, 154-166.
 
-37. Zhang, Y., Cheng, Y., Tan, G., Lyu, X., Sun, X., Bai, Y., & Yang, S. (2020). Natural frequency response evaluation for RC beams affected by steel corrosion using acceleration sensors. *Sensors*, 20, 5335.
+37. Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. *Journal of Machine Learning Research*, 12, 2825-2830.
 
-38. Zienkiewicz, O. C., & Taylor, R. L. (2000). *The Finite Element Method* (5th ed.). Butterworth-Heinemann.
+38. Prokhorenkova, L., Gusev, G., Vorobev, A., Dorogush, A. V., & Gulin, A. (2018). CatBoost: Unbiased Boosting with Categorical Features. *Advances in Neural Information Processing Systems*, 31.
+
+39. Rao, S. S. (2019). *Mechanical Vibrations* (6th ed.). Pearson.
+
+40. Rodriguez, J., Ortega, L. M., & Casal, J. (1997). Load carrying capacity of concrete structures with corroded reinforcement. *Construction and Building Materials*, 11(4), 239-248.
+
+41. Saha, P., & Yang, M. (2023). A neural network approach to estimate the frequency of a cantilever beam with random multiple damages. *Sensors*, 23, 7867.
+
+42. Sohn, H., Farrar, C. R., Hemez, F. M., Shunk, D. D., Stinemates, D. W., Nadler, B. R., & Czarnecki, J. J. (2004). A review of structural health monitoring literature: 1996-2001. *Los Alamos National Laboratory Report* LA-13976-MS.
+
+43. Virtanen, P., et al. (2020). SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. *Nature Methods*, 17, 261-272.
+
+44. Zhang, Y., Cheng, Y., Tan, G., Lyu, X., Sun, X., Bai, Y., & Yang, S. (2020). Natural frequency response evaluation for RC beams affected by steel corrosion using acceleration sensors. *Sensors*, 20, 5335.
+
+45. Zienkiewicz, O. C., & Taylor, R. L. (2000). *The Finite Element Method* (5th ed.). Butterworth-Heinemann.
