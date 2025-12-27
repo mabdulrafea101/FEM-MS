@@ -22,7 +22,7 @@ The findings suggest that machine learning can indeed predict frequencies with h
 
 Every structure has its own "heartbeat" - a natural rate at which it prefers to vibrate when disturbed. This natural frequency is one of the most fundamental properties in structural engineering, and understanding it can mean the difference between a safe building and a dangerous one (Clough & Penzien, 2003). The basic relationship is quite intuitive:
 
-$$f_n = \frac{1}{2\pi}\sqrt{\frac{k}{m}} \tag{1}$$
+$$f_n = \frac{1}{2\pi}\sqrt{\frac{k}{m}} \quad \quad \quad \quad (Eq. 1)$$
 
 Here, k represents how stiff the structure is, and m is its mass. This simple equation carries profound implications. When external forces like wind or earthquakes push against a structure at a frequency matching its natural frequency, the vibrations grow larger and larger. This resonance phenomenon has caused some spectacular failures throughout history. The collapse of the Tacoma Narrows Bridge in 1940 remains perhaps the most dramatic example of what happens when resonance goes unchecked (Miller et al., 2000).
 
@@ -114,13 +114,13 @@ Before diving into my own methodology, I needed to understand what others had al
 
 At its core, natural frequency describes how fast a structure vibrates when disturbed and allowed to oscillate freely. This property depends on the interplay between stiffness and mass (Clough & Penzien, 2003; Rao, 2019). For beam structures, the Euler-Bernoulli frequency equation provides the closed-form solution:
 
-$$f_n = \frac{\lambda_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \tag{2}$$
+$$f_n = \frac{\lambda_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \quad \quad \quad \quad (Eq. 2)$$
 
 In this equation, the eigenvalue for the first mode of a fixed-fixed beam is 4.730, L is beam length, E is elastic modulus, I is moment of inertia, rho is density, and A is cross-sectional area (Chopra, 2012). I chose Euler-Bernoulli over more complex formulations because it makes the physics transparent. You can see directly how lengthening a beam reduces frequency, or how increasing stiffness raises it. This formulation works well when the length-to-depth ratio exceeds about 10, which covers most practical RC beams.
 
 For concrete, we typically estimate elastic modulus from compressive strength using the ACI 318-19 relationship:
 
-$$E_c = 4700\sqrt{f'_c} \text{ MPa} \tag{3}$$
+$$E_c = 4700\sqrt{f'_c} \text{ MPa} \quad \quad \quad \quad (Eq. 3)$$
 
 I selected this over the Eurocode alternative because ACI 318-19 has been more extensively validated for the concrete strengths I was studying (25-50 MPa), and the differences between the two approaches are small anyway, typically under 5 percent (MacGregor & Wight, 2012).
 
@@ -130,7 +130,7 @@ Structural health monitoring has become increasingly important for infrastructur
 
 The principle is straightforward: any change in structural properties, whether from damage or deterioration, will shift the natural frequencies. The relationship can be approximated as:
 
-$$\frac{\Delta f}{f} \approx \frac{1}{2}\frac{\Delta K}{K} \tag{4}$$
+$$\frac{\Delta f}{f} \approx \frac{1}{2}\frac{\Delta K}{K} \quad \quad \quad \quad (Eq. 4)$$
 
 This tells us that stiffness reductions show up directly as frequency reductions. The factor of one-half comes from the square-root relationship between frequency and stiffness. Sohn et al. (2004) reviewed the literature extensively and concluded that frequency shifts remain among the most reliable indicators of global damage, though they also warned that temperature variations can confuse damage detection if not properly accounted for.
 
@@ -150,7 +150,7 @@ The finite element method has become the standard numerical approach for structu
 
 The governing equation for free vibration is:
 
-$$[K]\{u\} = \omega^2[M]\{u\} \tag{5}$$
+$$[K]\{u\} = \omega^2[M]\{u\} \quad \quad \quad (Eq. 5)$$
 
 Here, K is the global stiffness matrix, M is the global mass matrix, u is the mode shape vector, and omega represents angular frequencies. Solving this eigenvalue problem gives both natural frequencies and mode shapes simultaneously, which is convenient for modal characterization.
 
@@ -233,7 +233,7 @@ These findings provided experimental validation for the stiffness reduction appr
 
 The stiffness reduction method is widely used for simulating damage effects in FEM analysis. The effective stiffness is reduced proportionally to damage severity:
 
-$$EI_{damaged} = EI_{original} \times (1 - \alpha) \tag{6}$$
+$$EI_{damaged} = EI_{original} \times (1 - \alpha) \quad \quad (Eq. 6)$$
 
 where alpha is the damage factor. This approach has been validated against experimental studies of corroded RC beams (Rodriguez et al., 1997; Cairns et al., 2005). A multiplier of 1.6 is typically applied to corrosion percentage to estimate effective stiffness loss, reflecting the accelerated degradation beyond simple area reduction.
 
@@ -323,7 +323,7 @@ where K is the global stiffness matrix (N/m), M is the global mass matrix (kg), 
 
 The natural frequency f in Hertz comes from angular frequency:
 
-$$f = \frac{\omega}{2\pi} = \frac{\sqrt{\lambda}}{2\pi} \tag{7}$$
+$$f = \frac{\omega}{2\pi} = \frac{\sqrt{\lambda}}{2\pi} \quad \quad \quad (Eq. 7)$$
 
 where lambda represents the eigenvalue from the generalized eigenvalue problem.
 
@@ -331,13 +331,13 @@ where lambda represents the eigenvalue from the generalized eigenvalue problem.
 
 I calculated the elastic modulus of concrete using the ACI 318-19 empirical relationship:
 
-$$E_c = 4700\sqrt{f'_c} \text{ MPa} \tag{3}$$
+$$E_c = 4700\sqrt{f'_c} \text{ MPa} \quad \quad \quad \quad (Eq. 3)$$
 
 where f'c is compressive strength in MPa. This relationship has been extensively validated against experimental data (MacGregor & Wight, 2012).
 
 The moment of inertia for a rectangular cross-section is:
 
-$$I = \frac{bh^3}{12} \tag{8}$$
+$$I = \frac{bh^3}{12} \quad \quad \quad \quad \quad (Eq. 8)$$
 
 where b is width and h is depth.
 
@@ -350,7 +350,7 @@ $$[k]_e = \frac{EI}{L_e^3} \begin{bmatrix}
 6L_e & 4L_e^2 & -6L_e & 2L_e^2 \\
 -12 & -6L_e & 12 & -6L_e \\
 6L_e & 2L_e^2 & -6L_e & 4L_e^2
-\end{bmatrix} \tag{9}$$
+\end{bmatrix} \quad (Eq. 9)$$
 
 The consistent mass matrix for each element is:
 
@@ -359,7 +359,7 @@ $$[m]_e = \frac{\rho A L_e}{420} \begin{bmatrix}
 22L_e & 4L_e^2 & 13L_e & -3L_e^2 \\
 54 & 13L_e & 156 & -22L_e \\
 -13L_e & -3L_e^2 & -22L_e & 4L_e^2
-\end{bmatrix} \tag{10}$$
+\end{bmatrix} \quad (Eq. 10)$$
 
 where rho is material density (2400 kg/m3 for reinforced concrete) and A is cross-sectional area.
 
@@ -369,11 +369,11 @@ where rho is material density (2400 kg/m3 for reinforced concrete) and A is cros
 
 I simulated corrosion-induced damage using the stiffness reduction method, which has been validated against experimental studies (Zhang et al., 2020; Rodriguez et al., 1997; Cairns et al., 2005). The effective moment of inertia is reduced uniformly across all elements:
 
-$$I_{corroded} = I_{original} \times (1 - \alpha) \tag{6}$$
+$$I_{corroded} = I_{original} \times (1 - \alpha) \quad \quad (Eq. 6)$$
 
 The damage factor alpha relates to corrosion level through:
 
-$$\alpha = \min\left(1.6 \times \frac{C}{100}, 0.9\right) \tag{11}$$
+$$\alpha = \min\left(1.6 \times \frac{C}{100}, 0.9\right) \quad \quad (Eq. 11)$$
 
 where C is corrosion level expressed as a percentage (0-100%). The factor of 1.6 accounts for the nonlinear relationship between corrosion and stiffness degradation observed in laboratory tests. The upper limit of 0.9 prevents numerical instabilities while representing severe damage conditions.
 
@@ -434,7 +434,7 @@ The complete dataset comprises 3,000 simulations with six input features (Length
 
 **Feature Scaling:** StandardScaler normalization transforms features to zero mean and unit variance:
 
-$$X_{scaled} = \frac{X - \mu}{\sigma} \tag{12}$$
+$$X_{scaled} = \frac{X - \mu}{\sigma} \quad \quad \quad \quad (Eq. 12)$$
 
 This preprocessing is critical for SVR with RBF kernels, which are sensitive to feature magnitudes (Cortes & Vapnik, 1995). While tree-based methods are invariant to monotonic transformations, I scaled all features consistently for fair comparison.
 
@@ -621,7 +621,7 @@ The Pearson correlation coefficients between input parameters and output frequen
 
 These correlations align with theoretical expectations from the frequency equation:
 
-$$f \propto \frac{1}{L^2}\sqrt{\frac{EI}{\rho A}} \propto \frac{h}{L^2}\sqrt{f'_c} \tag{13}$$
+$$f \propto \frac{1}{L^2}\sqrt{\frac{EI}{\rho A}} \propto \frac{h}{L^2}\sqrt{f'_c} \quad \quad \quad \quad (Eq. 13)$$
 
 ---
 
@@ -639,7 +639,7 @@ Figure 4.2 illustrates the relationship between corrosion level and the fundamen
 
 Both Mode 1 and Mode 2 frequencies exhibit a monotonic decrease with increasing corrosion level, consistent with the reduction in structural stiffness. The frequency reduction follows a nonlinear trend approximated by:
 
-$$\frac{f_{corroded}}{f_{pristine}} \approx \sqrt{1 - \alpha} = \sqrt{1 - 1.6 \times \frac{C}{100}} \tag{14}$$
+$$\frac{f_{corroded}}{f_{pristine}} \approx \sqrt{1 - \alpha} = \sqrt{1 - 1.6 \times \frac{C}{100}} \quad \quad \quad \quad (Eq. 14)$$
 
 This square-root relationship arises from the proportionality $f \propto \sqrt{K/M}$, where corrosion primarily affects stiffness while mass remains relatively constant. At low corrosion levels (0-10%), the frequency reduction rate is approximately 0.8% per 1% corrosion, aligning with findings from Zhang et al. (2020). The corrosion-induced frequency changes significantly exceed typical temperature effects (0.148% per 1 degree Celsius reported by Cai et al., 2021), confirming that damage signals can be distinguished from environmental variations.
 
@@ -663,7 +663,7 @@ Figure 4.4 demonstrates the impact of crack severity on natural frequencies for 
 
 Cracks located at mid-span (maximum bending moment region for Mode 1) produce the most significant frequency reduction for the fundamental mode. The frequency reduction approximately follows:
 
-$$\Delta f \approx -k_1 \beta - k_2 \beta^2 \tag{15}$$
+$$\Delta f \approx -k_1 \beta - k_2 \beta^2 \quad \quad \quad \quad (Eq. 15)$$
 
 where $\beta$ is the crack severity, and $k_1$, $k_2$ are coefficients that depend on crack location and beam geometry. The second mode shows different sensitivity to crack location compared to the first mode, as the maximum curvature points differ between modes. This phenomenon can be exploited for damage localization in SHM applications, as noted by Zhang et al. (2020).
 
@@ -711,7 +711,7 @@ The high standard deviation (3.8%) indicates significant variability in frequenc
 
 I performed a local sensitivity analysis to quantify the influence of each parameter on the natural frequency. The sensitivity coefficient is defined as:
 
-$$S_i = \frac{\partial f}{\partial p_i} \times \frac{p_i}{f} \tag{16}$$
+$$S_i = \frac{\partial f}{\partial p_i} \times \frac{p_i}{f} \quad \quad \quad \quad (Eq. 16)$$
 
 where $p_i$ is the $i$-th parameter.
 
