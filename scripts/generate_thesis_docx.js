@@ -95,18 +95,13 @@ function createFigureCaption(number, text) {
   });
 }
 
-// Helper to create equation with proper formatting
-function createEquation(equationText, number) {
+// Helper to create equation with proper formatting (equation number included in LaTeX string)
+function createEquation(equationText) {
   return new Paragraph({
     children: [
       new TextRun({
         text: equationText,
         font: "Cambria Math",
-        size: 24,
-      }),
-      new TextRun({
-        text: `          (Eq. ${number})`,
-        font: "Times New Roman",
         size: 24,
       }),
     ],
@@ -305,7 +300,7 @@ async function createThesisDocument() {
 
         createHeading("1.1 Study Background", 2),
         p("Every structure has its own \"heartbeat\" - a natural rate at which it prefers to vibrate when disturbed. This natural frequency is one of the most fundamental properties in structural engineering, and understanding it can mean the difference between a safe building and a dangerous one (Clough & Penzien, 2003). The basic relationship is quite intuitive:"),
-        createEquation("f_n = \\frac{1}{2\\pi}\\sqrt{\\frac{k}{m}} \\quad \\text{(Eq. 1)}", 1),
+        createEquation("f_n = \\frac{1}{2\\pi}\\sqrt{\\frac{k}{m}} \\quad \\text{(Eq. 1)}"),
         p("Here, k represents how stiff the structure is, and m is its mass. This simple equation carries profound implications. When external forces like wind or earthquakes push against a structure at a frequency matching its natural frequency, the vibrations grow larger and larger. This resonance phenomenon has caused some spectacular failures throughout history. The collapse of the Tacoma Narrows Bridge in 1940 remains perhaps the most dramatic example of what happens when resonance goes unchecked (Miller et al., 2000)."),
         p("For me, this created an interesting problem worth solving. Traditional methods for calculating natural frequencies, whether through hand calculations or finite element analysis, work well enough for individual beams. But what happens when an engineer needs to assess fifty beams? Or a hundred? The computational time adds up quickly, and this becomes impractical during early design phases when exploring many different configurations (Das, 2023)."),
         p("This is where machine learning enters the picture. Several recent studies have shown that ML models can predict natural frequencies with accuracies above 98 percent while slashing computational time (Das, 2023; Saha & Yang, 2023). Once trained on validated simulation data, these models produce predictions almost instantly. The potential for structural health monitoring applications seemed too significant to ignore."),
@@ -367,16 +362,16 @@ async function createThesisDocument() {
         createHeading("2.2 Natural Frequency and Structural Health Monitoring", 2),
         createHeading("2.2.1 Fundamentals of Natural Frequency in RC Structures", 3),
         p("At its core, natural frequency describes how fast a structure vibrates when disturbed and allowed to oscillate freely. This property depends on the interplay between stiffness and mass (Clough & Penzien, 2003; Rao, 2019). For beam structures, the Euler-Bernoulli frequency equation provides the closed-form solution:"),
-        createEquation("f_n = \\frac{\\lambda_n^2}{2\\pi L^2}\\sqrt{\\frac{EI}{\\rho A}} \\quad \\text{(Eq. 2)}", 2),
+        createEquation("f_n = \\frac{\\lambda_n^2}{2\\pi L^2}\\sqrt{\\frac{EI}{\\rho A}} \\quad \\text{(Eq. 2)}"),
         p("In this equation, the eigenvalue for the first mode of a fixed-fixed beam is 4.730, L is beam length, E is elastic modulus, I is moment of inertia, rho is density, and A is cross-sectional area (Chopra, 2012). I chose Euler-Bernoulli over more complex formulations because it makes the physics transparent. You can see directly how lengthening a beam reduces frequency, or how increasing stiffness raises it. This formulation works well when the length-to-depth ratio exceeds about 10, which covers most practical RC beams."),
         p("For concrete, we typically estimate elastic modulus from compressive strength using the ACI 318-19 relationship:"),
-        createEquation("E_c = 4700\\sqrt{f'_c} \\text{ MPa} \\quad \\text{(Eq. 3)}", 3),
+        createEquation("E_c = 4700\\sqrt{f'_c} \\text{ MPa} \\quad \\text{(Eq. 3)}"),
         p("I selected this over the Eurocode alternative because ACI 318-19 has been more extensively validated for the concrete strengths I was studying (25-50 MPa), and the differences between the two approaches are small anyway, typically under 5 percent (MacGregor & Wight, 2012)."),
 
         createHeading("2.2.2 Role of Natural Frequency in Structural Health Monitoring", 3),
         p("Structural health monitoring has become increasingly important for infrastructure safety, and frequency-based methods have proven particularly useful because they can detect global changes without needing access to every part of a structure (Farrar & Worden, 2013; Doebling et al., 1996)."),
         p("The principle is straightforward: any change in structural properties, whether from damage or deterioration, will shift the natural frequencies. The relationship can be approximated as:"),
-        createEquation("\\frac{\\Delta f}{f} \\approx \\frac{1}{2}\\frac{\\Delta K}{K} \\quad \\text{(Eq. 4)}", 4),
+        createEquation("\\frac{\\Delta f}{f} \\approx \\frac{1}{2}\\frac{\\Delta K}{K} \\quad \\text{(Eq. 4)}"),
         p("This tells us that stiffness reductions show up directly as frequency reductions. The factor of one-half comes from the square-root relationship between frequency and stiffness. Sohn et al. (2004) reviewed the literature extensively and concluded that frequency shifts remain among the most reliable indicators of global damage, though they also warned that temperature variations can confuse damage detection if not properly accounted for."),
 
         createHeading("2.2.3 Damage Detection Through Frequency Shifts", 3),
@@ -388,7 +383,7 @@ async function createThesisDocument() {
         createHeading("2.3.1 FEM Fundamentals for Beam Vibration Analysis", 3),
         p("The finite element method has become the standard numerical approach for structural dynamics problems. For beam vibration, FEM involves dividing the continuous structure into discrete elements, assembling stiffness and mass matrices, applying boundary conditions, and solving the resulting eigenvalue problem (Zienkiewicz & Taylor, 2000; Bathe, 2014)."),
         p("The governing equation for free vibration is:"),
-        createEquation("[K] \\{u\\} = \\omega^2 [M] \\{u\\} \\quad \\text{(Eq. 5)}", 5),
+        createEquation("[K] \\{u\\} = \\omega^2 [M] \\{u\\} \\quad \\text{(Eq. 5)}"),
         p("Here, K is the global stiffness matrix, M is the global mass matrix, u is the mode shape vector, and omega represents angular frequencies. Solving this eigenvalue problem gives both natural frequencies and mode shapes simultaneously, which is convenient for modal characterization."),
 
         createHeading("2.3.2 Euler-Bernoulli vs Timoshenko Beam Theory", 3),
@@ -448,7 +443,7 @@ async function createThesisDocument() {
 
         createHeading("2.5.2 Stiffness Reduction Approach for Damage Modeling", 3),
         p("The stiffness reduction method is widely used for simulating damage effects in FEM analysis. The effective stiffness is reduced proportionally to damage severity:"),
-        createEquation("EI_{\\text{damaged}} = EI_{\\text{original}} \\times (1 - \\alpha) \\quad \\text{(Eq. 6)}", 6),
+        createEquation("EI_{\\text{damaged}} = EI_{\\text{original}} \\times (1 - \\alpha) \\quad \\text{(Eq. 6)}"),
         p("where alpha is the damage factor. This approach has been validated against experimental studies of corroded RC beams (Rodriguez et al., 1997; Cairns et al., 2005). A multiplier of 1.6 is typically applied to corrosion percentage to estimate effective stiffness loss, reflecting the accelerated degradation beyond simple area reduction."),
 
         createHeading("2.5.3 Crack Modeling Techniques", 3),
@@ -498,33 +493,33 @@ async function createThesisDocument() {
         createHeading("3.4 Finite Element Model Formulation", 2),
         createHeading("3.4.1 Governing Equations", 3),
         p("The dynamic behavior of the RC beam is governed by Euler-Bernoulli beam theory, which assumes plane sections remain plane and perpendicular to the neutral axis during deformation (Clough & Penzien, 2003; Chopra, 2012). The equation of motion for free vibration is:"),
-        createEquation("[K]{u} = ω²[M]{u}", 5),
+        createEquation("[K] \\{u\\} = \\omega^2 [M] \\{u\\} \\quad \\text{(Eq. 5)}"),
         p("where K is the global stiffness matrix (N/m), M is the global mass matrix (kg), u is the displacement vector (m), and omega is angular frequency (rad/s). I solved this generalized eigenvalue problem using scipy.linalg.eigh in Python (Virtanen et al., 2020)."),
         p("The natural frequency f in Hertz comes from angular frequency:"),
-        createEquation("f = \\frac{\\omega}{2\\pi} = \\frac{\\sqrt{\\lambda}}{2\\pi} \\quad \\text{(Eq. 7)}", 7),
+        createEquation("f = \\frac{\\omega}{2\\pi} = \\frac{\\sqrt{\\lambda}}{2\\pi} \\quad \\text{(Eq. 7)}"),
         p("where lambda represents the eigenvalue from the generalized eigenvalue problem."),
 
         createHeading("3.4.2 Material Properties", 3),
         p("I calculated the elastic modulus of concrete using the ACI 318-19 empirical relationship:"),
-        createEquation("E_c = 4700\\sqrt{f'_c} \\text{ MPa} \\quad \\text{(Eq. 3)}", 3),
+        createEquation("E_c = 4700\\sqrt{f'_c} \\text{ MPa} \\quad \\text{(Eq. 3)}"),
         p("where f'c is compressive strength in MPa. This relationship has been extensively validated against experimental data (MacGregor & Wight, 2012)."),
         p("The moment of inertia for a rectangular cross-section is:"),
-        createEquation("I = \\frac{bh^3}{12} \\quad \\text{(Eq. 8)}", 8),
+        createEquation("I = \\frac{bh^3}{12} \\quad \\text{(Eq. 8)}"),
         p("where b is width and h is depth."),
 
         createHeading("3.4.3 Element Matrices", 3),
         p("I formulated element stiffness and consistent mass matrices following standard finite element procedures (Zienkiewicz & Taylor, 2000; Bathe, 2014). For each beam element of length Le, the local stiffness matrix is:"),
-        createEquation("[k]_e = \\frac{EI}{L_e^3} \\begin{bmatrix} 12 & 6L_e & -12 & 6L_e \\\\ 6L_e & 4L_e^2 & -6L_e & 2L_e^2 \\\\ -12 & -6L_e & 12 & -6L_e \\\\ 6L_e & 2L_e^2 & -6L_e & 4L_e^2 \\end{bmatrix} \\quad \\text{(Eq. 9)}", 9),
+        createEquation("[k]_e = \\frac{EI}{L_e^3} \\begin{bmatrix} 12 & 6L_e & -12 & 6L_e \\\\ 6L_e & 4L_e^2 & -6L_e & 2L_e^2 \\\\ -12 & -6L_e & 12 & -6L_e \\\\ 6L_e & 2L_e^2 & -6L_e & 4L_e^2 \\end{bmatrix} \\quad \\text{(Eq. 9)}"),
         p("The consistent mass matrix for each element is:"),
-        createEquation("[m]_e = \\frac{\\rho A L_e}{420} \\begin{bmatrix} 156 & 22L_e & 54 & -13L_e \\\\ 22L_e & 4L_e^2 & 13L_e & -3L_e^2 \\\\ 54 & 13L_e & 156 & -22L_e \\\\ -13L_e & -3L_e^2 & -22L_e & 4L_e^2 \\end{bmatrix} \\quad \\text{(Eq. 10)}", 10),
+        createEquation("[m]_e = \\frac{\\rho A L_e}{420} \\begin{bmatrix} 156 & 22L_e & 54 & -13L_e \\\\ 22L_e & 4L_e^2 & 13L_e & -3L_e^2 \\\\ 54 & 13L_e & 156 & -22L_e \\\\ -13L_e & -3L_e^2 & -22L_e & 4L_e^2 \\end{bmatrix} \\quad \\text{(Eq. 10)}"),
         p("where rho is material density (2400 kg/m3 for reinforced concrete) and A is cross-sectional area."),
 
         createHeading("3.5 Damage Modeling Approaches", 2),
         createHeading("3.5.1 Uniform Corrosion Model", 3),
         p("I simulated corrosion-induced damage using the stiffness reduction method, which has been validated against experimental studies (Zhang et al., 2020; Rodriguez et al., 1997; Cairns et al., 2005). The effective moment of inertia is reduced uniformly across all elements:"),
-        createEquation("EI_{\\text{damaged}} = EI_{\\text{original}} \\times (1 - \\alpha) \\quad \\text{(Eq. 6)}", 6),
+        createEquation("EI_{\\text{damaged}} = EI_{\\text{original}} \\times (1 - \\alpha) \\quad \\text{(Eq. 6)}"),
         p("The damage factor alpha relates to corrosion level through:"),
-        createEquation("\\alpha = \\min\\left(1.6 \\times \\frac{C}{100}, 0.9\\right) \\quad \\text{(Eq. 11)}", 11),
+        createEquation("\\alpha = \\min\\left(1.6 \\times \\frac{C}{100}, 0.9\\right) \\quad \\text{(Eq. 11)}"),
         p("where C is corrosion level expressed as a percentage (0-100%). The factor of 1.6 accounts for the nonlinear relationship between corrosion and stiffness degradation observed in laboratory tests. The upper limit of 0.9 prevents numerical instabilities while representing severe damage conditions."),
 
         createHeading("3.5.2 Localized Crack Model", 3),
@@ -557,7 +552,7 @@ async function createThesisDocument() {
         p("Feature Encoding: I applied one-hot encoding to the categorical Damage_Type variable using sklearn.preprocessing.OneHotEncoder (Pedregosa et al., 2011). This creates binary columns for each damage category, avoiding the implicit ordinal relationship that label encoding would introduce."),
         p("Data Splitting: I used an 80-20 train-test split following established practices for regression tasks (Hastie et al., 2009). Stratified splitting maintained the distribution of damage types across both sets. I fixed the random state (random_state=42) for reproducibility, resulting in 2,400 training samples and 600 testing samples."),
         p("Feature Scaling: StandardScaler normalization transforms features to zero mean and unit variance:"),
-        createEquation("X_scaled = (X - μ)/σ", 12),
+        createEquation("X_{\\text{scaled}} = \\frac{X - \\mu}{\\sigma} \\quad \\text{(Eq. 12)}"),
         p("This preprocessing is critical for SVR with RBF kernels, which are sensitive to feature magnitudes (Cortes & Vapnik, 1995). While tree-based methods are invariant to monotonic transformations, I scaled all features consistently for fair comparison."),
 
         createHeading("3.7.2 Model Development", 3),
@@ -667,7 +662,7 @@ async function createThesisDocument() {
           ]
         ),
         p("These correlations align with theoretical expectations from the frequency equation."),
-        createEquation("f ∝ (h/L²) × √f'c", 13),
+        createEquation("f \\propto \\frac{1}{L^2}\\sqrt{\\frac{EI}{\\rho A}} \\propto \\frac{h}{L^2}\\sqrt{f'_c} \\quad \\text{(Eq. 13)}"),
 
         createHeading("4.4 Parametric Analysis of Damage Effects", 2),
         p("With the dataset characteristics established, this section examines how different damage scenarios affect natural frequencies."),
@@ -677,7 +672,7 @@ async function createThesisDocument() {
         createImage("simulation/outputs/figures/freq_vs_corrosion.png", 500, 350),
         createFigureCaption("4.2", "Impact of uniform corrosion on the first two natural frequencies of a fixed-fixed RC beam (L=3.0m, b=0.3m, h=0.45m, f'c=30 MPa)."),
         p("Both Mode 1 and Mode 2 frequencies exhibit a monotonic decrease with increasing corrosion level, consistent with the reduction in structural stiffness. The frequency reduction follows a nonlinear trend approximated by:"),
-        createEquation("f_corroded/f_pristine ≈ √(1 - 1.6 × C/100)", 14),
+        createEquation("\\frac{f_{\\text{corroded}}}{f_{\\text{pristine}}} \\approx \\sqrt{1 - \\alpha} = \\sqrt{1 - 1.6 \\times \\frac{C}{100}} \\quad \\text{(Eq. 14)}"),
         p("This square-root relationship arises from the proportionality f proportional to sqrt(K/M), where corrosion primarily affects stiffness while mass remains relatively constant. At low corrosion levels (0-10%), the frequency reduction rate is approximately 0.8% per 1% corrosion, aligning with findings from Zhang et al. (2020)."),
 
         createHeading("4.4.2 Mode Shape Analysis", 3),
@@ -691,7 +686,7 @@ async function createThesisDocument() {
         createImage("simulation/outputs/figures/severity_impact.png", 500, 350),
         createFigureCaption("4.4", "Influence of crack severity (0-90% stiffness loss) at mid-span on natural frequencies."),
         p("Cracks located at mid-span (maximum bending moment region for Mode 1) produce the most significant frequency reduction for the fundamental mode. The frequency reduction approximately follows:"),
-        createEquation("Δf ≈ -k₁β - k₂β²", 15),
+        createEquation("\\Delta f \\approx -k_1 \\beta - k_2 \\beta^2 \\quad \\text{(Eq. 15)}"),
         p("where beta is the crack severity, and k1, k2 are coefficients that depend on crack location and beam geometry."),
 
         createHeading("4.5 Comparative Analysis of Damage Scenarios", 2),
@@ -712,7 +707,7 @@ async function createThesisDocument() {
         createHeading("4.6 Sensitivity Analysis", 2),
         createHeading("4.6.1 Parameter Sensitivity", 3),
         p("I performed a local sensitivity analysis to quantify the influence of each parameter on the natural frequency. The sensitivity coefficient is defined as:"),
-        createEquation("Sᵢ = (∂f/∂pᵢ) × (pᵢ/f)", 16),
+        createEquation("S_i = \\frac{\\partial f}{\\partial p_i} \\times \\frac{p_i}{f} \\quad \\text{(Eq. 16)}"),
         p("where p_i is the i-th parameter."),
         p("Normalized Sensitivity Coefficients: Length: -2.00, Depth: +1.50, Concrete Strength: +0.50, Corrosion Level: -0.80"),
         p("Length exhibits the highest sensitivity (-2.00), consistent with the theoretical f proportional to L^-2 relationship (Clough & Penzien, 2003), while corrosion sensitivity (-0.80) confirms its detectability in SHM applications."),
