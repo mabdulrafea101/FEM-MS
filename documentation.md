@@ -330,40 +330,20 @@ The following flowchart outlines the systematic research methodology adopted in 
 
 ```mermaid
 graph TD
-    A["START"] --> B["CHAPTER 2:<br/>LITERATURE REVIEW<br/>Natural Frequency Fundamentals<br/>FEM Methods | ML Algorithms<br/>Damage Modeling"]
-
-    B --> C{Research<br/>Gaps?}
-    C -- "Fixed RC Beams Gap" --> D["THEORETICAL FOUNDATION<br/>FEM Validated | ML 98% Accurate<br/>Damage Models Established"]
-
-    D --> E["CHAPTER 3: METHODOLOGY"]
-    E --> F1["Define Beam Parameters<br/>L, b, h, f'c, Damage Level"]
-
-    F1 --> F2["FEM MODELING<br/>Euler-Bernoulli Theory<br/>Element Matrices Eq. 9-10"]
-
-    F2 --> G{Damage<br/>Type?}
-    G -->|Pristine| H["Modal Analysis<br/>Eigenvalue Problem Eq. 5"]
-    G -->|Corrosion| I["Stiffness Reduction<br/>Damage Factor Eq. 11"]
-    G -->|Cracks| J["Localized Reduction<br/>Piecewise Model"]
-
-    I --> H
-    J --> H
-
-    H --> K["Extract Natural Frequencies<br/>f = ω/2π Eq. 7"]
-    K --> L["DATASET GENERATION<br/>3000 FEM Samples<br/>Latin Hypercube Sampling"]
-
-    L --> M["PREPROCESSING<br/>Feature Scaling Eq. 12<br/>80-20 Train-Test Split"]
-
-    M --> N["MACHINE LEARNING<br/>Linear Regression<br/>Random Forest | XGBoost<br/>CatBoost | SVR"]
-
-    N --> O["MODEL EVALUATION<br/>Cross-Validation<br/>R² | MAE | RMSE"]
-
-    O --> P["VALIDATION<br/>vs Theory Eq. 2,5<br/>vs Literature Data"]
-
-    P --> Q{Performance<br/>Acceptable?}
-    Q -->|No| N
-    Q -->|Yes| R["FINAL MODELS<br/>Ready for SHM"]
-
-    R --> S["END"]
+    A[Start] --> B[Define Beam Parameters]
+    B --> C[Finite Element Modeling]
+    C --> D{Damage Scenario?}
+    D -- Pristine --> E[Modal Analysis]
+    D -- Corrosion --> F[Uniform Stiffness Reduction]
+    D -- Cracks --> G[Localized Stiffness Reduction]
+    F --> E
+    G --> E
+    E --> H[Extract Natural Frequencies]
+    H --> I[Generate Dataset]
+    I --> J[Data Preprocessing]
+    J --> K[Machine Learning Models]
+    K --> L[Model Evaluation]
+    L --> M[End]
 ```
 
 **Figure 3.1: Research Workflow - Vertical Snake Layout for A4 Page Fit**
