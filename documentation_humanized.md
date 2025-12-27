@@ -317,7 +317,7 @@ I determined the sample size of 3,000 simulations following power analysis guide
 
 The dynamic behavior of the RC beam is governed by Euler-Bernoulli beam theory, which assumes plane sections remain plane and perpendicular to the neutral axis during deformation (Clough & Penzien, 2003; Chopra, 2012). The equation of motion for free vibration is:
 
-$$[K]\{u\} = \omega^2 [M]\{u\} \tag{5}$$
+$$[K]\{u\} = \omega^2 [M]\{u\} \quad \quad \quad (Eq. 5)$$
 
 where K is the global stiffness matrix (N/m), M is the global mass matrix (kg), u is the displacement vector (m), and omega is angular frequency (rad/s). I solved this generalized eigenvalue problem using scipy.linalg.eigh in Python (Virtanen et al., 2020).
 
