@@ -42,23 +42,23 @@ This gap struck me as significant for a practical reason: fixed-fixed boundary c
 
 Three main questions guided this research:
 
-First, how accurately can machine learning predict the fundamental natural frequency of fixed reinforced concrete beams? Previous work on steel beams achieved around 98 percent accuracy (Das, 2023), and I wanted to know if similar performance was achievable for RC beams with their more complex material behavior.
+1. How accurately can machine learning predict the fundamental natural frequency of fixed reinforced concrete beams? Previous work on steel beams achieved around 98 percent accuracy (Das, 2023), and I wanted to know if similar performance was achievable for RC beams with their more complex material behavior.
 
-Second, which algorithm performs best for this specific application? I compared Linear Regression, Random Forest, XGBoost, CatBoost, and Support Vector Regression because each brings different strengths to regression problems.
+2. Which algorithm performs best for this specific application? I compared Linear Regression, Random Forest, XGBoost, CatBoost, and Support Vector Regression because each brings different strengths to regression problems.
 
-Third, what are the most important parameters? Understanding which geometric and material properties most strongly influence frequency could help engineers prioritize their measurements and design decisions.
+3. What are the most important parameters? Understanding which geometric and material properties most strongly influence frequency could help engineers prioritize their measurements and design decisions.
 
 ## 1.4 Research Objectives
 
 I established four concrete objectives:
 
-The first was generating a reliable dataset. I aimed for 3,000 samples of natural frequency data from finite element simulations, targeting less than 0.01 percent error compared to theoretical solutions. This would ensure the ML models had trustworthy training data.
+1. Generating a reliable dataset. I aimed for 3,000 samples of natural frequency data from finite element simulations, targeting less than 0.01 percent error compared to theoretical solutions. This would ensure the ML models had trustworthy training data.
 
-The second objective involved developing and testing five regression models, with a goal of achieving at least 95 percent R-squared on the test set.
+2. Developing and testing five regression models, with a goal of achieving at least 95 percent R-squared on the test set.
 
-Third, I wanted to quantify which parameters matter most using SHAP analysis and permutation importance. This would reveal whether length, depth, width, concrete strength, or damage severity has the greatest influence on frequency.
+3. Quantifying which parameters matter most using SHAP analysis and permutation importance. This would reveal whether length, depth, width, concrete strength, or damage severity has the greatest influence on frequency.
 
-Finally, I planned to validate everything against published experimental data to confirm the physical realism of my simulations.
+4. Validating everything against published experimental data to confirm the physical realism of my simulations.
 
 ## 1.5 Significance of the Research
 
@@ -106,7 +106,7 @@ Theoretically, I quantified the relationship between corrosion damage and freque
 
 ## 2.1 Introduction
 
-Before diving into my own methodology, I needed to understand what others had already accomplished and where the gaps remained. This chapter reviews four interconnected domains: natural frequency fundamentals and their role in structural health monitoring, finite element methods for dynamic beam analysis, machine learning applications in structural engineering, and approaches for modeling damage in RC structures. By synthesizing findings across these areas, I identified the specific research gap my thesis addresses.
+Understanding existing accomplishments and identifying research gaps is essential before developing new methodologies. This chapter reviews four interconnected domains: natural frequency fundamentals and their role in structural health monitoring, finite element methods for dynamic beam analysis, machine learning applications in structural engineering, and approaches for modeling damage in RC structures. By synthesizing findings across these areas, the specific research gap addressed by this thesis can be identified.
 
 ## 2.2 Natural Frequency and Structural Health Monitoring
 
@@ -116,13 +116,13 @@ At its core, natural frequency describes how fast a structure vibrates when dist
 
 $$f_n = \frac{\lambda_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \quad \quad \quad \quad (Eq. 2)$$
 
-In this equation, the eigenvalue for the first mode of a fixed-fixed beam is 4.730, L is beam length, E is elastic modulus, I is moment of inertia, rho is density, and A is cross-sectional area (Chopra, 2012). I chose Euler-Bernoulli over more complex formulations because it makes the physics transparent. You can see directly how lengthening a beam reduces frequency, or how increasing stiffness raises it. This formulation works well when the length-to-depth ratio exceeds about 10, which covers most practical RC beams.
+In this equation, the eigenvalue for the first mode of a fixed-fixed beam is 4.730, L is beam length, E is elastic modulus, I is moment of inertia, rho is density, and A is cross-sectional area (Chopra, 2012). Euler-Bernoulli formulation was chosen over more complex formulations because it makes the physics transparent. The direct relationship between beam length and frequency reduction, as well as how increasing stiffness raises frequency, can be clearly observed. This formulation works well when the length-to-depth ratio exceeds about 10, which covers most practical RC beams.
 
-For concrete, we typically estimate elastic modulus from compressive strength using the ACI 318-19 relationship:
+For concrete, elastic modulus is typically estimated from compressive strength using the ACI 318-19 relationship:
 
 $$E_c = 4700\sqrt{f'_c} \text{ MPa} \quad \quad \quad \quad (Eq. 3)$$
 
-I selected this over the Eurocode alternative because ACI 318-19 has been more extensively validated for the concrete strengths I was studying (25-50 MPa), and the differences between the two approaches are small anyway, typically under 5 percent (MacGregor & Wight, 2012).
+This relationship was selected over the Eurocode alternative because ACI 318-19 has been more extensively validated for concrete strengths in the range of 25-50 MPa, and the differences between the two approaches are small, typically under 5 percent (MacGregor & Wight, 2012).
 
 ### 2.2.2 Role of Natural Frequency in Structural Health Monitoring
 
@@ -160,7 +160,7 @@ Two beam theories dominate FEM analysis. Euler-Bernoulli assumes that plane sect
 
 Timoshenko theory includes shear and rotary effects, providing better accuracy for deep beams with length-to-depth ratios below 5. Das (2023) used both theories in generating FEM datasets and found that Euler-Bernoulli gives sufficient accuracy for typical building beam proportions.
 
-For the RC beams in my study, with length-to-depth ratios ranging from about 4.3 to 26.7, Euler-Bernoulli theory is appropriate for most configurations. Only the deepest sections might benefit from Timoshenko refinement.
+For RC beams with length-to-depth ratios ranging from about 4.3 to 26.7, Euler-Bernoulli theory is appropriate for most configurations. Only the deepest sections might benefit from Timoshenko refinement.
 
 ### 2.3.3 FEM Validation Studies in Literature
 
@@ -178,7 +178,7 @@ Laory et al. (2018) compared Multiple Linear Regression, Artificial Neural Netwo
 
 ### 2.4.2 Regression Models for Frequency Prediction
 
-Das (2023) conducted what I consider the most comprehensive ML study to date on beam frequency prediction. Using FEM-generated datasets for aluminum and steel beams under various boundary conditions, Das compared four algorithms:
+Das (2023) conducted the most comprehensive ML study to date on beam frequency prediction. Using FEM-generated datasets for aluminum and steel beams under various boundary conditions, Das compared four algorithms:
 
 **Table 2.1: ML Algorithm Performance for Beam Frequency Prediction (Das 2023)**
 
@@ -263,7 +263,7 @@ This thesis addresses these gaps by developing a comprehensive ML benchmark spec
 
 ## 3.1 Research Workflow
 
-The methodology I developed follows a systematic progression from beam parameter definition through FEM simulation to ML model development. Figure 3.1 illustrates this workflow:
+The methodology developed follows a systematic progression from beam parameter definition through FEM simulation to ML model development. Figure 3.1 illustrates this workflow:
 
 ```mermaid
 graph TD
@@ -291,25 +291,25 @@ The workflow integrates literature findings from Chapter 2 with finite element s
 
 ### 3.2.1 Chapter Overview
 
-This chapter explains how I investigated the relationship between structural damage and natural frequency shifts in reinforced concrete beams. My approach combined high-fidelity finite element simulations with machine learning algorithms to develop a predictive framework suitable for structural health monitoring. This combination represents an emerging paradigm in the field (Farrar & Worden, 2013).
+This chapter explains the investigation of the relationship between structural damage and natural frequency shifts in reinforced concrete beams. The approach combined high-fidelity finite element simulations with machine learning algorithms to develop a predictive framework suitable for structural health monitoring. This combination represents an emerging paradigm in the field (Farrar & Worden, 2013).
 
 ### 3.2.2 Rationale for Chosen Methods
 
-I chose to combine FEM and ML because purely experimental approaches have significant limitations. Physical testing is expensive, time-consuming, and allows only a limited number of damage scenarios to be examined. FEM, by contrast, lets me generate a large, diverse dataset under precisely controlled conditions. Machine learning then provides the analytical capability to map complex, nonlinear relationships between damage parameters and frequency responses.
+FEM and ML were combined because purely experimental approaches have significant limitations. Physical testing is expensive, time-consuming, and allows only a limited number of damage scenarios to be examined. FEM, by contrast, enables generation of large, diverse datasets under precisely controlled conditions. Machine learning then provides the analytical capability to map complex, nonlinear relationships between damage parameters and frequency responses.
 
 ## 3.3 Research Design
 
 ### 3.3.1 Quantitative and Simulation-Based Approach
 
-My research follows a quantitative, simulation-based design with four main steps:
+This research follows a quantitative, simulation-based design with four main steps:
 
-First, I created a parameterized FEM model of a fixed-fixed RC beam. Second, I systematically introduced damage (corrosion and cracks) into the model. Third, I ran thousands of simulations to generate a comprehensive dataset. Fourth, I trained regression algorithms to predict natural frequencies from beam parameters.
+First, a parameterized FEM model of a fixed-fixed RC beam was created. Second, damage (corrosion and cracks) was systematically introduced into the model. Third, thousands of simulations were run to generate a comprehensive dataset. Fourth, regression algorithms were trained to predict natural frequencies from beam parameters.
 
 ### 3.3.2 Design Justification and Scope
 
 This approach ensures internal validity by strictly controlling input parameters and external validity by covering a wide range of geometric and material properties typical of real structures. The scope is limited to fixed-fixed RC beams, considering uniform corrosion and localized cracking as primary damage mechanisms.
 
-I determined the sample size of 3,000 simulations following power analysis guidelines for regression studies (Cohen, 1992). Latin Hypercube Sampling was selected over simple random sampling because of its superior space-filling properties (McKay et al., 1979).
+The sample size of 3,000 simulations was determined following power analysis guidelines for regression studies (Cohen, 1992). Latin Hypercube Sampling was selected over simple random sampling because of its superior space-filling properties (McKay et al., 1979).
 
 ## 3.4 Finite Element Model Formulation
 
@@ -319,7 +319,7 @@ The dynamic behavior of the RC beam is governed by Euler-Bernoulli beam theory, 
 
 $$[K]\{u\} = \omega^2 [M]\{u\} \quad \quad \quad (Eq. 5)$$
 
-where K is the global stiffness matrix (N/m), M is the global mass matrix (kg), u is the displacement vector (m), and omega is angular frequency (rad/s). I solved this generalized eigenvalue problem using scipy.linalg.eigh in Python (Virtanen et al., 2020).
+where K is the global stiffness matrix (N/m), M is the global mass matrix (kg), u is the displacement vector (m), and omega is angular frequency (rad/s). This generalized eigenvalue problem was solved using scipy.linalg.eigh in Python (Virtanen et al., 2020).
 
 The natural frequency f in Hertz comes from angular frequency:
 
@@ -329,7 +329,7 @@ where lambda represents the eigenvalue from the generalized eigenvalue problem.
 
 ### 3.4.2 Material Properties
 
-I calculated the elastic modulus of concrete using the ACI 318-19 empirical relationship:
+The elastic modulus of concrete was calculated using the ACI 318-19 empirical relationship:
 
 $$E_c = 4700\sqrt{f'_c} \text{ MPa} \quad \quad \quad \quad (Eq. 3)$$
 
@@ -343,7 +343,7 @@ where b is width and h is depth.
 
 ### 3.4.3 Element Matrices
 
-I formulated element stiffness and consistent mass matrices following standard finite element procedures (Zienkiewicz & Taylor, 2000; Bathe, 2014). For each beam element of length Le, the local stiffness matrix is:
+Element stiffness and consistent mass matrices were formulated following standard finite element procedures (Zienkiewicz & Taylor, 2000; Bathe, 2014). For each beam element of length Le, the local stiffness matrix is:
 
 $$[k]_e = \frac{EI}{L_e^3} \begin{bmatrix}
 12 & 6L_e & -12 & 6L_e \\
@@ -367,7 +367,7 @@ where rho is material density (2400 kg/m3 for reinforced concrete) and A is cros
 
 ### 3.5.1 Uniform Corrosion Model
 
-I simulated corrosion-induced damage using the stiffness reduction method, which has been validated against experimental studies (Zhang et al., 2020; Rodriguez et al., 1997; Cairns et al., 2005). The effective moment of inertia is reduced uniformly across all elements:
+Corrosion-induced damage was simulated using the stiffness reduction method, which has been validated against experimental studies (Zhang et al., 2020; Rodriguez et al., 1997; Cairns et al., 2005). The effective moment of inertia is reduced uniformly across all elements:
 
 $$I_{corroded} = I_{original} \times (1 - \alpha) \quad \quad (Eq. 6)$$
 
@@ -379,7 +379,7 @@ where C is corrosion level expressed as a percentage (0-100%). The factor of 1.6
 
 ### 3.5.2 Localized Crack Model
 
-For localized damage like cracks, based on fracture mechanics principles (Dimarogonas, 1996; Chondros et al., 1998), I applied stiffness reduction only to elements within the damaged zone:
+For localized damage like cracks, based on fracture mechanics principles (Dimarogonas, 1996; Chondros et al., 1998), stiffness reduction was applied only to elements within the damaged zone:
 
 $$I_{effective}(x) = \begin{cases}
 I_{original} \times (1 - \beta) & \text{if } |x - x_{crack}| \leq \frac{w_{crack}}{2} \\
@@ -390,7 +390,7 @@ where x_crack is crack location, w_crack is width of the cracked zone, and beta 
 
 ### 3.5.3 Random Damage Model
 
-To simulate realistic damage patterns with multiple defects, I introduced random damage at multiple locations:
+To simulate realistic damage patterns with multiple defects, random damage was introduced at multiple locations:
 
 $$I_{effective,i} = I_{original} \times (1 - \beta_i)$$
 
@@ -400,7 +400,7 @@ where beta_i is randomly sampled from a uniform distribution for n randomly sele
 
 ### 3.6.1 Sampling Plan
 
-I generated a comprehensive dataset of 3,000 simulations using Latin Hypercube Sampling via scipy.stats.qmc (Virtanen et al., 2020). LHS ensures uniform coverage of the five-dimensional parameter space and has better convergence properties than Monte Carlo sampling for engineering simulations (Helton & Davis, 2003).
+A comprehensive dataset of 3,000 simulations was generated using Latin Hypercube Sampling via scipy.stats.qmc (Virtanen et al., 2020). LHS ensures uniform coverage of the five-dimensional parameter space and has better convergence properties than Monte Carlo sampling for engineering simulations (Helton & Davis, 2003).
 
 The parameter ranges were selected based on typical RC beam dimensions in building construction (ACI 318-19) and practical concrete grades (Eurocode 2, 2004):
 
@@ -416,6 +416,10 @@ The parameter ranges were selected based on typical RC beam dimensions in buildi
 
 The dataset composition breaks down as follows: 1,500 pristine beam samples (50%), 500 uniform corrosion samples (16.7%), 500 localized crack samples (16.7%), and 500 random damage samples (16.7%).
 
+![Parameter Distributions](simulation/outputs/ml_figures/parameter_distributions.png)
+
+**Figure 3.2:** Distribution of input parameters across the 3,000-sample dataset generated using Latin Hypercube Sampling. The uniform coverage across all parameter ranges demonstrates the effectiveness of LHS in ensuring comprehensive exploration of the design space, covering beam lengths (3-8 m), cross-sectional dimensions (width: 0.2-0.5 m, depth: 0.3-0.7 m), concrete strengths (25-50 MPa), and damage severities (0-20%).
+
 ## 3.7 Machine Learning Methodology
 
 ### 3.7.1 Data Preparation and Preprocessing
@@ -426,21 +430,21 @@ The complete dataset comprises 3,000 simulations with six input features (Length
 
 #### 3.7.1.2 Preprocessing Steps
 
-**Data Integrity Verification:** The FEM-generated dataset contained no missing values, so imputation was unnecessary. I verified data integrity using pandas.DataFrame.isnull() before model training. Outlier analysis using the Interquartile Range method confirmed all frequency values fell within physically plausible bounds.
+**Data Integrity Verification:** The FEM-generated dataset contained no missing values, so imputation was unnecessary. Data integrity was verified using pandas.DataFrame.isnull() before model training. Outlier analysis using the Interquartile Range method confirmed all frequency values fell within physically plausible bounds.
 
-**Feature Encoding:** I applied one-hot encoding to the categorical Damage_Type variable using sklearn.preprocessing.OneHotEncoder (Pedregosa et al., 2011). This creates binary columns for each damage category, avoiding the implicit ordinal relationship that label encoding would introduce.
+**Feature Encoding:** One-hot encoding was applied to the categorical Damage_Type variable using sklearn.preprocessing.OneHotEncoder (Pedregosa et al., 2011). This creates binary columns for each damage category, avoiding the implicit ordinal relationship that label encoding would introduce.
 
-**Data Splitting:** I used an 80-20 train-test split following established practices for regression tasks (Hastie et al., 2009). Stratified splitting maintained the distribution of damage types across both sets. I fixed the random state (random_state=42) for reproducibility, resulting in 2,400 training samples and 600 testing samples.
+**Data Splitting:** An 80-20 train-test split was used following established practices for regression tasks (Hastie et al., 2009). Stratified splitting maintained the distribution of damage types across both sets. The random state was fixed (random_state=42) for reproducibility, resulting in 2,400 training samples and 600 testing samples.
 
 **Feature Scaling:** StandardScaler normalization transforms features to zero mean and unit variance:
 
 $$X_{scaled} = \frac{X - \mu}{\sigma} \quad \quad \quad \quad (Eq. 12)$$
 
-This preprocessing is critical for SVR with RBF kernels, which are sensitive to feature magnitudes (Cortes & Vapnik, 1995). While tree-based methods are invariant to monotonic transformations, I scaled all features consistently for fair comparison.
+This preprocessing is critical for SVR with RBF kernels, which are sensitive to feature magnitudes (Cortes & Vapnik, 1995). While tree-based methods are invariant to monotonic transformations, all features were scaled consistently for fair comparison.
 
 ### 3.7.2 Model Development
 
-I implemented five regression algorithms with hyperparameters selected based on literature recommendations:
+Five regression algorithms were implemented with hyperparameters selected based on literature recommendations:
 
 **Linear Regression** serves as a baseline model establishing the performance floor. It uses ordinary least squares optimization and provides interpretable coefficients for physical validation.
 
@@ -448,23 +452,23 @@ I implemented five regression algorithms with hyperparameters selected based on 
 
 **XGBoost Regressor** hyperparameters follow Chen & Guestrin (2016) guidelines: learning rate of 0.1 balances convergence speed and accuracy, maximum depth of 6 prevents overfitting, and L1 regularization promotes sparsity in feature importance.
 
-**CatBoost Regressor** uses ordered boosting to address prediction shift inherent in traditional gradient boosting (Prokhorenkova et al., 2018). I configured 100 iterations, 0.1 learning rate, and depth of 6.
+**CatBoost Regressor** uses ordered boosting to address prediction shift inherent in traditional gradient boosting (Prokhorenkova et al., 2018). The model was configured with 100 iterations, 0.1 learning rate, and depth of 6.
 
-**Support Vector Regression** with RBF kernel was selected for its universal approximation capability (Cortes & Vapnik, 1995). I set the regularization parameter C to 100 based on cross-validation to balance bias-variance trade-off.
+**Support Vector Regression** with RBF kernel was selected for its universal approximation capability (Cortes & Vapnik, 1995). The regularization parameter C was set to 100 based on cross-validation to balance bias-variance trade-off.
 
 ## 3.8 Tools and Instruments Used
 
 ### 3.8.1 Software Platforms
 
-I used Python 3.9+ as the primary programming language and Jupyter Notebooks for interactive development and visualization.
+Python 3.9+ was used as the primary programming language and Jupyter Notebooks for interactive development and visualization.
 
 ### 3.8.2 ML Libraries and Statistical Packages
 
-For data preprocessing and model implementation, I used Scikit-learn (Pedregosa et al., 2011), XGBoost (Chen & Guestrin, 2016), and CatBoost (Prokhorenkova et al., 2018). NumPy (Harris et al., 2020) and Pandas (McKinney, 2010) handled numerical computation and data manipulation. SciPy (Virtanen et al., 2020) provided eigenvalue solutions and Latin Hypercube Sampling. Matplotlib and Seaborn generated visualizations. SHAP provided model-agnostic feature importance analysis.
+For data preprocessing and model implementation, Scikit-learn (Pedregosa et al., 2011), XGBoost (Chen & Guestrin, 2016), and CatBoost (Prokhorenkova et al., 2018) were used. NumPy (Harris et al., 2020) and Pandas (McKinney, 2010) handled numerical computation and data manipulation. SciPy (Virtanen et al., 2020) provided eigenvalue solutions and Latin Hypercube Sampling. Matplotlib and Seaborn generated visualizations. SHAP provided model-agnostic feature importance analysis.
 
 ### 3.8.3 Evaluation Metrics
 
-I evaluated models using Mean Absolute Error (average error magnitude in Hz), Root Mean Square Error (which penalizes larger errors more heavily), Coefficient of Determination R-squared (proportion of variance explained), and 5-Fold Cross-Validation for assessing generalization.
+Models were evaluated using Mean Absolute Error (average error magnitude in Hz), Root Mean Square Error (which penalizes larger errors more heavily), Coefficient of Determination R-squared (proportion of variance explained), and 5-Fold Cross-Validation for assessing generalization.
 
 ## 3.9 Ethical Considerations
 
@@ -474,7 +478,7 @@ This research adheres to principles of scientific reproducibility and transparen
 
 ### 3.9.2 Computational Transparency
 
-I employed exclusively open-source tools (Python, NumPy, SciPy, Scikit-learn, XGBoost, CatBoost), ensuring results can be independently reproduced without proprietary software and algorithms are publicly documented.
+Exclusively open-source tools (Python, NumPy, SciPy, Scikit-learn, XGBoost, CatBoost) were employed, ensuring results can be independently reproduced without proprietary software and algorithms are publicly documented.
 
 ### 3.9.3 Limitations Acknowledgment
 
@@ -482,7 +486,7 @@ Several limitations affect result generalizability. The FEM model, while validat
 
 ### 3.9.4 Intended Use and Misuse Prevention
 
-The predictive models I developed are intended for preliminary design assessment, rapid parametric studies, educational purposes, and research benchmarking. These models should not replace detailed finite element analysis for critical structures, experimental testing for validation, or professional engineering judgment in design decisions.
+The predictive models developed are intended for preliminary design assessment, rapid parametric studies, educational purposes, and research benchmarking. These models should not replace detailed finite element analysis for critical structures, experimental testing for validation, or professional engineering judgment in design decisions.
 
 ---
 
@@ -623,19 +627,27 @@ These correlations align with theoretical expectations from the frequency equati
 
 $$f \propto \frac{1}{L^2}\sqrt{\frac{EI}{\rho A}} \propto \frac{h}{L^2}\sqrt{f'_c} \quad \quad \quad \quad (Eq. 13)$$
 
+![Correlation Matrix](simulation/outputs/ml_figures/correlation_matrix.png)
+
+**Figure 4.2:** Pearson correlation matrix heatmap showing relationships between all input parameters and output frequencies (Mode 1 and Mode 2). Warm colors (red) indicate strong positive correlations, while cool colors (blue) indicate strong negative correlations. The strong negative correlation between length and frequency (-0.87) and positive correlation between depth and frequency (+0.64) are clearly visible, confirming the theoretical relationships embedded in the Euler-Bernoulli beam equation.
+
 ---
 
 ## 4.4 Parametric Analysis of Damage Effects
 
 With the dataset characteristics established, this section examines how different damage scenarios affect natural frequencies.
 
+![Damage vs Frequency](simulation/outputs/ml_figures/damage_vs_frequency.png)
+
+**Figure 4.3:** Comprehensive visualization of the relationship between damage severity and natural frequency reduction across all damage types in the dataset. The plot demonstrates the nonlinear decay in both Mode 1 and Mode 2 frequencies as damage severity increases from 0% to 20%. Different damage types (pristine, uniform corrosion, localized cracks, and random damage) show distinct frequency response patterns, with uniform corrosion generally producing the most significant frequency reductions for equivalent damage levels.
+
 ### 4.4.1 Effect of Uniform Corrosion on Natural Frequencies
 
-Figure 4.2 illustrates the relationship between corrosion level and the fundamental natural frequency for a representative beam configuration.
+Figure 4.4 illustrates the relationship between corrosion level and the fundamental natural frequency for a representative beam configuration.
 
 ![Frequency vs. Corrosion Level](simulation/outputs/figures/freq_vs_corrosion.png)
 
-**Figure 4.2:** Impact of uniform corrosion on the first two natural frequencies of a fixed-fixed RC beam (L=3.0m, b=0.3m, h=0.45m, f'c=30 MPa).
+**Figure 4.4:** Impact of uniform corrosion on the first two natural frequencies of a fixed-fixed RC beam (L=3.0m, b=0.3m, h=0.45m, f'c=30 MPa).
 
 Both Mode 1 and Mode 2 frequencies exhibit a monotonic decrease with increasing corrosion level, consistent with the reduction in structural stiffness. The frequency reduction follows a nonlinear trend approximated by:
 
@@ -645,21 +657,21 @@ This square-root relationship arises from the proportionality $f \propto \sqrt{K
 
 ### 4.4.2 Mode Shape Analysis
 
-Figure 4.3 presents the comparison of mode shapes between pristine and corroded beams.
+Figure 4.5 presents the comparison of mode shapes between pristine and corroded beams.
 
 ![Mode Shape Comparison](simulation/outputs/figures/mode_shape_comparison.png)
 
-**Figure 4.3:** Comparison of the first two mode shapes for pristine and corroded (20% corrosion) beams.
+**Figure 4.5:** Comparison of the first two mode shapes for pristine and corroded (20% corrosion) beams.
 
 The fundamental mode shape (single curvature) and second mode shape (double curvature) maintain their characteristic forms even under significant corrosion (20%), confirming that uniform damage does not alter the modal patterns. The normalized mode shapes are identical for pristine and corroded beams, as expected for uniform stiffness reduction. The fixed-fixed boundary conditions are clearly satisfied, with zero displacement and zero slope at both ends.
 
 ### 4.4.3 Effect of Localized Damage
 
-Figure 4.4 demonstrates the impact of crack severity on natural frequencies for a mid-span crack.
+Figure 4.6 demonstrates the impact of crack severity on natural frequencies for a mid-span crack.
 
 ![Severity Impact on Frequency](simulation/outputs/figures/severity_impact.png)
 
-**Figure 4.4:** Influence of crack severity (0-90% stiffness loss) at mid-span on natural frequencies.
+**Figure 4.6:** Influence of crack severity (0-90% stiffness loss) at mid-span on natural frequencies.
 
 Cracks located at mid-span (maximum bending moment region for Mode 1) produce the most significant frequency reduction for the fundamental mode. The frequency reduction approximately follows:
 
@@ -793,7 +805,7 @@ The results demonstrate that CatBoost achieves accuracy comparable to or exceedi
 
 ![Model Comparison](simulation/outputs/ml_figures/model_comparison.png)
 
-**Figure 4.5:** Comparative visualization of model performance metrics. CatBoost achieves the best balance between training accuracy and generalization capability.
+**Figure 4.7:** Comparative visualization of model performance metrics. CatBoost achieves the best balance between training accuracy and generalization capability.
 
 **Performance Analysis:**
 
@@ -831,7 +843,7 @@ The results demonstrate that CatBoost achieves accuracy comparable to or exceedi
 
 ![Prediction vs Actual](simulation/outputs/ml_figures/prediction_vs_actual.png)
 
-**Figure 4.6:** Scatter plots comparing predicted vs. actual frequencies for all models. Perfect predictions would align along the diagonal line (y = x). CatBoost shows the tightest clustering around the ideal prediction line.
+**Figure 4.8:** Scatter plots comparing predicted vs. actual frequencies for all models. Perfect predictions would align along the diagonal line (y = x). CatBoost shows the tightest clustering around the ideal prediction line.
 
 The prediction accuracy analysis demonstrates:
 
@@ -844,7 +856,7 @@ The prediction accuracy analysis demonstrates:
 
 ![Residual Plots](simulation/outputs/ml_figures/residual_plots.png)
 
-**Figure 4.7:** Residual plots (predicted - actual) for each model. Ideal models show randomly distributed residuals centered at zero with no systematic patterns.
+**Figure 4.9:** Residual plots (predicted - actual) for each model. Ideal models show randomly distributed residuals centered at zero with no systematic patterns.
 
 **Residual Characteristics:**
 
@@ -862,7 +874,7 @@ The prediction accuracy analysis demonstrates:
 
 ![Feature Importance](simulation/outputs/ml_figures/feature_importance.png)
 
-**Figure 4.8:** Permutation feature importance scores for the best-performing model (CatBoost). Higher scores indicate greater influence on prediction accuracy.
+**Figure 4.10:** Permutation feature importance scores for the best-performing model (CatBoost). Higher scores indicate greater influence on prediction accuracy.
 
 **Feature Importance Rankings:**
 
@@ -877,7 +889,7 @@ The prediction accuracy analysis demonstrates:
 
 ![SHAP Summary](simulation/outputs/ml_figures/shap_summary.png)
 
-**Figure 4.9:** SHAP (SHapley Additive exPlanations) summary plot showing feature contribution to model predictions. Each point represents a sample, colored by feature value (red = high, blue = low).
+**Figure 4.11:** SHAP (SHapley Additive exPlanations) summary plot showing feature contribution to model predictions. Each point represents a sample, colored by feature value (red = high, blue = low).
 
 **SHAP Insights:**
 
@@ -902,13 +914,13 @@ Low standard deviations for ensemble methods confirm robust generalization acros
 
 #### 4.8.4.1 Uncertainty Quantification
 
-To assess prediction reliability and provide confidence intervals for operational deployment, I performed bootstrap-based uncertainty quantification on test predictions. This analysis generates 95% confidence intervals around point predictions using 100 bootstrap iterations.
+To assess prediction reliability and provide confidence intervals for operational deployment, bootstrap-based uncertainty quantification was performed on test predictions. This analysis generates 95% confidence intervals around point predictions using 100 bootstrap iterations.
 
 **Uncertainty Quantification Results:**
 
 ![Uncertainty Quantification Analysis](docs/figures/uncertainty_quantification.png)
 
-**Figure 4.10:** Left panel shows predictions with 95% confidence intervals for 200 sorted test samples. Narrower intervals near the data mean indicate higher prediction confidence, while wider intervals at distribution extremes reflect greater uncertainty. Right panel displays the distribution of confidence interval widths.
+**Figure 4.12:** Left panel shows predictions with 95% confidence intervals for 200 sorted test samples. Narrower intervals near the data mean indicate higher prediction confidence, while wider intervals at distribution extremes reflect greater uncertainty. Right panel displays the distribution of confidence interval widths.
 
 **Table 4.8: Bootstrap Confidence Interval Statistics**
 
@@ -926,7 +938,7 @@ The bootstrap analysis reveals excellent calibration of uncertainty estimates. T
 
 ![Coverage Analysis Plot](docs/figures/coverage_analysis.png)
 
-**Figure 4.11:** Scatter plot validating confidence interval calibration. Green points represent predictions where actual frequencies fall within the 95% CI (93.2% coverage); red points indicate out-of-interval predictions (6.8%).
+**Figure 4.13:** Scatter plot validating confidence interval calibration. Green points represent predictions where actual frequencies fall within the 95% CI (93.2% coverage); red points indicate out-of-interval predictions (6.8%).
 
 ### 4.8.5 Computational Efficiency
 
@@ -959,13 +971,13 @@ CatBoost is selected as the production model based on:
 
 #### 4.8.6.1 Hyperparameter Optimization Analysis
 
-I performed systematic hyperparameter optimization using RandomizedSearchCV with 50 iterations and 5-fold cross-validation to refine CatBoost model performance. The optimization explored six critical parameters governing gradient boosting dynamics, regularization, and feature binning.
+Systematic hyperparameter optimization was performed using RandomizedSearchCV with 50 iterations and 5-fold cross-validation to refine CatBoost model performance. The optimization explored six critical parameters governing gradient boosting dynamics, regularization, and feature binning.
 
 **Hyperparameter Importance Analysis:**
 
 ![Hyperparameter Importance Plot](docs/figures/hyperparameter_importance.png)
 
-**Figure 4.12:** Feature importance visualization showing the impact of each hyperparameter on model performance across 50 RandomizedSearchCV iterations.
+**Figure 4.14:** Feature importance visualization showing the impact of each hyperparameter on model performance across 50 RandomizedSearchCV iterations.
 
 **Table 4.9: Hyperparameter Search Space for RandomizedSearchCV Optimization**
 
