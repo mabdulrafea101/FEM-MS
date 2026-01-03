@@ -1162,100 +1162,6 @@ The results provide a solid foundation for developing machine learning models fo
 
 ---
 
-# References
-
-1. ACI Committee 318. (2019). *Building Code Requirements for Structural Concrete (ACI 318-19)*. American Concrete Institute.
-
-2. Avcar, M., & Saplioglu, K. (2015). An artificial neural network application for estimation of natural frequencies of beams. *Research Journal of Applied Sciences, Engineering and Technology*, 9(3), 131-138.
-
-3. Banerjee, A., Panigrahi, B., & Pohit, G. (2017). Crack modelling and detection in Timoshenko FGM beam under transverse vibration using frequency contour and response surface model with GA. *Nondestructive Testing and Evaluation*, 32(1), 27-48.
-
-4. Bathe, K. J. (2014). *Finite Element Procedures* (2nd ed.). Klaus-Jurgen Bathe.
-
-5. Bergstra, J., & Bengio, Y. (2012). Random search for hyper-parameter optimization. *Journal of Machine Learning Research*, 13(10), 281-305.
-
-6. Breiman, L. (2001). Random Forests. *Machine Learning*, 45(1), 5-32.
-
-7. Cai, Y., Zhang, K., Ye, Z., Liu, C., Lu, K., & Wang, L. (2021). Influence of temperature on the natural vibration characteristics of simply supported reinforced concrete beam. *Sensors*, 21, 4242.
-
-8. Cairns, J., Plizzari, G. A., Du, Y., Law, D. W., & Franzoni, C. (2005). Mechanical properties of corrosion-damaged reinforcement. *ACI Materials Journal*, 102(4), 256-264.
-
-9. Chen, T., & Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. *Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*, 785-794.
-
-10. Chondros, T. G., Dimarogonas, A. D., & Yao, J. (1998). A continuous cracked beam vibration theory. *Journal of Sound and Vibration*, 215(1), 17-34.
-
-11. Chopra, A. K. (2012). *Dynamics of Structures: Theory and Applications to Earthquake Engineering* (4th ed.). Pearson.
-
-12. Clough, R. W., & Penzien, J. (2003). *Dynamics of Structures* (3rd ed.). Computers & Structures, Inc.
-
-13. Cohen, J. (1992). A power primer. *Psychological Bulletin*, 112(1), 155-159.
-
-14. Cook, R. D. (2007). *Concepts and Applications of Finite Element Analysis* (4th ed.). Wiley.
-
-15. Cortes, C., & Vapnik, V. (1995). Support-vector networks. *Machine Learning*, 20(3), 273-297.
-
-16. Das, O. (2023). Prediction of the natural frequencies of various beams using regression machine learning models. *Sigma Journal of Engineering and Natural Sciences*, 41(2), 302-321.
-
-17. Dimarogonas, A. D. (1996). Vibration of cracked structures: A state of the art review. *Engineering Fracture Mechanics*, 55(5), 831-857.
-
-18. Doebling, S. W., Farrar, C. R., Prime, M. B., & Shevitz, D. W. (1996). Damage identification and health monitoring of structural and mechanical systems from changes in their vibration characteristics: A literature review. *Los Alamos National Laboratory Report* LA-13070-MS.
-
-19. Efron, B., & Tibshirani, R. (1993). *An Introduction to the Bootstrap*. Chapman and Hall.
-
-20. Eurocode 2. (2004). *Design of Concrete Structures - Part 1-1: General Rules and Rules for Buildings*. EN 1992-1-1.
-
-21. Farrar, C. R., & Worden, K. (2013). *Structural Health Monitoring: A Machine Learning Perspective*. John Wiley & Sons.
-
-22. Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press.
-
-23. Guo, C., Pleiss, G., Sun, Y., & Weinberger, K. Q. (2017). On calibration of modern neural networks. In *International Conference on Machine Learning* (pp. 1321-1330). PMLR.
-
-24. Harris, C. R., et al. (2020). Array programming with NumPy. *Nature*, 585, 357-362.
-
-25. Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.). Springer.
-
-26. Helton, J. C., & Davis, F. J. (2003). Latin hypercube sampling and the propagation of uncertainty in analyses of complex systems. *Reliability Engineering & System Safety*, 81(1), 23-69.
-
-27. Hughes, T. J. R. (2000). *The Finite Element Method: Linear Static and Dynamic Finite Element Analysis*. Dover Publications.
-
-28. Inman, D. J. (2014). *Engineering Vibration* (4th ed.). Pearson.
-
-29. Laory, I., Trinh, T. N., Smith, I. F., & Brownjohn, J. M. (2018). Methodologies for predicting natural frequency variation of a suspension bridge. *Engineering Structures*, 80, 211-221.
-
-30. Luu, X.-B. (2024). Finite element modelling of reinforced concrete beam strengthening using ultra-high performance fiber-reinforced shotcrete. *Structures*, 60, 105794.
-
-31. MacGregor, J. G., & Wight, J. K. (2012). *Reinforced Concrete: Mechanics and Design* (6th ed.). Pearson.
-
-32. McKay, M. D., Beckman, R. J., & Conover, W. J. (1979). A comparison of three methods for selecting values of input variables in the analysis of output from a computer code. *Technometrics*, 21(2), 239-245.
-
-33. McKinney, W. (2010). Data Structures for Statistical Computing in Python. *Proceedings of the 9th Python in Science Conference*, 51-56.
-
-34. Meirovitch, L. (2001). *Fundamentals of Vibrations*. McGraw-Hill.
-
-35. Miller, J., et al. (2000). The Tacoma Narrows Bridge collapse: A review of the causes. *Engineering History and Heritage*, 153(1), 25-30.
-
-36. Nikoo, M., Zarfam, P., & Sayahpour, H. (2018). Determination of natural frequency of Euler-Bernoulli beam using artificial neural network. *Engineering Structures*, 157, 154-166.
-
-37. Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. *Journal of Machine Learning Research*, 12, 2825-2830.
-
-38. Prokhorenkova, L., Gusev, G., Vorobev, A., Dorogush, A. V., & Gulin, A. (2018). CatBoost: Unbiased Boosting with Categorical Features. *Advances in Neural Information Processing Systems*, 31.
-
-39. Rao, S. S. (2019). *Mechanical Vibrations* (6th ed.). Pearson.
-
-40. Rodriguez, J., Ortega, L. M., & Casal, J. (1997). Load carrying capacity of concrete structures with corroded reinforcement. *Construction and Building Materials*, 11(4), 239-248.
-
-41. Saha, P., & Yang, M. (2023). A neural network approach to estimate the frequency of a cantilever beam with random multiple damages. *Sensors*, 23, 7867.
-
-42. Sohn, H., Farrar, C. R., Hemez, F. M., Shunk, D. D., Stinemates, D. W., Nadler, B. R., & Czarnecki, J. J. (2004). A review of structural health monitoring literature: 1996-2001. *Los Alamos National Laboratory Report* LA-13976-MS.
-
-43. Virtanen, P., et al. (2020). SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. *Nature Methods*, 17, 261-272.
-
-44. Zhang, Y., Cheng, Y., Tan, G., Lyu, X., Sun, X., Bai, Y., & Yang, S. (2020). Natural frequency response evaluation for RC beams affected by steel corrosion using acceleration sensors. *Sensors*, 20, 5335.
-
-45. Zienkiewicz, O. C., & Taylor, R. L. (2000). *The Finite Element Method* (5th ed.). Butterworth-Heinemann.
-
----
-
 # Chapter 5: Conclusions and Future Work
 
 ## 5.1 Introduction
@@ -1756,6 +1662,100 @@ The fixed-fixed RC beams studied here represent just one case, but the methodolo
 ---
 
 # Appendices
+
+# References
+
+1. ACI Committee 318. (2019). *Building Code Requirements for Structural Concrete (ACI 318-19)*. American Concrete Institute.
+
+2. Avcar, M., & Saplioglu, K. (2015). An artificial neural network application for estimation of natural frequencies of beams. *Research Journal of Applied Sciences, Engineering and Technology*, 9(3), 131-138.
+
+3. Banerjee, A., Panigrahi, B., & Pohit, G. (2017). Crack modelling and detection in Timoshenko FGM beam under transverse vibration using frequency contour and response surface model with GA. *Nondestructive Testing and Evaluation*, 32(1), 27-48.
+
+4. Bathe, K. J. (2014). *Finite Element Procedures* (2nd ed.). Klaus-Jurgen Bathe.
+
+5. Bergstra, J., & Bengio, Y. (2012). Random search for hyper-parameter optimization. *Journal of Machine Learning Research*, 13(10), 281-305.
+
+6. Breiman, L. (2001). Random Forests. *Machine Learning*, 45(1), 5-32.
+
+7. Cai, Y., Zhang, K., Ye, Z., Liu, C., Lu, K., & Wang, L. (2021). Influence of temperature on the natural vibration characteristics of simply supported reinforced concrete beam. *Sensors*, 21, 4242.
+
+8. Cairns, J., Plizzari, G. A., Du, Y., Law, D. W., & Franzoni, C. (2005). Mechanical properties of corrosion-damaged reinforcement. *ACI Materials Journal*, 102(4), 256-264.
+
+9. Chen, T., & Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. *Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*, 785-794.
+
+10. Chondros, T. G., Dimarogonas, A. D., & Yao, J. (1998). A continuous cracked beam vibration theory. *Journal of Sound and Vibration*, 215(1), 17-34.
+
+11. Chopra, A. K. (2012). *Dynamics of Structures: Theory and Applications to Earthquake Engineering* (4th ed.). Pearson.
+
+12. Clough, R. W., & Penzien, J. (2003). *Dynamics of Structures* (3rd ed.). Computers & Structures, Inc.
+
+13. Cohen, J. (1992). A power primer. *Psychological Bulletin*, 112(1), 155-159.
+
+14. Cook, R. D. (2007). *Concepts and Applications of Finite Element Analysis* (4th ed.). Wiley.
+
+15. Cortes, C., & Vapnik, V. (1995). Support-vector networks. *Machine Learning*, 20(3), 273-297.
+
+16. Das, O. (2023). Prediction of the natural frequencies of various beams using regression machine learning models. *Sigma Journal of Engineering and Natural Sciences*, 41(2), 302-321.
+
+17. Dimarogonas, A. D. (1996). Vibration of cracked structures: A state of the art review. *Engineering Fracture Mechanics*, 55(5), 831-857.
+
+18. Doebling, S. W., Farrar, C. R., Prime, M. B., & Shevitz, D. W. (1996). Damage identification and health monitoring of structural and mechanical systems from changes in their vibration characteristics: A literature review. *Los Alamos National Laboratory Report* LA-13070-MS.
+
+19. Efron, B., & Tibshirani, R. (1993). *An Introduction to the Bootstrap*. Chapman and Hall.
+
+20. Eurocode 2. (2004). *Design of Concrete Structures - Part 1-1: General Rules and Rules for Buildings*. EN 1992-1-1.
+
+21. Farrar, C. R., & Worden, K. (2013). *Structural Health Monitoring: A Machine Learning Perspective*. John Wiley & Sons.
+
+22. Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press.
+
+23. Guo, C., Pleiss, G., Sun, Y., & Weinberger, K. Q. (2017). On calibration of modern neural networks. In *International Conference on Machine Learning* (pp. 1321-1330). PMLR.
+
+24. Harris, C. R., et al. (2020). Array programming with NumPy. *Nature*, 585, 357-362.
+
+25. Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.). Springer.
+
+26. Helton, J. C., & Davis, F. J. (2003). Latin hypercube sampling and the propagation of uncertainty in analyses of complex systems. *Reliability Engineering & System Safety*, 81(1), 23-69.
+
+27. Hughes, T. J. R. (2000). *The Finite Element Method: Linear Static and Dynamic Finite Element Analysis*. Dover Publications.
+
+28. Inman, D. J. (2014). *Engineering Vibration* (4th ed.). Pearson.
+
+29. Laory, I., Trinh, T. N., Smith, I. F., & Brownjohn, J. M. (2018). Methodologies for predicting natural frequency variation of a suspension bridge. *Engineering Structures*, 80, 211-221.
+
+30. Luu, X.-B. (2024). Finite element modelling of reinforced concrete beam strengthening using ultra-high performance fiber-reinforced shotcrete. *Structures*, 60, 105794.
+
+31. MacGregor, J. G., & Wight, J. K. (2012). *Reinforced Concrete: Mechanics and Design* (6th ed.). Pearson.
+
+32. McKay, M. D., Beckman, R. J., & Conover, W. J. (1979). A comparison of three methods for selecting values of input variables in the analysis of output from a computer code. *Technometrics*, 21(2), 239-245.
+
+33. McKinney, W. (2010). Data Structures for Statistical Computing in Python. *Proceedings of the 9th Python in Science Conference*, 51-56.
+
+34. Meirovitch, L. (2001). *Fundamentals of Vibrations*. McGraw-Hill.
+
+35. Miller, J., et al. (2000). The Tacoma Narrows Bridge collapse: A review of the causes. *Engineering History and Heritage*, 153(1), 25-30.
+
+36. Nikoo, M., Zarfam, P., & Sayahpour, H. (2018). Determination of natural frequency of Euler-Bernoulli beam using artificial neural network. *Engineering Structures*, 157, 154-166.
+
+37. Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. *Journal of Machine Learning Research*, 12, 2825-2830.
+
+38. Prokhorenkova, L., Gusev, G., Vorobev, A., Dorogush, A. V., & Gulin, A. (2018). CatBoost: Unbiased Boosting with Categorical Features. *Advances in Neural Information Processing Systems*, 31.
+
+39. Rao, S. S. (2019). *Mechanical Vibrations* (6th ed.). Pearson.
+
+40. Rodriguez, J., Ortega, L. M., & Casal, J. (1997). Load carrying capacity of concrete structures with corroded reinforcement. *Construction and Building Materials*, 11(4), 239-248.
+
+41. Saha, P., & Yang, M. (2023). A neural network approach to estimate the frequency of a cantilever beam with random multiple damages. *Sensors*, 23, 7867.
+
+42. Sohn, H., Farrar, C. R., Hemez, F. M., Shunk, D. D., Stinemates, D. W., Nadler, B. R., & Czarnecki, J. J. (2004). A review of structural health monitoring literature: 1996-2001. *Los Alamos National Laboratory Report* LA-13976-MS.
+
+43. Virtanen, P., et al. (2020). SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. *Nature Methods*, 17, 261-272.
+
+44. Zhang, Y., Cheng, Y., Tan, G., Lyu, X., Sun, X., Bai, Y., & Yang, S. (2020). Natural frequency response evaluation for RC beams affected by steel corrosion using acceleration sensors. *Sensors*, 20, 5335.
+
+45. Zienkiewicz, O. C., & Taylor, R. L. (2000). *The Finite Element Method* (5th ed.). Butterworth-Heinemann.
+
+---
 
 ## Appendix A: FEM Implementation Code Structure
 
