@@ -1661,8 +1661,6 @@ The fixed-fixed RC beams studied here represent just one case, but the methodolo
 
 ---
 
-# Appendices
-
 # References
 
 1. ACI Committee 318. (2019). *Building Code Requirements for Structural Concrete (ACI 318-19)*. American Concrete Institute.
@@ -1756,6 +1754,7 @@ The fixed-fixed RC beams studied here represent just one case, but the methodolo
 45. Zienkiewicz, O. C., & Taylor, R. L. (2000). *The Finite Element Method* (5th ed.). Butterworth-Heinemann.
 
 ---
+# Appendices
 
 ## Appendix A: FEM Implementation Code Structure
 
