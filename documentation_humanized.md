@@ -1834,5 +1834,4 @@ Hyperparameter tuning improved CatBoost performance by approximately 1.2 percent
 
 ---
 
-*End of Chapter 5*
 
