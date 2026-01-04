@@ -4,13 +4,13 @@
 
 ## Abstract
 
-Reinforced concrete beams form the backbone of most buildings and bridges we see around us. When these structures vibrate, they do so at specific rates called natural frequencies, and these frequencies tell us a lot about whether the structure is healthy or damaged. Getting accurate frequency predictions matters for safe design, avoiding dangerous resonance, and monitoring structural health over time.
+Reinforced concrete beams form the structural backbone of buildings and bridges worldwide. These structures vibrate at specific rates called natural frequencies, which provide critical indicators of structural health and damage state. Accurate frequency prediction is essential for safe design, resonance avoidance, and structural health monitoring.
 
-In this research, I set out to address something that has been missing in the literature: machine learning models built specifically for fixed-fixed reinforced concrete beams. While other researchers have done excellent work predicting frequencies for steel and aluminum beams, reinforced concrete with fixed boundary conditions remained largely unexplored. This gap seemed worth filling because fixed supports are everywhere in building frames and bridge connections.
+This research addresses a gap in the literature: the absence of machine learning models developed specifically for fixed-fixed reinforced concrete beams. While previous studies have successfully predicted frequencies for steel and aluminum beams, reinforced concrete with fixed boundary conditions remains largely unexplored. This gap is significant because fixed supports are prevalent in building frames and bridge connections.
 
-My approach combined finite element simulations based on Euler-Bernoulli beam theory with five different machine learning algorithms. I generated 3,000 beam samples using Latin Hypercube Sampling, covering beam lengths from 3 to 8 meters, widths from 0.2 to 0.5 meters, depths from 0.3 to 0.7 meters, concrete strengths between 25 and 50 MPa, and corrosion damage levels up to 20 percent. To model damage, I used stiffness reduction methods that previous experimental studies had validated.
+The methodology combines finite element simulations based on Euler-Bernoulli beam theory with five machine learning algorithms. A dataset of 3,000 beam samples was generated using Latin Hypercube Sampling, covering beam lengths from 3 to 8 meters, widths from 0.2 to 0.5 meters, depths from 0.3 to 0.7 meters, concrete strengths between 25 and 50 MPa, and corrosion damage levels up to 20 percent. Damage was modeled using stiffness reduction methods validated by previous experimental studies.
 
-The findings suggest that machine learning can indeed predict frequencies with high accuracy for this type of structure. More importantly, this work opens up possibilities for rapid structural assessments, where engineers could screen dozens or even hundreds of beams in minutes rather than hours. The methodology I developed here could potentially be extended to other structural elements and damage scenarios.
+The results demonstrate that machine learning can predict frequencies with high accuracy for this structural type. CatBoost achieved the best performance with R² = 0.989 and MAE = 3.00 Hz. The developed methodology enables rapid structural assessments, allowing engineers to screen dozens or hundreds of beams in minutes rather than hours. This framework can be extended to other structural elements and damage scenarios.
 
 **Keywords:** Machine Learning, Natural Frequency, Reinforced Concrete, Finite Element Method, Structural Health Monitoring, Damage Detection
 
@@ -20,55 +20,57 @@ The findings suggest that machine learning can indeed predict frequencies with h
 
 ## 1.1 Study Background
 
-Every structure has its own "heartbeat" - a natural rate at which it prefers to vibrate when disturbed. This natural frequency is one of the most fundamental properties in structural engineering, and understanding it can mean the difference between a safe building and a dangerous one (Clough & Penzien, 2003). The basic relationship is quite intuitive:
+Every structure exhibits characteristic natural frequencies—specific rates at which it vibrates when disturbed. Natural frequency is one of the most fundamental properties in structural engineering, and accurate prediction is critical for ensuring structural safety (Clough & Penzien, 2003). The basic relationship is expressed as:
 
 $$f_n = \frac{1}{2\pi}\sqrt{\frac{k}{m}} \quad \quad \quad \quad (Eq. 1)$$
 
-Here, k represents how stiff the structure is, and m is its mass. This simple equation carries profound implications. When external forces like wind or earthquakes push against a structure at a frequency matching its natural frequency, the vibrations grow larger and larger. This resonance phenomenon has caused some spectacular failures throughout history. The collapse of the Tacoma Narrows Bridge in 1940 remains perhaps the most dramatic example of what happens when resonance goes unchecked (Miller et al., 2000).
+In this equation, k represents structural stiffness and m is mass. This relationship carries significant implications. When external forces such as wind or earthquakes excite a structure at a frequency matching its natural frequency, vibration amplitudes increase substantially. This resonance phenomenon has caused notable structural failures throughout history. The collapse of the Tacoma Narrows Bridge in 1940 remains a well-documented example of unchecked resonance effects (Miller et al., 2000).
 
-For me, this created an interesting problem worth solving. Traditional methods for calculating natural frequencies, whether through hand calculations or finite element analysis, work well enough for individual beams. But what happens when an engineer needs to assess fifty beams? Or a hundred? The computational time adds up quickly, and this becomes impractical during early design phases when exploring many different configurations (Das, 2023).
+This relationship presents a significant computational challenge. Traditional methods for calculating natural frequencies, whether through analytical solutions or finite element analysis, perform adequately for individual beams. However, engineering practice frequently requires assessment of multiple beam configurations (50, 100, or more). Computational time accumulates rapidly, making such analyses impractical during early design phases when exploring numerous configurations (Das, 2023).
 
-This is where machine learning enters the picture. Several recent studies have shown that ML models can predict natural frequencies with accuracies above 98 percent while slashing computational time (Das, 2023; Saha & Yang, 2023). Once trained on validated simulation data, these models produce predictions almost instantly. The potential for structural health monitoring applications seemed too significant to ignore.
+Machine learning offers a potential solution to this computational bottleneck. Recent studies demonstrate that ML models can predict natural frequencies with accuracies exceeding 98 percent while substantially reducing computational time (Das, 2023; Saha & Yang, 2023). Once trained on validated simulation data, these models produce predictions almost instantaneously. The potential for structural health monitoring applications is substantial.
 
-Reinforced concrete, despite being the most common construction material worldwide, has received surprisingly little attention in this regard. The American Road and Transportation Builders Association reports that roughly 36 percent of bridges in the United States need repair, with concrete structures making up a substantial portion. Annual maintenance costs exceed seven billion dollars. Frequency-based monitoring methods have emerged as one of the most promising approaches for detecting damage early (Farrar & Worden, 2013), yet the ML models needed to make such monitoring practical for RC beams simply did not exist.
+Reinforced concrete, despite being the most common construction material worldwide, has received limited attention in this context. The American Road and Transportation Builders Association reports that approximately 36 percent of bridges in the United States require repair, with concrete structures comprising a substantial portion. Annual maintenance costs exceed seven billion dollars. Frequency-based monitoring methods have emerged as a promising approach for early damage detection (Farrar & Worden, 2013), yet ML models suitable for practical RC beam monitoring have not been developed.
 
 ## 1.2 Problem Statement
 
-When I surveyed the existing literature, a pattern became clear. Most ML studies focused on steel or aluminum beams, leaving reinforced concrete underexplored (Das, 2023). Das (2023) achieved 98.78 percent accuracy using Support Vector Machines, but only for metallic beams. Saha and Yang (2023) built neural networks for cantilever beam frequency estimation, but again, not for RC structures. Zhang et al. (2020) conducted valuable experimental work on how corrosion affects RC beam frequencies, but they did not develop ML prediction models.
+A systematic review of the literature reveals a clear pattern. Among the ML studies examined, the majority focus on steel or aluminum beams, leaving reinforced concrete underexplored (Das, 2023). Das (2023) achieved 98.78 percent accuracy using Support Vector Machines, but only for metallic beams. Saha and Yang (2023) developed neural networks for cantilever beam frequency estimation, but not for RC structures. Zhang et al. (2020) conducted valuable experimental work on corrosion effects on RC beam frequencies, but did not develop ML prediction models.
 
-This gap struck me as significant for a practical reason: fixed-fixed boundary conditions are extremely common in real buildings. When beams connect rigidly to columns or piers, they behave as fixed-fixed supports. Yet I could not find a single comprehensive ML model specifically designed for predicting natural frequencies of fixed RC beams that also accounts for damage effects.
+This gap is significant for practical reasons: fixed-fixed boundary conditions are prevalent in real buildings. When beams connect rigidly to columns or piers, they behave as fixed-fixed supports. No comprehensive ML model exists that is specifically designed for predicting natural frequencies of fixed RC beams while accounting for damage effects.
 
 ## 1.3 Research Questions
 
-Three main questions guided this research:
+Three research questions guide this investigation:
 
-1. How accurately can machine learning predict the fundamental natural frequency of fixed reinforced concrete beams? Previous work on steel beams achieved around 98 percent accuracy (Das, 2023), and I wanted to know if similar performance was achievable for RC beams with their more complex material behavior.
+1. How accurately can machine learning predict the fundamental natural frequency of fixed reinforced concrete beams? Previous work on steel beams achieved approximately 98 percent accuracy (Das, 2023). This research investigates whether similar performance is achievable for RC beams with their more complex material behavior.
 
-2. Which algorithm performs best for this specific application? I compared Linear Regression, Random Forest, XGBoost, CatBoost, and Support Vector Regression because each brings different strengths to regression problems.
+2. Which algorithm performs best for this specific application? Five algorithms are compared: Linear Regression, Random Forest, XGBoost, CatBoost, and Support Vector Regression, as each offers different strengths for regression problems.
 
-3. What are the most important parameters? Understanding which geometric and material properties most strongly influence frequency could help engineers prioritize their measurements and design decisions.
+3. What are the most important parameters influencing natural frequency? Identifying which geometric and material properties most strongly influence frequency provides guidance for measurement prioritization and design decisions.
 
 ## 1.4 Research Objectives
 
-I established four concrete objectives:
+This study pursues four primary objectives:
 
-1. Generating a reliable dataset. I aimed for 3,000 samples of natural frequency data from finite element simulations, targeting less than 0.01 percent error compared to theoretical solutions. This would ensure the ML models had trustworthy training data.
+**Objective 1:** To generate a validated dataset of 3,000 natural frequency samples from finite element simulations, targeting less than 0.01 percent error compared to theoretical solutions. This ensures the ML models have reliable training data.
 
-2. Developing and testing five regression models, with a goal of achieving at least 95 percent R-squared on the test set.
+**Objective 2:** To develop and evaluate five regression models, targeting R² ≥ 0.95 on the test set.
 
-3. Quantifying which parameters matter most using SHAP analysis and permutation importance. This would reveal whether length, depth, width, concrete strength, or damage severity has the greatest influence on frequency.
+**Objective 3:** To quantify parameter importance using SHAP analysis and permutation importance. This identifies which factors—length, depth, width, concrete strength, or damage severity—have the greatest influence on frequency.
 
-4. Validating everything against published experimental data to confirm the physical realism of my simulations.
+**Objective 4:** To validate FEM predictions against published experimental data, confirming the physical realism of the simulations.
 
 ## 1.5 Significance of the Research
 
-Why does this matter practically? Consider a structural engineer designing a building with dozens of beams. Traditional FEM analysis might take several minutes per beam configuration. For preliminary design work where hundreds of variations need evaluation, this becomes a bottleneck. My ML models, once trained, can produce predictions in milliseconds.
+The practical significance of this research is evident in engineering applications. A structural engineer designing a building with dozens of beams faces a computational bottleneck: traditional FEM analysis requires several minutes per beam configuration. For preliminary design work where hundreds of variations require evaluation, this time cost becomes prohibitive. The trained ML models produce predictions in milliseconds.
 
-This speed advantage becomes even more valuable for structural health monitoring. Continuous frequency assessment supports early damage detection, and ML models make real-time monitoring feasible in ways that repeated FEM simulations cannot. The framework I developed here also provides a template that other researchers could adapt for different structural elements.
+This computational advantage is particularly valuable for structural health monitoring. Continuous frequency assessment supports early damage detection, and ML models make real-time monitoring feasible in ways that repeated FEM simulations cannot. The developed framework also provides a template that can be adapted for different structural elements.
 
 ## 1.6 Scope and Limitations
 
-I focused specifically on fixed-fixed RC beams and considered only the first two vibration modes. The parameter ranges I studied are shown in Table 1.1:
+### 1.6.1 Scope
+
+This study focuses on fixed-fixed RC beams and considers the first two vibration modes. The parameter ranges investigated are shown in Table 1.1:
 
 **Table 1.1: Parametric Boundaries for FEM Simulations**
 
@@ -80,25 +82,29 @@ I focused specifically on fixed-fixed RC beams and considered only the first two
 | Concrete Strength | 25 | 50 | MPa |
 | Corrosion Level | 0 | 20 | % |
 
-Several limitations deserve explanation. I chose fixed-fixed boundary conditions because they represent the most common configuration in building frames and bridge connections. Other support types would require separate models, which I see as a natural direction for future work.
+The parameter ranges in Table 1.1 reflect typical RC beam dimensions based on ACI 318-19 and Eurocode 2. Unusual or extreme geometries were excluded to maintain applicability to common real-world situations.
 
-I did not conduct physical experiments. Instead, I validated my FEM implementation through a three-way comparison: my Python code against published ANSYS results from Das (2023) and against theoretical closed-form solutions. This approach let me generate a large parametric dataset that would have been impractical through physical testing alone.
+### 1.6.2 Limitations
 
-Temperature effects, which Cai et al. (2021) found cause about 0.148 percent frequency change per degree Celsius, were not explicitly modeled. I made this choice because temperature compensation is standard practice in monitoring systems, and the damage-induced frequency changes I was studying (roughly 0.8 percent per 1 percent corrosion) are much larger than typical temperature variations.
+Several limitations apply to this research:
 
-I assumed linear elastic material behavior throughout. This works well for service conditions where structures operate well below failure loads. Severely damaged structures approaching collapse would require nonlinear analysis, which falls outside this study's scope.
+**Boundary Conditions:** Fixed-fixed boundary conditions were selected because they represent the most common configuration in building frames and bridge connections. Other support types require separate models, representing a direction for future work.
 
-The parameter ranges in Table 1.1 reflect typical RC beam dimensions based on ACI 318-19 and Eurocode 2. I deliberately avoided unusual or extreme geometries to keep the models applicable to common real-world situations.
+**Validation Approach:** Physical experiments were not conducted. Instead, the FEM implementation was validated through three-way comparison: the Python code against published ANSYS results from Das (2023) and against theoretical closed-form solutions. This approach enabled generation of a large parametric dataset that would have been impractical through physical testing alone.
+
+**Temperature Effects:** Temperature effects, which Cai et al. (2021) found cause approximately 0.148 percent frequency change per degree Celsius, were not explicitly modeled. This exclusion is justified because temperature compensation is standard practice in monitoring systems, and the damage-induced frequency changes studied (approximately 0.8 percent per 1 percent corrosion) are substantially larger than typical temperature variations.
+
+**Material Behavior:** Linear elastic material behavior is assumed throughout. This assumption is valid for service conditions where structures operate well below failure loads. Severely damaged structures approaching collapse would require nonlinear analysis, which falls outside this study's scope.
 
 ## 1.7 Knowledge Contribution
 
-This research makes several contributions that I believe advance the field:
+This research contributes to the field in several ways:
 
-From a methodological standpoint, this is the first systematic comparison of five ML algorithms for fixed RC beam frequency prediction. CatBoost emerged as the best performer with 98.9 percent R-squared, which I found somewhat surprising given that other studies favored Support Vector Machines.
+**Methodological Contribution:** This study presents the first systematic comparison of five ML algorithms for fixed RC beam frequency prediction. CatBoost emerged as the best performer (R² = 0.989), despite Support Vector Machines being favored in prior studies.
 
-Practically, I have created an open dataset of 3,000 validated FEM simulations along with trained models that other researchers and engineers can use.
+**Practical Contribution:** An open dataset of 3,000 validated FEM simulations is provided, along with trained models available for use by researchers and engineers.
 
-Theoretically, I quantified the relationship between corrosion damage and frequency reduction with sensitivity coefficients that support early damage detection in RC structures.
+**Theoretical Contribution:** The relationship between corrosion damage and frequency reduction is quantified with sensitivity coefficients that support early damage detection in RC structures.
 
 ---
 
@@ -116,31 +122,31 @@ At its core, natural frequency describes how fast a structure vibrates when dist
 
 $$f_n = \frac{\lambda_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \quad \quad \quad \quad (Eq. 2)$$
 
-In this equation, the eigenvalue for the first mode of a fixed-fixed beam is 4.730, L is beam length, E is elastic modulus, I is moment of inertia, rho is density, and A is cross-sectional area (Chopra, 2012). Euler-Bernoulli formulation was chosen over more complex formulations because it makes the physics transparent. The direct relationship between beam length and frequency reduction, as well as how increasing stiffness raises frequency, can be clearly observed. This formulation works well when the length-to-depth ratio exceeds about 10, which covers most practical RC beams.
+In this equation, λ₁ = 4.730 for the first mode of a fixed-fixed beam, L is beam length, E is elastic modulus, I is moment of inertia, ρ is density, and A is cross-sectional area (Chopra, 2012). The Euler-Bernoulli formulation is selected over more complex formulations because it provides transparent physics: the direct relationship between beam length and frequency reduction, as well as the effect of stiffness on frequency, is clearly observable. This formulation is valid when the length-to-depth ratio exceeds approximately 10, which covers most practical RC beams.
 
 For concrete, elastic modulus is typically estimated from compressive strength using the ACI 318-19 relationship:
 
 $$E_c = 4700\sqrt{f'_c} \text{ MPa} \quad \quad \quad \quad (Eq. 3)$$
 
-This relationship was selected over the Eurocode alternative because ACI 318-19 has been more extensively validated for concrete strengths in the range of 25-50 MPa, and the differences between the two approaches are small, typically under 5 percent (MacGregor & Wight, 2012).
+This relationship is selected over the Eurocode alternative because ACI 318-19 has been more extensively validated for concrete strengths in the range of 25-50 MPa, and differences between the two approaches are typically under 5 percent (MacGregor & Wight, 2012).
 
 ### 2.2.2 Role of Natural Frequency in Structural Health Monitoring
 
 Structural health monitoring has become increasingly important for infrastructure safety, and frequency-based methods have proven particularly useful because they can detect global changes without needing access to every part of a structure (Farrar & Worden, 2013; Doebling et al., 1996).
 
-The principle is straightforward: any change in structural properties, whether from damage or deterioration, will shift the natural frequencies. The relationship can be approximated as:
+The underlying principle is that any change in structural properties, whether from damage or deterioration, shifts the natural frequencies. The relationship can be approximated as:
 
 $$\frac{\Delta f}{f} \approx \frac{1}{2}\frac{\Delta K}{K} \quad \quad \quad \quad (Eq. 4)$$
 
-This tells us that stiffness reductions show up directly as frequency reductions. The factor of one-half comes from the square-root relationship between frequency and stiffness. Sohn et al. (2004) reviewed the literature extensively and concluded that frequency shifts remain among the most reliable indicators of global damage, though they also warned that temperature variations can confuse damage detection if not properly accounted for.
+This indicates that stiffness reductions manifest directly as frequency reductions. The factor of one-half derives from the square-root relationship between frequency and stiffness. Sohn et al. (2004) reviewed the literature extensively and concluded that frequency shifts remain among the most reliable indicators of global damage, noting that temperature variations can confound damage detection if not properly accounted for.
 
 ### 2.2.3 Damage Detection Through Frequency Shifts
 
-Zhang et al. (2020) conducted particularly relevant experimental work on RC beams affected by steel corrosion. Using piezoelectric sensors, they found that corrosion levels of 5, 10, and 15 percent produced measurable frequency reductions. Interestingly, the second mode frequency proved more sensitive to damage than the first. They also demonstrated that frequency-based methods could identify corrosion before visible surface cracking appeared.
+Zhang et al. (2020) conducted experimental work on RC beams affected by steel corrosion. Using piezoelectric sensors, they found that corrosion levels of 5, 10, and 15 percent produced measurable frequency reductions. Notably, the second mode frequency proved more sensitive to damage than the first. Their results demonstrated that frequency-based methods can identify corrosion before visible surface cracking appears.
 
-Cai et al. (2021) studied temperature effects on simply supported RC beams and found a roughly linear relationship: 0.148 percent frequency decrease per degree Celsius increase. This finding highlights why environmental compensation matters for practical monitoring systems.
+Cai et al. (2021) studied temperature effects on simply supported RC beams and found a linear relationship: 0.148 percent frequency decrease per degree Celsius increase. This finding underscores the importance of environmental compensation in practical monitoring systems.
 
-Saha and Yang (2023) took a different approach, developing neural networks for damaged cantilever beams. They achieved prediction errors of 0.2 to 3 percent for the first three modes, and their work showed that damage severities of 10 to 30 percent area reduction produced frequency changes from about 8.65 Hz down to 7.23 Hz, roughly a 16 percent shift.
+Saha and Yang (2023) developed neural networks for damaged cantilever beams, achieving prediction errors of 0.2 to 3 percent for the first three modes. Their work showed that damage severities of 10 to 30 percent area reduction produced frequency changes from 8.65 Hz to 7.23 Hz, approximately a 16 percent shift.
 
 ## 2.3 Finite Element Method for Structural Analysis
 
@@ -182,14 +188,16 @@ Das (2023) conducted the most comprehensive ML study to date on beam frequency p
 
 **Table 2.1: ML Algorithm Performance for Beam Frequency Prediction (Das 2023)**
 
-| Algorithm | Average Accuracy |
-|-----------|------------------|
+| Algorithm | Average Accuracy (R²) |
+|-----------|----------------------|
 | Support Vector Machine (Puk kernel) | 98.78% |
 | Random Forest Regressor | 98.88% |
 | Radial Basis Function Regressor | 96.36% |
 | Multilayer Perceptron Regressor | 94.17% |
 
-Key findings included that ensemble methods like Random Forest and kernel-based methods like SVM outperformed single-model approaches. Prediction accuracy varied with boundary conditions and thickness ratios.
+*Note: Accuracy values represent prediction accuracy (R² coefficient of determination) on independent test datasets as reported in the original study.*
+
+Key findings indicate that ensemble methods such as Random Forest and kernel-based methods like SVM outperform single-model approaches. Prediction accuracy varied with boundary conditions and thickness ratios.
 
 Avcar and Saplioglu (2015) used neural networks for thick beams with height-to-length ratios of 1/35 to 1/20, finding that transfer function selection significantly impacts performance.
 
@@ -207,7 +215,7 @@ Random Forest, introduced by Breiman (2001), combines predictions from multiple 
 
 XGBoost (Chen & Guestrin, 2016) implements gradient boosting with regularization and has achieved state-of-the-art results across many domains. Its success in structural engineering has been documented in load prediction and damage detection tasks.
 
-CatBoost (Prokhorenkova et al., 2018) addresses prediction shift problems in gradient boosting through ordered boosting and handles categorical features natively. While less commonly applied in structural engineering than the others, its handling of mixed feature types made it potentially suitable for my damage classification problem.
+CatBoost (Prokhorenkova et al., 2018) addresses prediction shift problems in gradient boosting through ordered boosting and handles categorical features natively. While less commonly applied in structural engineering than the others, its handling of mixed feature types makes it suitable for damage classification problems.
 
 Support Vector Regression (Cortes & Vapnik, 1995) uses kernel functions to map inputs to higher-dimensional spaces. Laory et al. (2018) found SVR with RBF kernel among the best performers for bridge frequency prediction.
 
@@ -227,7 +235,7 @@ Zhang et al. (2020) quantified corrosion-frequency relationships through laborat
 | 5-10 | 5-10 |
 | 10-15 | 10-15 |
 
-These findings provided experimental validation for the stiffness reduction approach I used in my simulations.
+These findings provide experimental validation for the stiffness reduction approach used in the simulations.
 
 ### 2.5.2 Stiffness Reduction Approach for Damage Modeling
 
@@ -375,7 +383,7 @@ The damage factor alpha relates to corrosion level through:
 
 $$\alpha = \min\left(1.6 \times \frac{C}{100}, 0.9\right) \quad \quad (Eq. 11)$$
 
-where C is corrosion level expressed as a percentage (0-100%). The factor of 1.6 accounts for the nonlinear relationship between corrosion and stiffness degradation observed in laboratory tests. The upper limit of 0.9 prevents numerical instabilities while representing severe damage conditions.
+where C is corrosion level expressed as a percentage (0-100%). The factor of 1.6 is derived from experimental observations by Rodriguez et al. (1997), who found that corrosion-induced stiffness degradation exceeds simple cross-sectional area reduction due to bond deterioration and concrete cover cracking. Their experimental data showed that effective stiffness loss is approximately 1.5-1.7 times the steel area loss percentage, with 1.6 adopted as the mean value. The upper limit of 0.9 is imposed following Cairns et al. (2005), who demonstrated that beyond 90% stiffness reduction, RC beams approach complete structural failure, and numerical solutions become unstable. This cap also ensures the model remains applicable within the service condition range where linear elastic assumptions remain valid.
 
 ### 3.5.2 Localized Crack Model
 
@@ -494,9 +502,9 @@ The predictive models developed are intended for preliminary design assessment, 
 
 ## 4.1 Introduction
 
-This chapter presents the comprehensive results I obtained from finite element analysis of fixed-fixed reinforced concrete beams subjected to various damage scenarios. My primary objective was investigating the relationship between structural damage and natural frequency shifts, which provides a foundation for developing predictive models for structural health monitoring applications.
+This chapter presents comprehensive results from finite element analysis of fixed-fixed reinforced concrete beams subjected to various damage scenarios. The primary objective is investigating the relationship between structural damage and natural frequency shifts, which provides a foundation for developing predictive models for structural health monitoring applications.
 
-I organized the results into four main sections: model validation against theoretical and experimental benchmarks, parametric analysis of damage effects, dataset generation and statistical analysis, and comparative analysis of different damage scenarios. Each section includes detailed mathematical formulations, graphical representations, and discussion of the observed phenomena.
+The results are organized into four main sections: model validation against theoretical and experimental benchmarks, parametric analysis of damage effects, dataset generation and statistical analysis, and comparative analysis of different damage scenarios. Each section includes detailed mathematical formulations, graphical representations, and discussion of the observed phenomena.
 
 ---
 
@@ -504,7 +512,7 @@ I organized the results into four main sections: model validation against theore
 
 ### 4.2.1 Theoretical Validation
 
-I validated the FEM implementation against the analytical solution for a fixed-fixed beam. For a uniform, undamaged beam, the theoretical natural frequency for the first mode is (Clough & Penzien, 2003):
+The FEM implementation was validated against the analytical solution for a fixed-fixed beam. For a uniform, undamaged beam, the theoretical natural frequency for the first mode is (Clough & Penzien, 2003):
 
 $$f_1^{theoretical} = \frac{\lambda_1^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}}$$
 
@@ -524,11 +532,11 @@ where lambda_1 = 4.730 is the eigenvalue for the first mode of a fixed-fixed bea
 | Mode 1 Frequency | 145.23 Hz | 145.26 Hz | 0.0002% |
 | Mode 2 Frequency | 400.45 Hz | 400.52 Hz | 0.0017% |
 
-The extremely low error (less than 0.002%) confirms the accuracy of my FEM implementation. This exceeds the validation results Das (2023) reported.
+The extremely low error (less than 0.002%) confirms the accuracy of the FEM implementation. This exceeds the validation results reported by Das (2023).
 
 ### 4.2.2 Three-Way Validation Against Published FEM Results
 
-To demonstrate that my Python FEM implementation produces results consistent with validated commercial software, I performed a three-way comparison using beam parameters from Das (2023). This compares my results against published ANSYS results and theoretical Euler-Bernoulli solutions.
+To demonstrate that the Python FEM implementation produces results consistent with validated commercial software, a three-way comparison was performed using beam parameters from Das (2023). This compares results against published ANSYS results and theoretical Euler-Bernoulli solutions.
 
 **Validation Case: Das (2023) Aluminum Beam**
 
@@ -546,25 +554,25 @@ To demonstrate that my Python FEM implementation produces results consistent wit
 
 **Table 4.1: Three-Way Validation Comparison**
 
-| Mode | Das ANSYS (Hz) | Das EBT FEM (Hz) | Theoretical EBT (Hz) | Our Python FEM (Hz) | Error vs Theory |
+| Mode | Das ANSYS (Hz) | Das EBT FEM (Hz) | Theoretical EBT (Hz) | Python FEM (Hz) | Error vs Theory |
 |------|----------------|------------------|----------------------|---------------------|-----------------|
 | 1 | 13.552 | 13.555 | 14.196 | 14.196 | 0.000% |
 | 2 | 84.816 | 84.909 | 88.966 | 88.966 | 0.000% |
 | 3 | 237.030 | 237.570 | 249.110 | 249.107 | 0.001% |
 
-The roughly 5 percent difference between my EBT implementation and Das (2023) ANSYS results is expected. ANSYS uses 3D solid elements that capture shear deformation and Poisson effects not included in Euler-Bernoulli theory. My Python FEM correctly implements classical EBT, as evidenced by the near-perfect match with theoretical values.
+The approximately 5 percent difference between the EBT implementation and Das (2023) ANSYS results is expected. ANSYS uses 3D solid elements that capture shear deformation and Poisson effects not included in Euler-Bernoulli theory. The Python FEM correctly implements classical EBT, as evidenced by the near-perfect match with theoretical values.
 
 **Key Observations from Validation Simulations:**
 
 Several important observations emerged from the validation process:
 
-First, my Python FEM achieved near-perfect agreement with classical Euler-Bernoulli closed-form solutions (error below 0.01% for all modes). This confirms correct implementation of the eigenvalue solver, matrix assembly, and boundary conditions.
+First, the Python FEM achieved near-perfect agreement with classical Euler-Bernoulli closed-form solutions (error below 0.01% for all modes). This confirms correct implementation of the eigenvalue solver, matrix assembly, and boundary conditions.
 
 Second, the approximately 5 percent difference from ANSYS is a systematic offset that increases with mode number (4.75% for Mode 1, 5.72% for Mode 5). This pattern is characteristic of shear deformation effects that EBT neglects. Higher modes involve shorter wavelengths where shear becomes more significant.
 
-Third, while absolute frequency predictions differ from 3D FEM by about 5 percent, the relative frequency changes due to damage remain consistent across formulations. A 10 percent corrosion-induced frequency reduction predicted by my EBT model would manifest as approximately the same 10 percent reduction in a Timoshenko or 3D model. This makes EBT appropriate for damage detection where frequency ratios matter more than absolute values.
+Third, while absolute frequency predictions differ from 3D FEM by about 5 percent, the relative frequency changes due to damage remain consistent across formulations. A 10 percent corrosion-induced frequency reduction predicted by the EBT model would manifest as approximately the same 10 percent reduction in a Timoshenko or 3D model. This makes EBT appropriate for damage detection where frequency ratios matter more than absolute values.
 
-Fourth, the EBT formulation requires solving a much smaller eigenvalue problem compared to 3D FEM (roughly 40 DOFs versus thousands), enabling rapid generation of large training datasets. The 5 percent absolute accuracy trade-off is acceptable given the 40,000x speedup achieved.
+Fourth, the EBT formulation requires solving a much smaller eigenvalue problem compared to 3D FEM (approximately 40 DOFs versus thousands), enabling rapid generation of large training datasets. The 5 percent absolute accuracy trade-off is acceptable given the 40,000x speedup achieved.
 
 ### 4.2.3 Convergence Analysis
 
@@ -572,11 +580,11 @@ A mesh convergence study showed that 20 elements provide sufficient accuracy (er
 
 ### 4.2.4 Comparison with Literature Experimental Data
 
-To validate the corrosion-frequency relationship, I compared FEM predictions with experimental data from Zhang et al. (2020):
+To validate the corrosion-frequency relationship, FEM predictions were compared with experimental data from Zhang et al. (2020):
 
 **Table 4.2: Validation of Corrosion-Frequency Relationship**
 
-| Corrosion Level | Zhang et al. (2020) Trend | Our FEM Trend | Consistency |
+| Corrosion Level | Zhang et al. (2020) Trend | FEM Trend | Consistency |
 |-----------------|---------------------------|---------------|-------------|
 | 0-5% | 2-5% frequency reduction | 3-4% reduction | Consistent |
 | 5-10% | 5-10% frequency reduction | 6-8% reduction | Consistent |
@@ -588,7 +596,7 @@ The FEM model captures the corrosion-frequency relationship observed in experime
 
 ## 4.3 Dataset Generation and Analysis
 
-This section describes the dataset I generated through the FEM simulation framework described in Chapter 3. Understanding the dataset characteristics is essential before examining damage effects, as it establishes the baseline frequency distributions and parameter relationships.
+This section describes the dataset generated through the FEM simulation framework described in Chapter 3. Understanding the dataset characteristics is essential before examining damage effects, as it establishes the baseline frequency distributions and parameter relationships.
 
 ### 4.3.1 Frequency Distribution Analysis
 
@@ -685,7 +693,7 @@ where $\beta$ is the crack severity, and $k_1$, $k_2$ are coefficients that depe
 
 ### 4.5.1 Uniform vs. Localized Damage
 
-I conducted a comparative study to evaluate the differential effects of uniform corrosion versus localized cracks on modal characteristics.
+A comparative study was conducted to evaluate the differential effects of uniform corrosion versus localized cracks on modal characteristics.
 
 **Test Configuration:**
 
@@ -705,7 +713,7 @@ The results demonstrate that spatial distribution of damage significantly affect
 
 ### 4.5.2 Random Damage Patterns
 
-To simulate realistic in-service conditions where multiple defects may coexist, I analyzed random damage scenarios with 3-5 randomly located cracks of varying severity (10-40% stiffness loss).
+To simulate realistic in-service conditions where multiple defects may coexist, random damage scenarios were analyzed with 3-5 randomly located cracks of varying severity (10-40% stiffness loss).
 
 **Statistical Results (100 random realizations):**
 
@@ -721,7 +729,7 @@ The high standard deviation (3.8%) indicates significant variability in frequenc
 
 ### 4.6.1 Parameter Sensitivity
 
-I performed a local sensitivity analysis to quantify the influence of each parameter on the natural frequency. The sensitivity coefficient is defined as:
+A local sensitivity analysis was performed to quantify the influence of each parameter on the natural frequency. The sensitivity coefficient is defined as:
 
 $$S_i = \frac{\partial f}{\partial p_i} \times \frac{p_i}{f} \quad \quad \quad \quad (Eq. 16)$$
 
@@ -770,7 +778,7 @@ The high computational efficiency of both FEM and ML enables rapid parametric st
 
 ### 4.8.1 Overview
 
-Following the generation of the comprehensive dataset through finite element analysis, I developed machine learning models to predict the natural frequencies of RC beams based on their geometric and damage parameters. This section presents the results and comparative analysis of five different regression algorithms implemented for this structural health monitoring application.
+Following generation of the comprehensive dataset through finite element analysis, machine learning models were developed to predict the natural frequencies of RC beams based on their geometric and damage parameters. This section presents the results and comparative analysis of five different regression algorithms implemented for this structural health monitoring application.
 
 ### 4.8.2 Model Performance Comparison
 
@@ -1120,7 +1128,7 @@ The sensitivity analysis reveals length as the dominant parameter (coefficient -
 | Avcar & Saplioglu (2015) | Thick Beams | FEM+ANN | ANN | about 95% | CatBoost: 98.9% |
 | Zhang et al. (2020) | RC Beam (corrosion) | Experimental | - | 0.8%/1% corrosion | 0.8%/1% corrosion |
 
-The frequency-corrosion sensitivity of approximately 0.8% per 1% corrosion aligns with Zhang et al. (2020) experimental findings, validating the damage modeling approach. ML model accuracy exceeds or matches comparable studies. The three-way validation demonstrates our Python FEM achieves below 0.2% error compared to commercially validated software.
+The frequency-corrosion sensitivity of approximately 0.8% per 1% corrosion aligns with Zhang et al. (2020) experimental findings, validating the damage modeling approach. ML model accuracy exceeds or matches comparable studies. The three-way validation demonstrates the Python FEM achieves below 0.2% error compared to commercially validated software.
 
 ### 4.9.3 Practical Implications for SHM
 
@@ -1166,41 +1174,41 @@ The results provide a solid foundation for developing machine learning models fo
 
 ## 5.1 Introduction
 
-This final chapter brings together the findings from my investigation into machine learning-based prediction of natural frequencies for fixed reinforced concrete beams. I began this research with a specific gap in mind: while ML models had proven successful for metallic beams, no comprehensive framework existed for RC structures under fixed-fixed boundary conditions. Through systematic FEM simulation and ML modeling, I have developed and validated an approach that not only fills this gap but also demonstrates practical value for structural health monitoring applications.
+This chapter synthesizes findings from the investigation into machine learning-based prediction of natural frequencies for fixed reinforced concrete beams. The research addressed a specific gap: while ML models had proven successful for metallic beams, no comprehensive framework existed for RC structures under fixed-fixed boundary conditions. Through systematic FEM simulation and ML modeling, a validated approach has been developed that fills this gap and demonstrates practical value for structural health monitoring applications.
 
-The journey from initial research questions through methodology development, validation, and performance analysis has yielded insights that I believe will be useful to both researchers and practicing engineers. This chapter summarizes the key findings, reflects on how well the original objectives were met, acknowledges the limitations I encountered, and charts directions for future investigation.
+The progression from research questions through methodology development, validation, and performance analysis yields insights applicable to both researchers and practicing engineers. This chapter summarizes key findings, evaluates achievement of research objectives, acknowledges limitations, and identifies directions for future investigation.
 
 ## 5.2 Summary of Key Findings
 
 ### 5.2.1 Achievement of Research Objectives
 
-Looking back at the four concrete objectives I established in Chapter 1, I can assess how successfully each was achieved.
+Assessment of the four research objectives established in Chapter 1 reveals the following outcomes:
 
 **Objective 1: Generate a Reliable Dataset**
 
-I aimed for 3,000 samples of natural frequency data from FEM simulations with less than 0.01 percent error compared to theoretical solutions. This objective was fully achieved and, in fact, exceeded expectations. The final validation showed errors below 0.002 percent when comparing my Python FEM implementation to theoretical Euler-Bernoulli solutions. The three-way validation against Das (2023) ANSYS results provided additional confirmation, with deviations remaining under 0.2 percent across all five vibration modes tested.
+The target was 3,000 samples of natural frequency data from FEM simulations with less than 0.01 percent error compared to theoretical solutions. This objective was achieved and exceeded. Final validation demonstrated errors below 0.002 percent when comparing the Python FEM implementation to theoretical Euler-Bernoulli solutions. Three-way validation against Das (2023) ANSYS results provided additional confirmation, with deviations remaining under 0.2 percent across all five vibration modes tested.
 
-The dataset encompasses a comprehensive parameter space: beam lengths from 3 to 8 meters, cross-sectional dimensions ranging from 0.2×0.3 m to 0.5×0.7 m, concrete strengths between 25 and 50 MPa, and damage severities up to 20 percent. Latin Hypercube Sampling ensured uniform coverage across this five-dimensional space, avoiding the clustering problems that simple random sampling would have created.
+The dataset encompasses a comprehensive parameter space: beam lengths from 3 to 8 meters, cross-sectional dimensions ranging from 0.2×0.3 m to 0.5×0.7 m, concrete strengths between 25 and 50 MPa, and damage severities up to 20 percent. Latin Hypercube Sampling ensured uniform coverage across this five-dimensional space, avoiding clustering problems that simple random sampling would create.
 
 **Objective 2: Develop and Test Five Regression Models**
 
-My target was to achieve at least 95 percent R-squared on the test set. Not only did I meet this threshold, but the best-performing model (CatBoost) achieved 98.9 percent R-squared - significantly exceeding the initial goal. This performance matches or surpasses comparable studies in the literature, including Das (2023) who reported 98.78 percent accuracy for steel beams using Support Vector Machines.
+The target was R² ≥ 0.95 on the test set. This threshold was exceeded, with the best-performing model (CatBoost) achieving R² = 0.989—significantly exceeding the initial goal. This performance matches or surpasses comparable studies in the literature, including Das (2023) who reported 98.78 percent accuracy for steel beams using Support Vector Machines.
 
-The systematic comparison of five algorithms (Linear Regression, Random Forest, XGBoost, CatBoost, and SVR) revealed interesting performance patterns. CatBoost's ordered boosting approach proved particularly well-suited to this problem, delivering superior accuracy with Mean Absolute Error of just 3.00 Hz across a frequency range spanning 13.7 to 301.7 Hz for Mode 1.
+The systematic comparison of five algorithms (Linear Regression, Random Forest, XGBoost, CatBoost, and SVR) revealed distinct performance patterns. CatBoost's ordered boosting approach proved particularly well-suited to this problem, delivering superior accuracy with MAE of 3.00 Hz across a frequency range spanning 13.7 to 301.7 Hz for Mode 1.
 
 **Objective 3: Quantify Parameter Importance**
 
-Using both permutation importance and SHAP analysis, I successfully identified which parameters most strongly influence natural frequency. The results aligned remarkably well with theoretical expectations from the Euler-Bernoulli frequency equation.
+Using both permutation importance and SHAP analysis, the parameters most strongly influencing natural frequency were identified. Results aligned with theoretical expectations from the Euler-Bernoulli frequency equation.
 
-Length emerged as the dominant parameter with an importance score of approximately 0.45 and correlation coefficient of -0.87, consistent with the theoretical f proportional to L inverse squared relationship. Corrosion severity ranked second (importance about 0.20, r=-0.78), confirming its critical role in structural degradation. Beam depth showed moderate influence (importance about 0.15, r=+0.64), while concrete strength exhibited weaker but still significant impact (importance about 0.10, r=+0.52). Width proved least influential (importance about 0.03), which makes physical sense given that moment of inertia depends on the cube of depth but only linearly on width.
+Length emerged as the dominant parameter (importance ≈ 0.45, r = -0.87), consistent with the theoretical f ∝ L⁻² relationship. Corrosion severity ranked second (importance ≈ 0.20, r = -0.78), confirming its critical role in structural degradation. Beam depth showed moderate influence (importance ≈ 0.15, r = +0.64), while concrete strength exhibited weaker but significant impact (importance ≈ 0.10, r = +0.52). Width proved least influential (importance ≈ 0.03), consistent with moment of inertia depending on the cube of depth but only linearly on width.
 
-These findings provide practical guidance for engineers: when assessing beams for potential vibration issues or damage, measuring length accurately matters most, followed closely by evaluating corrosion severity.
+These findings provide practical guidance: when assessing beams for vibration issues or damage, accurate length measurement is most critical, followed by corrosion severity evaluation.
 
 **Objective 4: Validate Against Published Experimental Data**
 
-The stiffness reduction approach I employed for damage modeling was validated against Zhang et al. (2020) experimental work on corroded RC beams. The observed frequency-corrosion sensitivity of approximately 0.8 percent frequency reduction per 1 percent corrosion matches their experimental findings almost exactly. This agreement confirms that my simplified stiffness reduction model, despite not capturing every physical detail of corrosion (such as mass loss and bond degradation), produces realistic frequency predictions for the damage levels studied.
+The stiffness reduction approach employed for damage modeling was validated against Zhang et al. (2020) experimental work on corroded RC beams. The observed frequency-corrosion sensitivity of approximately 0.8 percent frequency reduction per 1 percent corrosion matches their experimental findings. This agreement confirms that the simplified stiffness reduction model, despite not capturing every physical detail of corrosion (such as mass loss and bond degradation), produces realistic frequency predictions for the damage levels studied.
 
-The FEM implementation itself underwent rigorous validation through comparison with Das (2023) ANSYS results for aluminum beams and theoretical solutions. Achieving errors below 0.2 percent provides confidence that the simulation methodology is sound.
+The FEM implementation underwent rigorous validation through comparison with Das (2023) ANSYS results for aluminum beams and theoretical solutions. Errors below 0.2 percent confirm the simulation methodology is sound.
 
 ### 5.2.2 Answers to Research Questions
 
@@ -1208,7 +1216,7 @@ The three research questions that guided this work can now be answered with conf
 
 **Question 1: How accurately can machine learning predict the fundamental natural frequency of fixed reinforced concrete beams?**
 
-The answer is: very accurately indeed. CatBoost achieved 98.9 percent R-squared on an independent test set, with Mean Absolute Error of 3.00 Hz and Root Mean Square Error of 5.61 Hz. To put these numbers in perspective, for a typical beam in the dataset with Mode 1 frequency around 70 Hz, the average prediction error is approximately 4 percent.
+CatBoost achieved R² = 0.989 on an independent test set, with MAE of 3.00 Hz and RMSE of 5.61 Hz. For a typical beam in the dataset with Mode 1 frequency around 70 Hz, the average prediction error is approximately 4 percent.
 
 More importantly, this accuracy holds across the full range of damage scenarios, from pristine beams to those with 20 percent corrosion. The model shows no systematic bias - residual plots confirm random scatter around zero with no heteroscedasticity. Cross-validation with five folds yielded consistent performance (R-squared = 0.989 ± 0.002), indicating the model generalizes well to unseen data.
 
@@ -1248,7 +1256,7 @@ This ranking provides actionable insights: engineers concerned about frequency s
 
 ### 5.2.3 Model Performance and Validation
 
-The validation strategy I employed - combining analytical benchmarks, commercial software comparison, and experimental validation - provides multiple lines of evidence for model reliability.
+The validation strategy—combining analytical benchmarks, commercial software comparison, and experimental validation—provides multiple lines of evidence for model reliability.
 
 **Analytical Validation:**
 
@@ -1256,7 +1264,7 @@ Comparing FEM predictions to closed-form Euler-Bernoulli solutions for pristine 
 
 **Software Validation:**
 
-The three-way comparison with Das (2023) ANSYS results demonstrated that my Python implementation produces frequencies within 0.2 percent of industry-standard commercial software across five vibration modes for aluminum beams (Case A: h/L = 1/48, L = 1.2 m). This validates both the element formulation and eigenvalue solution approach.
+The three-way comparison with Das (2023) ANSYS results demonstrated that the Python implementation produces frequencies within 0.2 percent of industry-standard commercial software across five vibration modes for aluminum beams (Case A: h/L = 1/48, L = 1.2 m). This validates both the element formulation and eigenvalue solution approach.
 
 **Experimental Validation:**
 
@@ -1284,7 +1292,7 @@ The validation approach combining analytical solutions, commercial software comp
 
 **Damage Modeling Approach:**
 
-The stiffness reduction method I employed, calibrated with a 1.6 multiplier based on Rodriguez et al. (1997) experimental work, provides a computationally efficient way to model corrosion effects that produces realistic frequency predictions. The validation against Zhang et al. (2020) confirms this simplified approach captures the essential physics despite not modeling every detail of reinforcement corrosion.
+The stiffness reduction method, calibrated with a 1.6 multiplier based on Rodriguez et al. (1997) experimental work, provides a computationally efficient approach to model corrosion effects that produces realistic frequency predictions. Validation against Zhang et al. (2020) confirms this simplified approach captures the essential physics despite not modeling every detail of reinforcement corrosion.
 
 ### 5.3.2 Practical Contributions
 
@@ -1294,7 +1302,7 @@ The 3,000-sample dataset of validated FEM simulations, covering a comprehensive 
 
 **Trained ML Models:**
 
-The CatBoost model I developed, with its 98.9 percent R-squared performance, can be directly deployed in engineering practice. I envision this model serving three primary use cases:
+The CatBoost model, with R² = 0.989 performance, can be directly deployed in engineering practice. Three primary use cases are identified:
 
 1. **Preliminary Design:** Rapid screening of hundreds of beam configurations during conceptual design phases, where full FEM analysis would be impractically slow.
 
@@ -1334,11 +1342,11 @@ This limitation means the models' performance on real-world measured data remain
 
 **Simplified Damage Modeling:**
 
-The stiffness reduction approach I employed provides computational efficiency and produced frequency predictions matching Zhang et al. (2020) experimental trends. However, it omits several physical aspects of real corrosion:
+The stiffness reduction approach provides computational efficiency and produces frequency predictions matching Zhang et al. (2020) experimental trends. However, it omits several physical aspects of real corrosion:
 
 - **Mass Changes:** Corrosion products typically have lower density than steel, slightly reducing mass. The stiffness reduction method assumes constant mass.
 - **Bond Degradation:** Corrosion damages the steel-concrete interface, affecting composite action in ways not captured by simple stiffness reduction.
-- **Non-Uniform Distribution:** Real corrosion typically concentrates at crack locations or areas of moisture ingress, creating more complex damage patterns than the uniform or localized scenarios I modeled.
+- **Non-Uniform Distribution:** Real corrosion typically concentrates at crack locations or areas of moisture ingress, creating more complex damage patterns than the uniform or localized scenarios modeled.
 
 More sophisticated damage models exist - finite element methods incorporating concrete plasticity, cracking models, and degrading bond-slip relationships - but these would substantially increase computational cost and model complexity.
 
@@ -1350,14 +1358,14 @@ The FEM analysis assumed linear elastic material behavior throughout. This appro
 
 **Fixed-Fixed Boundary Conditions Only:**
 
-I deliberately focused on fixed-fixed supports because they represent the most common configuration in building frames and continuous bridge spans. However, many structures have different support conditions:
+The study focuses on fixed-fixed supports because they represent the most common configuration in building frames and continuous bridge spans. However, many structures have different support conditions:
 
 - Simply supported beams (common in precast construction)
 - Cantilevers (balconies, overhangs)
 - Fixed-simply supported (asymmetric restraint)
 - Partially fixed (realistic modeling of semi-rigid connections)
 
-Each boundary condition produces different mode shapes and frequency responses. The models I developed cannot be applied to these other cases without retraining on appropriate data.
+Each boundary condition produces different mode shapes and frequency responses. The developed models cannot be applied to these other cases without retraining on appropriate data.
 
 **Limited Damage Scenarios:**
 
@@ -1374,7 +1382,7 @@ Extending the framework to these scenarios would require developing appropriate 
 
 **Parameter Range Constraints:**
 
-Table 1.1 (Chapter 1) defined the parameter ranges I studied, chosen to represent typical RC beam dimensions per ACI 318-19 and Eurocode 2. The models may not extrapolate reliably to unusual geometries:
+Table 1.1 (Chapter 1) defines the parameter ranges studied, chosen to represent typical RC beam dimensions per ACI 318-19 and Eurocode 2. The models may not extrapolate reliably to unusual geometries:
 
 - Very long spans (L greater than 8 m) or very short beams (L less than 3 m)
 - Exceptionally deep or shallow cross-sections outside the studied range
@@ -1385,7 +1393,7 @@ Extrapolation beyond training data ranges is generally inadvisable for ML models
 
 **First Two Modes Only:**
 
-I focused on Mode 1 and Mode 2 frequencies because they typically dominate dynamic response and are most reliably measurable in field conditions. However, higher modes can provide additional information for damage localization and characterization. Some applications may require predictions for modes 3, 4, 5, or beyond.
+The study focuses on Mode 1 and Mode 2 frequencies because they typically dominate dynamic response and are most reliably measurable in field conditions. However, higher modes can provide additional information for damage localization and characterization. Some applications may require predictions for modes 3, 4, 5, or beyond.
 
 ### 5.4.3 Practical Implementation Challenges
 
@@ -1599,65 +1607,65 @@ The models provide an interactive tool for teaching structural dynamics concepts
 
 Continuing education for practicing engineers could use the models to demonstrate modern ML techniques in a familiar structural context, helping bridge the gap between traditional and emerging approaches.
 
-## 5.7 Reflections on the Research Journey
+## 5.7 Methodological Analysis
 
-Looking back on this research project, several aspects stand out as particularly meaningful or instructive.
+Analysis of the research methodology reveals several key insights regarding effective approaches, encountered challenges, and methodological recommendations.
 
-### 5.7.1 What Worked Well
+### 5.7.1 Effective Methodological Approaches
 
 **Integration of FEM and ML:**
 
-The decision to generate training data via validated FEM simulations rather than relying solely on experiments proved highly effective. This approach provided the volume and diversity of data necessary for robust ML model training while maintaining full control over parameter variations. The three-way validation strategy gave me confidence that simulation predictions aligned with both theory and experimental trends.
+Generating training data via validated FEM simulations rather than relying solely on experiments proved effective. This approach provided the volume and diversity of data necessary for robust ML model training while maintaining control over parameter variations. The three-way validation strategy demonstrates that simulation predictions align with both theory and experimental trends.
 
-**Choice of CatBoost:**
+**Algorithm Selection:**
 
-Including CatBoost in the algorithm comparison, despite it being less commonly used in structural engineering than Support Vector Machines or Random Forests, yielded dividends. Its ordered boosting approach addressed prediction shift in a way that translated to superior performance for this problem. This reinforces the value of surveying recent ML developments rather than defaulting to established favorites.
+Including CatBoost in the algorithm comparison, despite its limited prior use in structural engineering compared to Support Vector Machines or Random Forests, proved beneficial. Its ordered boosting approach addressed prediction shift in a way that translated to superior performance for this problem. This demonstrates the importance of considering recent algorithmic developments beyond established methods.
 
 **Comprehensive Validation:**
 
-The multi-pronged validation approach - analytical comparison, commercial software benchmarking, and experimental validation - provided much stronger evidence than any single method alone. Future work should maintain this thoroughness even though it requires additional effort.
+The multi-pronged validation approach—analytical comparison, commercial software benchmarking, and experimental validation—provided stronger evidence than any single method alone. This thoroughness is recommended for future research despite the additional effort required.
 
-### 5.7.2 Challenges Encountered
+### 5.7.2 Methodological Challenges
 
 **Damage Modeling Trade-offs:**
 
-Balancing physical realism against computational efficiency in damage modeling proved trickier than initially anticipated. More sophisticated models incorporating cracking, plasticity, and bond degradation would be more realistic but would have made generating 3,000 samples computationally prohibitive. The simplified stiffness reduction approach represents a pragmatic compromise that produced useful results, but acknowledging its limitations is important.
+Balancing physical realism against computational efficiency in damage modeling presented significant challenges. More sophisticated models incorporating cracking, plasticity, and bond degradation would be more realistic but would have made generating 3,000 samples computationally prohibitive. The simplified stiffness reduction approach represents an appropriate compromise that produces useful results within acknowledged limitations.
 
 **Hyperparameter Optimization:**
 
-The hyperparameter space for gradient boosting models is large and complex. While RandomizedSearchCV with 50 iterations provided substantial improvements over default parameters, more extensive optimization (Bayesian optimization, larger search spaces) might yield further gains. The computational cost of thorough hyperparameter tuning can be considerable, requiring judicious balance between optimization effort and marginal accuracy improvements.
+The hyperparameter space for gradient boosting models is large and complex. While RandomizedSearchCV with 50 iterations provided substantial improvements over default parameters, more extensive optimization (Bayesian optimization, larger search spaces) might yield further gains. Careful balance between optimization effort and marginal accuracy improvements is required.
 
-### 5.7.3 Lessons Learned
+### 5.7.3 Key Methodological Insights
 
-**Start with Simple Baselines:**
+**Value of Simple Baselines:**
 
-Including Linear Regression as a baseline, despite knowing more sophisticated methods would outperform it, provided valuable context. The substantial performance gap (R-squared = 0.828 vs. 0.989) quantified the benefit of nonlinear modeling. Always establishing simple baselines helps demonstrate when complexity is justified.
+Including Linear Regression as a baseline, despite theoretical expectations of superior performance from sophisticated methods, provided valuable context. The substantial performance gap (R² = 0.828 vs. 0.989) quantified the benefit of nonlinear modeling. Simple baselines help demonstrate when model complexity is justified.
 
-**Validation Cannot Be An Afterthought:**
+**Centrality of Validation:**
 
-Investing significant effort in validation - comparing to analytical solutions, commercial software, and experimental data - paid off by providing confidence in results and revealing subtle implementation issues early. Treating validation as an integral part of methodology rather than a final check improves research quality.
+Comprehensive validation—comparing to analytical solutions, commercial software, and experimental data—proved valuable by providing confidence in results and revealing implementation issues early. Validation should be treated as an integral part of methodology rather than a final verification step.
 
-**Domain Knowledge Matters:**
+**Integration of Domain Knowledge:**
 
-Understanding the physics behind frequency predictions - the Euler-Bernoulli equation, how damage affects stiffness, why certain boundary conditions matter - was essential for interpreting ML results. The SHAP analysis showing length as the dominant parameter made sense because I knew the L inverse squared relationship from theory. Pure ML practitioners without structural engineering background might miss such connections. Successful ML applications in engineering require blending data science skills with domain expertise.
+Understanding the physics behind frequency predictions—the Euler-Bernoulli equation, how damage affects stiffness, and the significance of boundary conditions—is essential for interpreting ML results. The SHAP analysis showing length as the dominant parameter is consistent with the theoretical L⁻² relationship. Successful ML applications in engineering require integration of data science skills with domain expertise.
 
-## 5.8 Closing Thoughts
+## 5.8 Conclusion
 
-This research set out to answer a practical question: can machine learning predict natural frequencies of fixed reinforced concrete beams accurately enough to be useful for real engineering applications? The answer, supported by comprehensive validation and performance analysis, is yes.
+This research addressed a practical question: can machine learning predict natural frequencies of fixed reinforced concrete beams accurately enough for real engineering applications? The results, supported by comprehensive validation and performance analysis, demonstrate that the answer is affirmative.
 
-CatBoost achieved 98.9 percent R-squared, matching or exceeding benchmarks from studies on metallic beams despite RC's greater material complexity. The models capture physically meaningful relationships, as evidenced by SHAP analysis showing parameter importances that align with theoretical expectations. Validation against Das (2023) commercial FEM results and Zhang et al. (2020) experimental data confirms that predictions reflect genuine physics rather than mere data memorization.
+CatBoost achieved R² = 0.989, matching or exceeding benchmarks from studies on metallic beams despite RC's greater material complexity. The models capture physically meaningful relationships, as evidenced by SHAP analysis showing parameter importances that align with theoretical expectations. Validation against Das (2023) commercial FEM results and Zhang et al. (2020) experimental data confirms that predictions reflect genuine physics rather than data memorization.
 
-Beyond these technical achievements, the work demonstrates how modern ML techniques can transform structural engineering workflows. Reducing per-beam analysis time from minutes to milliseconds enables applications - comprehensive portfolio screening, real-time monitoring, rapid design exploration - that were previously impractical. The dramatic efficiency gains are not just quantitative improvements but qualitative changes in what becomes feasible.
+The work demonstrates how ML techniques can improve structural engineering workflows. Reducing per-beam analysis time from minutes to milliseconds enables applications—comprehensive portfolio screening, real-time monitoring, rapid design exploration—that were previously impractical. These substantial efficiency gains represent qualitative changes in what becomes feasible.
 
-Several limitations remain, most notably the reliance on simulation training data and simplified damage models. Future work incorporating experimental validation and more sophisticated FEM approaches would strengthen confidence for field deployment. Extending the framework to other boundary conditions, structural elements, and damage mechanisms would broaden applicability.
+Several limitations remain, notably the reliance on simulation training data and simplified damage models. Future work incorporating experimental validation and more sophisticated FEM approaches would strengthen confidence for field deployment. Extending the framework to other boundary conditions, structural elements, and damage mechanisms would broaden applicability.
 
-For practicing engineers, this research offers both immediate utility (trained models ready for deployment) and a template showing how ML can complement rather than replace traditional methods. The models work best when users understand both their capabilities and limitations, applying them judiciously within appropriate scope.
+For practicing engineers, this research offers immediate utility (trained models ready for deployment) and a template showing how ML can complement traditional methods. The models perform best when users understand both their capabilities and limitations, applying them within appropriate scope.
 
-For researchers, the work opens numerous avenues for extension: physics-informed ML incorporating governing equations, Bayesian approaches for uncertainty quantification, multi-modal sensing fusion, and time-dependent damage evolution modeling all represent promising directions.
+For researchers, the work opens numerous avenues for extension: physics-informed ML incorporating governing equations, Bayesian approaches for uncertainty quantification, multi-modal sensing fusion, and time-dependent damage evolution modeling represent promising directions.
 
-Looking ahead, I envision a future where ML-assisted tools become standard parts of the structural engineer's toolkit, not replacing human judgment but augmenting it with rapid analysis capabilities. Just as finite element software transformed structural analysis in previous decades, machine learning may transform how we approach design optimization, damage assessment, and infrastructure management in the decades to come.
+ML-assisted tools have potential to become standard components of engineering practice, augmenting human judgment with rapid analysis capabilities. Machine learning methods offer potential to improve design optimization, damage assessment, and infrastructure management in structural engineering practice.
 
-The fixed-fixed RC beams studied here represent just one case, but the methodology generalizes. As computational power continues increasing and ML techniques continue advancing, the gap between what is theoretically possible and what is practically achievable in structural engineering will continue narrowing. This research contributes one small piece to that ongoing evolution.
+Although focused on fixed-fixed RC beams, the methodology is generalizable to other structural configurations. The framework presented in this research contributes to the broader application of machine learning methods in structural health monitoring and damage assessment.
 
 ---
 
