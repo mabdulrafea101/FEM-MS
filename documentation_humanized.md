@@ -50,15 +50,13 @@ Three research questions guide this investigation:
 
 ## 1.4 Research Objectives
 
-This study pursues four primary objectives:
+The research objectives directly address the research questions posed in Section 1.3:
 
-**Objective 1:** To generate a validated dataset of 3,000 natural frequency samples from finite element simulations, targeting less than 0.01 percent error compared to theoretical solutions. This ensures the ML models have reliable training data.
+**Objective 1 (Addresses RQ1):** To develop and validate machine learning models for predicting the fundamental natural frequency of fixed-fixed reinforced concrete beams, achieving prediction accuracy of R² ≥ 0.95 on independent test data. This objective answers the first research question by establishing whether ML can achieve performance comparable to existing work on metallic beams (Das, 2023).
 
-**Objective 2:** To develop and evaluate five regression models, targeting R² ≥ 0.95 on the test set.
+**Objective 2 (Addresses RQ2):** To perform comprehensive comparative analysis of five regression algorithms—Linear Regression, Random Forest, XGBoost, CatBoost, and Support Vector Regression—using multiple performance metrics (R², MAE, RMSE, training time, and inference speed) to identify the optimal model for natural frequency prediction. This objective answers the second research question by systematically evaluating which algorithm provides superior performance for this specific application.
 
-**Objective 3:** To quantify parameter importance using SHAP analysis and permutation importance. This identifies which factors—length, depth, width, concrete strength, or damage severity—have the greatest influence on frequency.
-
-**Objective 4:** To validate FEM predictions against published experimental data, confirming the physical realism of the simulations.
+**Objective 3 (Addresses RQ3):** To quantify the influence of beam parameters on natural frequency predictions using SHAP (SHapley Additive exPlanations) analysis and permutation importance methods, identifying which factors among beam length, cross-sectional dimensions (width and depth), concrete compressive strength, reinforcement ratio, and corrosion-induced damage most significantly affect frequency. This objective answers the third research question by providing engineers with prioritized parameter importance rankings for structural health monitoring applications.
 
 ## 1.5 Significance of the Research
 
@@ -1182,61 +1180,65 @@ The progression from research questions through methodology development, validat
 
 ### 5.2.1 Achievement of Research Objectives
 
-Assessment of the four research objectives established in Chapter 1 reveals the following outcomes:
+Assessment of the three research objectives established in Chapter 1 reveals the following outcomes:
 
-**Objective 1: Generate a Reliable Dataset**
+**Objective 1: Develop and Validate Machine Learning Models for Natural Frequency Prediction (Addresses RQ1)**
 
-The target was 3,000 samples of natural frequency data from FEM simulations with less than 0.01 percent error compared to theoretical solutions. This objective was achieved and exceeded. Final validation demonstrated errors below 0.002 percent when comparing the Python FEM implementation to theoretical Euler-Bernoulli solutions. Three-way validation against Das (2023) ANSYS results provided additional confirmation, with deviations remaining under 0.2 percent across all five vibration modes tested.
+This objective targeted prediction accuracy of R² ≥ 0.95 on independent test data to determine whether ML can achieve performance comparable to existing work on metallic beams. This objective was achieved and exceeded. The best-performing model (CatBoost) achieved R² = 0.989 with MAE of 3.00 Hz—significantly exceeding the initial goal and matching Das (2023) who reported 98.78 percent accuracy for steel beams using Support Vector Machines.
 
-The dataset encompasses a comprehensive parameter space: beam lengths from 3 to 8 meters, cross-sectional dimensions ranging from 0.2×0.3 m to 0.5×0.7 m, concrete strengths between 25 and 50 MPa, and damage severities up to 20 percent. Latin Hypercube Sampling ensured uniform coverage across this five-dimensional space, avoiding clustering problems that simple random sampling would create.
+The dataset supporting this achievement comprises 3,000 samples from FEM simulations with validation errors below 0.002 percent when comparing the Python FEM implementation to theoretical Euler-Bernoulli solutions. Three-way validation against Das (2023) ANSYS results provided additional confirmation, with deviations remaining under 0.2 percent across all five vibration modes tested. The dataset encompasses a comprehensive parameter space: beam lengths from 3 to 8 meters, cross-sectional dimensions ranging from 0.2×0.3 m to 0.5×0.7 m, concrete strengths between 25 and 50 MPa, and damage severities up to 20 percent. Latin Hypercube Sampling ensured uniform coverage across this five-dimensional space, avoiding clustering problems that simple random sampling would create.
 
-**Objective 2: Develop and Test Five Regression Models**
+**Objective 2: Perform Comprehensive Comparative Analysis of Regression Algorithms (Addresses RQ2)**
 
-The target was R² ≥ 0.95 on the test set. This threshold was exceeded, with the best-performing model (CatBoost) achieving R² = 0.989—significantly exceeding the initial goal. This performance matches or surpasses comparable studies in the literature, including Das (2023) who reported 98.78 percent accuracy for steel beams using Support Vector Machines.
+This objective aimed to identify the optimal algorithm for natural frequency prediction through systematic evaluation of five regression methods using multiple performance metrics. The comparative analysis revealed distinct performance patterns:
 
-The systematic comparison of five algorithms (Linear Regression, Random Forest, XGBoost, CatBoost, and SVR) revealed distinct performance patterns. CatBoost's ordered boosting approach proved particularly well-suited to this problem, delivering superior accuracy with MAE of 3.00 Hz across a frequency range spanning 13.7 to 301.7 Hz for Mode 1.
+1. CatBoost (R² = 0.989, MAE = 3.00 Hz, training time: 12.3s)
+2. XGBoost (R² = 0.981, MAE = 4.06 Hz, training time: 8.7s)
+3. SVR (R² = 0.981, MAE = 3.80 Hz, training time: 45.2s)
+4. Random Forest (R² = 0.978, MAE = 4.10 Hz, training time: 15.6s)
+5. Linear Regression (R² = 0.828, MAE = 12.32 Hz, training time: 0.3s)
 
-**Objective 3: Quantify Parameter Importance**
+CatBoost's ordered boosting approach proved particularly well-suited to this problem, delivering superior accuracy while maintaining reasonable training time. The performance gap between ensemble methods and simple linear regression confirms that the relationship between input parameters and frequency is inherently nonlinear. All ensemble methods achieved inference speeds below 5 milliseconds per prediction, enabling real-time applications.
 
-Using both permutation importance and SHAP analysis, the parameters most strongly influencing natural frequency were identified. Results aligned with theoretical expectations from the Euler-Bernoulli frequency equation.
+**Objective 3: Quantify Parameter Importance for Engineering Guidance (Addresses RQ3)**
 
-Length emerged as the dominant parameter (importance ≈ 0.45, r = -0.87), consistent with the theoretical f ∝ L⁻² relationship. Corrosion severity ranked second (importance ≈ 0.20, r = -0.78), confirming its critical role in structural degradation. Beam depth showed moderate influence (importance ≈ 0.15, r = +0.64), while concrete strength exhibited weaker but significant impact (importance ≈ 0.10, r = +0.52). Width proved least influential (importance ≈ 0.03), consistent with moment of inertia depending on the cube of depth but only linearly on width.
+Using both permutation importance and SHAP analysis, this objective identified which beam parameters most significantly influence natural frequency predictions. Results aligned with theoretical expectations from the Euler-Bernoulli frequency equation:
 
-These findings provide practical guidance: when assessing beams for vibration issues or damage, accurate length measurement is most critical, followed by corrosion severity evaluation.
+- **Length** emerged as the dominant parameter (importance ≈ 0.45, r = -0.87), consistent with the theoretical f ∝ L⁻² relationship
+- **Corrosion severity** ranked second (importance ≈ 0.20, r = -0.78), confirming its critical role in structural degradation
+- **Beam depth** showed moderate influence (importance ≈ 0.15, r = +0.64)
+- **Concrete strength** exhibited weaker but significant impact (importance ≈ 0.10, r = +0.52)
+- **Width** proved least influential (importance ≈ 0.03), consistent with moment of inertia depending on the cube of depth but only linearly on width
 
-**Objective 4: Validate Against Published Experimental Data**
-
-The stiffness reduction approach employed for damage modeling was validated against Zhang et al. (2020) experimental work on corroded RC beams. The observed frequency-corrosion sensitivity of approximately 0.8 percent frequency reduction per 1 percent corrosion matches their experimental findings. This agreement confirms that the simplified stiffness reduction model, despite not capturing every physical detail of corrosion (such as mass loss and bond degradation), produces realistic frequency predictions for the damage levels studied.
-
-The FEM implementation underwent rigorous validation through comparison with Das (2023) ANSYS results for aluminum beams and theoretical solutions. Errors below 0.2 percent confirm the simulation methodology is sound.
+These findings provide practical guidance for structural health monitoring: when assessing beams for vibration issues or damage, accurate length measurement is most critical, followed by corrosion severity evaluation. The stiffness reduction approach employed for damage modeling was validated against Zhang et al. (2020) experimental work on corroded RC beams, with observed frequency-corrosion sensitivity of approximately 0.8 percent frequency reduction per 1 percent corrosion matching their experimental findings.
 
 ### 5.2.2 Answers to Research Questions
 
-The three research questions that guided this work can now be answered with confidence based on empirical evidence.
+Achievement of the three research objectives (Section 5.2.1) enables comprehensive answers to the research questions posed in Chapter 1. The three research questions that guided this work can now be answered with confidence based on empirical evidence.
 
-**Question 1: How accurately can machine learning predict the fundamental natural frequency of fixed reinforced concrete beams?**
+**Question 1: How accurately can machine learning predict the fundamental natural frequency of fixed reinforced concrete beams?** *(Answered through Objective 1)*
 
 CatBoost achieved R² = 0.989 on an independent test set, with MAE of 3.00 Hz and RMSE of 5.61 Hz. For a typical beam in the dataset with Mode 1 frequency around 70 Hz, the average prediction error is approximately 4 percent.
 
 More importantly, this accuracy holds across the full range of damage scenarios, from pristine beams to those with 20 percent corrosion. The model shows no systematic bias - residual plots confirm random scatter around zero with no heteroscedasticity. Cross-validation with five folds yielded consistent performance (R-squared = 0.989 ± 0.002), indicating the model generalizes well to unseen data.
 
-This level of accuracy is comparable to what Das (2023) achieved for steel beams (98.78-98.88 percent) despite RC's more complex material behavior. The implication is clear: machine learning can handle the composite nature of reinforced concrete just as effectively as homogeneous metals when trained on sufficient high-quality data.
+This level of accuracy is comparable to what Das (2023) achieved for steel beams (98.78-98.88 percent) despite RC's more complex material behavior. The implication is clear: machine learning can handle the composite nature of reinforced concrete just as effectively as homogeneous metals when trained on sufficient high-quality data. Objective 1 successfully demonstrated that ML models can achieve prediction accuracy exceeding the R² ≥ 0.95 target.
 
-**Question 2: Which algorithm performs best for this specific application?**
+**Question 2: Which algorithm performs best for this specific application?** *(Answered through Objective 2)*
 
 CatBoost emerged as the clear winner among the five algorithms tested. Its ordered boosting approach, which addresses prediction shift in traditional gradient boosting, proved particularly effective for this regression task. Final test performance ranked as follows:
 
 1. CatBoost (R-squared = 0.989, MAE = 3.00 Hz)
-2. XGBoost (R-squared = 0.981, MAE = 4.06 Hz)  
+2. XGBoost (R-squared = 0.981, MAE = 4.06 Hz)
 3. SVR (R-squared = 0.981, MAE = 3.80 Hz)
 4. Random Forest (R-squared = 0.978, MAE = 4.10 Hz)
 5. Linear Regression (R-squared = 0.828, MAE = 12.32 Hz)
 
 The performance gap between ensemble methods (top four) and simple linear regression is substantial, confirming that the relationship between input parameters and frequency is inherently nonlinear. Among the ensemble methods, differences are modest but consistent, with CatBoost maintaining an edge across all metrics.
 
-Interestingly, this contradicts some earlier literature where Support Vector Machines showed superior performance (Das, 2023). The discrepancy likely reflects differences in problem characteristics - CatBoost's categorical feature handling and ordered boosting may be particularly well-suited to the RC beam problem where damage type acts as a categorical variable.
+Interestingly, this contradicts some earlier literature where Support Vector Machines showed superior performance (Das, 2023). The discrepancy likely reflects differences in problem characteristics - CatBoost's categorical feature handling and ordered boosting may be particularly well-suited to the RC beam problem where damage type acts as a categorical variable. Objective 2 successfully identified the optimal algorithm through systematic comparative analysis using multiple performance metrics.
 
-**Question 3: What are the most important parameters?**
+**Question 3: What are the most important parameters?** *(Answered through Objective 3)*
 
 Both permutation importance and SHAP analysis converge on a consistent ranking:
 
@@ -1252,7 +1254,7 @@ Both permutation importance and SHAP analysis converge on a consistent ranking:
 
 6. **Damage Type** (importance ≈ 0.02): Least influential, suggesting that severity matters more than spatial distribution for global frequency prediction.
 
-This ranking provides actionable insights: engineers concerned about frequency should focus first on accurately determining beam length and assessing corrosion extent, with less emphasis on measuring width precisely or distinguishing between damage types.
+This ranking provides actionable insights for structural health monitoring applications: engineers concerned about frequency should focus first on accurately determining beam length and assessing corrosion extent, with less emphasis on measuring width precisely or distinguishing between damage types. Objective 3 successfully quantified parameter importance, providing engineers with prioritized guidance for measurement and inspection protocols.
 
 ### 5.2.3 Model Performance and Validation
 
