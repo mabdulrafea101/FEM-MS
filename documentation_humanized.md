@@ -42,21 +42,22 @@ This gap is significant for practical reasons: fixed-fixed boundary conditions a
 
 Three research questions guide this investigation:
 
-1. How accurately can machine learning predict the fundamental natural frequency of fixed reinforced concrete beams? Previous work on steel beams achieved approximately 98 percent accuracy (Das, 2023). This research investigates whether similar performance is achievable for RC beams with their more complex material behavior.
+1. How accurately can machine learning predict the fundamental natural frequency of fixed-fixed reinforced concrete beams?
 
-2. Which algorithm performs best for this specific application? Five algorithms are compared: Linear Regression, Random Forest, XGBoost, CatBoost, and Support Vector Regression, as each offers different strengths for regression problems.
+2. Which algorithm performs best for predicting natural frequencies of fixed RC beams among Linear Regression, Random Forest, XGBoost, CatBoost, and SVR?
 
-3. What are the most important parameters influencing natural frequency? Identifying which geometric and material properties most strongly influence frequency provides guidance for measurement prioritization and design decisions.
+3. What are the most important parameters influencing natural frequency predictions?
 
 ## 1.4 Research Objectives
 
 The research objectives directly address the research questions posed in Section 1.3:
 
-**Objective 1 (Addresses RQ1):** To develop and validate machine learning models for predicting the fundamental natural frequency of fixed-fixed reinforced concrete beams, achieving prediction accuracy of R² ≥ 0.95 on independent test data. This objective answers the first research question by establishing whether ML can achieve performance comparable to existing work on metallic beams (Das, 2023).
+1. To develop and validate machine learning models for predicting the fundamental natural frequency of fixed-fixed reinforced concrete beams, achieving prediction accuracy of R^2\geq0.95 on independent test data.
 
-**Objective 2 (Addresses RQ2):** To perform comprehensive comparative analysis of five regression algorithms—Linear Regression, Random Forest, XGBoost, CatBoost, and Support Vector Regression—using multiple performance metrics (R², MAE, RMSE, training time, and inference speed) to identify the optimal model for natural frequency prediction. This objective answers the second research question by systematically evaluating which algorithm provides superior performance for this specific application.
+2. To perform comprehensive comparative analysis of five regression algorithms—Linear Regression, Random Forest, XGBoost, CatBoost, and Support Vector Regression—using multiple performance metrics (R^2, MAE, RMSE, training time, and inference speed) to identify the optimal model for natural frequency prediction.
 
-**Objective 3 (Addresses RQ3):** To quantify the influence of beam parameters on natural frequency predictions using SHAP (SHapley Additive exPlanations) analysis and permutation importance methods, identifying which factors among beam length, cross-sectional dimensions (width and depth), concrete compressive strength, reinforcement ratio, and corrosion-induced damage most significantly affect frequency. This objective answers the third research question by providing engineers with prioritized parameter importance rankings for structural health monitoring applications.
+3. To quantify the influence of beam parameters on natural frequency predictions using SHAP (SHapley Additive exPlanations) analysis and permutation importance methods, identifying which factors most significantly affect frequency.
+
 
 ## 1.5 Significance of the Research
 
