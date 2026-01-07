@@ -345,27 +345,9 @@ This thesis addresses these gaps by developing a comprehensive ML benchmark spec
 
 The methodology developed follows a systematic progression from beam parameter definition through FEM simulation to ML model development. Figure 3.1 illustrates this workflow:
 
-```mermaid
-graph TD
-    A[Start] --> B[Define Beam Parameters]
-    B --> C[Finite Element Modeling]
-    C --> D{Damage Scenario?}
-    D -- Pristine --> E[Modal Analysis]
-    D -- Corrosion --> F[Uniform Stiffness Reduction]
-    D -- Cracks --> G[Localized Stiffness Reduction]
-    F --> E
-    G --> E
-    E --> H[Extract Natural Frequencies]
-    H --> I[Generate Dataset]
-    I --> J[Data Preprocessing]
-    J --> K[Machine Learning Models]
-    K --> L[Model Evaluation]
-    L --> M[End]
-```
+![Research Workflow Diagram](docs/figures/research_workflow.png)
 
-**Figure 3.1: Research Workflow**
-
-The workflow integrates literature findings from Chapter 2 with finite element simulations and machine learning analysis, following established practices demonstrated by Das (2023) and Saha and Yang (2023).
+**Figure 3.1:** Complete research workflow for RC beam frequency prediction using machine learning. The process begins with beam parameter definition using Latin Hypercube Sampling to ensure comprehensive coverage of the design space. FEM simulation involves assembly of element stiffness and mass matrices, application of fixed-fixed boundary conditions, and eigenvalue solution for natural frequency extraction. Three damage scenarios (uniform corrosion, localized cracks, random damage) are applied to generate diverse structural states. The resulting dataset undergoes preprocessing (scaling, encoding, train-test split) before training five ML algorithms (Linear Regression, Random Forest, XGBoost, CatBoost, SVR). Model evaluation employs multiple metrics (R², MAE, RMSE) and SHAP analysis for interpretability. This workflow integrates literature findings from Chapter 2 with finite element simulations and machine learning analysis, following established practices demonstrated by Das (2023) and Saha and Yang (2023).
 
 ## 3.2 Introduction
 
