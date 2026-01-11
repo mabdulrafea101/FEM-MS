@@ -207,7 +207,7 @@ Cai et al. (2021) studied temperature effects on simply supported RC beams and f
 
 Saha and Yang (2023) developed neural networks for damaged cantilever beams, achieving prediction errors of 0.2 to 3 percent for the first three modes. Their work showed that damage severities of 10 to 30 percent area reduction produced frequency changes from 8.65 Hz to 7.23 Hz, approximately a 16 percent shift.
 
-Khan et al. (2020) developed a damage detection algorithm coupling Frequency Response Function (FRF) with Iterative Modal Strain Energy (IMSE) method for fixed-fixed beams. Their study is particularly relevant to this thesis as it employed the same boundary condition (fixed-fixed) and beam theory (Euler-Bernoulli). Using a 2.0 m steel beam with 12 elements, they demonstrated that natural frequency changes can accurately localize and quantify damage. For a single damage case (35% stiffness reduction at element 6), the fundamental frequency decreased from 37.22 Hz to 36.16 Hz (2.85% reduction). Their FRF-based damage indicator β successfully identified damaged elements, and the IMSE method converged within 10-11 iterations to estimate damage severity. This study provides direct validation data for fixed-fixed beam simulations.
+The relationship between damage and frequency shifts has been extensively studied in the literature. Damage is typically modeled using the stiffness reduction method, which has been validated against experimental studies (Rodriguez et al., 1997; Cairns et al., 2005; Chondros et al., 1998). This approach is well-established for both corrosion-induced degradation and localized crack damage, with the amplification factor derived from experimental observations reflecting bond deterioration and concrete cover degradation beyond simple steel area loss.
 
 ## 2.3 Finite Element Method for Structural Analysis
 
@@ -233,7 +233,7 @@ For RC beams with length-to-depth ratios ranging from about 4.3 to 26.7, Euler-B
 
 Validating FEM implementations against analytical solutions and experimental data is essential. Das (2023) validated FEM code against Euler-Bernoulli theory with errors below 1 percent for various boundary conditions. Mesh convergence studies showed that 20 elements provide sufficient accuracy for beam vibration problems.
 
-Khan et al. (2020) provided valuable validation data for fixed-fixed beam analysis. Their numerical study on a 2.0 m steel beam with 12 Euler-Bernoulli elements established baseline frequencies (f₁ = 37.22 Hz, f₂ = 102.60 Hz, f₃ = 201.21 Hz) that serve as reference values for validating fixed-fixed beam implementations. The study also demonstrated that localized stiffness reduction accurately models damage-induced frequency shifts, with single and multiple damage scenarios producing predictable frequency reductions.
+Gautam et al. (2016) provided valuable validation data for fixed-fixed beam analysis using ANSYS 14.5. Their numerical study on a 2.0 m steel beam compared analytical solutions with finite element results using Solid185 elements. The published frequencies for fixed-fixed boundary condition (f₁ = 132.04 Hz, f₂ = 357.80 Hz, f₃ = 687.19 Hz) serve as reference values for validating fixed-fixed beam implementations. The study demonstrated excellent agreement between analytical Euler-Bernoulli theory and 3D finite element analysis for slender beams.
 
 Luu (2024) used ABAQUS with the Concrete Damaged Plasticity model for RC beam analysis, demonstrating the importance of proper material modeling for capturing concrete behavior under loading.
 
@@ -321,7 +321,7 @@ After reviewing the literature, several gaps became apparent:
 | Gap | Literature Status | This Thesis Contribution |
 |-----|------------------|-------------------------|
 | ML for fixed RC beams | Most studies use steel/aluminum (Das, 2023) | Focuses specifically on fixed RC beams |
-| Fixed-fixed FEM validation | Khan et al. (2020) used steel beams only | Extends to RC with comprehensive validation |
+| Fixed-fixed FEM validation | Gautam et al. (2016) validated ANSYS vs analytical | Extends to RC with comprehensive validation |
 | Comprehensive algorithm comparison | Limited to 2-3 algorithms typically | Compares 5 algorithms systematically |
 | Parameter sensitivity for RC | Not well quantified | SHAP and permutation importance analysis |
 | Validated FEM dataset for RC | Many use experimental only | 3,000 FEM-validated samples |
@@ -333,9 +333,9 @@ Two primary seed papers guide this research:
 
 1. **Das (2023)** - "Prediction of the natural frequencies of various beams using regression machine learning models" provides the benchmark for ML model performance. Das achieved 98.78-98.88% accuracy using SVM and Random Forest on steel/aluminum beams with various boundary conditions. This establishes the accuracy target for ML models developed in this thesis.
 
-2. **Khan et al. (2020)** - "Damage detection in a fixed-fixed beam using natural frequency changes" provides the validation framework for FEM simulation. Using the same fixed-fixed boundary condition and Euler-Bernoulli beam theory, Khan's published frequency values (f₁ = 37.22 Hz, f₂ = 102.60 Hz, f₃ = 201.21 Hz) serve as direct reference for validating the simulation methodology.
+2. **Gautam et al. (2016)** - "Modal Analysis of Beam Through Analytically and FEM" provides the validation framework for FEM simulation. Using ANSYS 14.5 with Solid185 elements, their published frequency values for fixed-fixed beam (f₁ = 132.04 Hz, f₂ = 357.80 Hz, f₃ = 687.19 Hz) serve as direct reference for validating the simulation methodology.
 
-This thesis addresses these gaps by developing a comprehensive ML benchmark specifically for fixed RC beams, comparing five regression algorithms, and providing validated accuracy metrics against both theoretical solutions and literature benchmarks. The dual-validation approach ensures both simulation methodology (validated against Khan et al., 2020) and ML performance (benchmarked against Das, 2023) meet established standards.
+This thesis addresses these gaps by developing a comprehensive ML benchmark specifically for fixed RC beams, comparing five regression algorithms, and providing validated accuracy metrics against both theoretical solutions and literature benchmarks. The validation framework compares computational results across multiple established methods: the Python FEM implementation against published ANSYS results and theoretical Euler-Bernoulli solutions.
 
 ---
 
@@ -628,113 +628,119 @@ Third, while absolute frequency predictions differ from 3D FEM by about 5 percen
 
 Fourth, the EBT formulation requires solving a much smaller eigenvalue problem compared to 3D FEM (approximately 40 DOFs versus thousands), enabling rapid generation of large training datasets. The 5 percent absolute accuracy trade-off is acceptable given the 40,000x speedup achieved.
 
-### 4.2.3 Simulation Validation Against Khan et al. (2020) Fixed-Fixed Beam
+### 4.2.3 Simulation Validation Against Gautam et al. (2016) Fixed-Fixed Beam
 
-While Das (2023) provides validation for machine learning model performance, a separate validation is required for the fixed-fixed boundary condition used in this thesis. Khan et al. (2020) presented a damage detection study using a fixed-fixed steel beam with Euler-Bernoulli elements—the same boundary condition and beam theory employed in this research. This makes Khan et al. (2020) the primary reference for validating the FEM simulation methodology.
+While Das (2023) provides validation for machine learning model performance, a separate validation is required for the fixed-fixed boundary condition used in this thesis. Gautam et al. (2016) presented a comprehensive modal analysis study comparing analytical solutions with ANSYS 14.5 finite element results for beams under various boundary conditions. Their published results for fixed-fixed beams provide direct reference values for validating the simulation methodology.
 
-**Khan et al. (2020) Beam Parameters:**
+**Gautam et al. (2016) Beam Parameters (Table 4):**
 
 | Parameter | Value | Unit |
 |-----------|-------|------|
-| Material | Steel | - |
-| Elastic Modulus (E) | 210 | GPa |
-| Density (ρ) | 7850 | kg/m³ |
+| Material | Mild Steel | - |
+| Elastic Modulus (E) | 205 | GPa |
+| Density (ρ) | 7830 | kg/m³ |
+| Poisson's Ratio (ν) | 0.33 | - |
 | Length (L) | 2.0 | m |
-| Cross-sectional Area (A) | 0.0014 | m² |
-| Number of Elements | 12 | - |
-| Number of Nodes | 13 | - |
-| DOF per Node | 2 | - |
+| Width (b) | 0.3 | m |
+| Height (h) | 0.1 | m |
 | Boundary Condition | Fixed-Fixed | - |
 
-**Dynamic Equations (Khan et al., 2020):**
+**Python FEM Implementation Methodology:**
 
-The dynamic response equation for an n-DOF system is (Khan et al., 2020, Eq. 1):
+The Python FEM simulation solves the generalized eigenvalue problem for free vibration analysis of beams. The implementation consists of the following computational steps:
 
-$$[M]\ddot{a}(t) + [C]\dot{a}(t) + [K]a(t) = f(t) \quad \quad \quad \quad (Eq. 17)$$
+1. **Element Matrices:** For each Euler-Bernoulli beam element, the local stiffness matrix [kₑ] and consistent mass matrix [mₑ] are computed analytically. The element stiffness matrix is derived from the beam bending strain energy (EI·∫(d²v/dx²)²dx), while the consistent mass matrix is derived from the kinetic energy (ρA·∫v̇²dx). Each element has 4 degrees of freedom: transverse displacement (v) and rotation (θ) at both nodes.
 
-For undamped free vibration conditions, the Frequency Response Function is expressed as (Khan et al., 2020, Eq. 2):
+2. **Global Assembly:** The element matrices are assembled into global stiffness [K] and mass [M] matrices using the direct stiffness method. For a beam with n elements, this produces (n+1)×2 degrees of freedom representing the displacement and rotation at each node.
 
-$$[H(\omega)] = [(-\omega^2[M] + [K])]^{-1} \quad \quad \quad \quad (Eq. 18)$$
+3. **Boundary Conditions:** Fixed-fixed boundary conditions are applied by eliminating the constrained degrees of freedom (v=0, θ=0 at both ends). This reduces the system from (n+1)×2 DOFs to (n-1)×2 free DOFs.
 
-Damage reduces element stiffness. For damaged elements, the global stiffness matrix is modified as (Khan et al., 2020, Eq. 7):
+4. **Eigenvalue Solution:** The reduced system [K]φ = ω²[M]φ is solved using scipy.linalg.eigh, which computes eigenvalues (ω²) and eigenvectors (φ). Natural frequencies are obtained as f = ω/(2π).
 
-$$[K]^* = [K] + \sum_{n=1}^{N_d} \alpha_n K_{l_n} \quad \quad \quad \quad (Eq. 19)$$
+5. **Mode Shape Extraction:** The eigenvectors represent the mode shapes. For visualization, the transverse displacement components are extracted from each mode shape vector, normalized to unit maximum amplitude, and interpolated using cubic splines for smooth representation.
 
-where $N_d$ is the number of damaged elements, $\alpha_n$ is the damage severity coefficient (0 to 1), and $K_{l_n}$ is the local stiffness matrix of damaged element $n$.
+The implementation uses 20 elements, which convergence analysis confirmed provides errors below 0.01% compared to theoretical solutions while maintaining computational efficiency suitable for large-scale dataset generation.
 
-**Table 4.2: Three-Way Validation for Fixed-Fixed Beam (Intact)**
+**Frequency Equation for Fixed-Fixed Beam:**
 
-| Mode | Khan et al. (2020) FEM (Hz) | Our Python FEM (Hz) | Theoretical EBT (Hz) | Error vs Khan |
-|------|------------------------------|---------------------|----------------------|---------------|
-| 1 | 37.22 | 37.22 | 37.22 | 0.003% |
-| 2 | 102.60 | 102.61 | 102.60 | 0.013% |
-| 3 | 201.21 | 201.23 | 201.14 | 0.012% |
+For a fixed-fixed beam, the characteristic equation derived from Euler-Bernoulli theory is (Gautam et al., 2016, Eq. 35):
 
-**Damage Case Validation:**
+$$\cos\beta L \cosh\beta L - 1 = 0 \quad \quad \quad \quad (Eq. 17)$$
 
-Khan et al. (2020) simulated three damage cases to validate their FRF-based damage detection algorithm. The same damage scenarios were replicated using our Python FEM implementation:
+The natural frequency is then calculated using (Gautam et al., 2016, Eq. 9):
 
-**Table 4.3: Damage Case Validation Against Khan et al. (2020)**
+$$f_n = \frac{(\beta L)_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \quad \quad \quad \quad (Eq. 18)$$
 
-| Case | Damage Description | Khan f₁ (Hz) | Our f₁ (Hz) | Error |
-|------|-------------------|--------------|-------------|-------|
-| Intact | No damage | 37.22 | 37.22 | 0.003% |
-| DCI | Element 6 @ 35% | 36.16 | 36.16 | 0.002% |
-| DCII | Elements 3, 8 @ 25%, 30% | 36.74 | 36.64 | 0.28% |
-| DCIII | Elements 3, 6, 9 @ 40% each | 36.67 | 35.69 | 2.68% |
+where (βL)ₙ values for fixed-fixed beam are: Mode 1 = 4.730041, Mode 2 = 7.853205, Mode 3 = 10.995608 (Gautam et al., 2016, Table 3).
 
-![FE Model of Fixed-Fixed Beam](docs/figures/khan_validation/fe_model_khan.png)
+**Table 4.2: Three-Way Validation for Fixed-Fixed Beam**
 
-**Figure 4.1:** Finite element model of the fixed-fixed beam based on Khan et al. (2020). The beam is discretized into 12 Euler-Bernoulli elements with 13 nodes, where each node has 2 degrees of freedom (transverse displacement v and rotation θ). Fixed boundary conditions are applied at both ends, constraining all four DOFs at the supports (v₁ = θ₁ = v₁₃ = θ₁₃ = 0). Element numbers (1-12) are displayed at the center of each element, while node numbers (1-13) appear above the beam. The figure illustrates the fundamental discretization scheme used for modal analysis, which is identical in structure to the RC beam model used in this thesis—only the material properties differ.
+| Mode | Gautam et al. (2016) ANSYS (Hz) | Our Python FEM (Hz) | Theoretical EBT (Hz) | Error vs ANSYS |
+|------|--------------------------------|---------------------|----------------------|----------------|
+| 1 | 132.04 | 131.49 | 131.49 | 0.42% |
+| 2 | 357.80 | 362.47 | 362.46 | 1.30% |
+| 3 | 687.19 | 710.61 | 710.57 | 3.41% |
 
-![Validation Comparison](docs/figures/khan_validation/validation_comparison.png)
+![FE Model of Fixed-Fixed Beam](docs/figures/gautam_validation/fe_model_gautam.png)
 
-**Figure 4.2:** Three-way validation comparison between Khan et al. (2020) published FEM results, our Python FEM implementation, and theoretical Euler-Bernoulli solutions. The left panel shows intact beam frequencies for Modes 1-3, where all three sources show near-perfect agreement (errors < 0.02%). The right panel compares Mode 1 frequencies across four structural states: Intact, DCI (single damage), DCII (double damage), and DCIII (triple damage). The close agreement between green bars (Khan) and blue bars (Our FEM) confirms that our implementation correctly replicates the published results. This validation establishes confidence in the FEM methodology before applying it to RC beam simulations.
+**Figure 4.1:** Finite element model of the fixed-fixed beam based on Gautam et al. (2016). The beam is discretized into 20 Euler-Bernoulli elements with 21 nodes, where each node has 2 degrees of freedom (transverse displacement v and rotation θ). Fixed boundary conditions are applied at both ends, constraining all four DOFs at the supports. The material and geometric properties match those specified in Table 4 of the original study: mild steel beam with L = 2.0 m, b = 0.3 m, h = 0.1 m, E = 205 GPa, and ρ = 7830 kg/m³.
 
-![Damage Indicators](docs/figures/khan_validation/damage_indicators.png)
+![Validation Comparison](docs/figures/gautam_validation/validation_comparison.png)
 
-**Figure 4.3:** Damage localization indicators (β) for the three damage cases from Khan et al. (2020). Each subplot shows the stiffness reduction factor applied to specific elements: DCI has 35% damage at element 6, DCII has 25% at element 3 and 30% at element 8, and DCIII has 40% damage at elements 3, 6, and 9. Red bars highlight damaged elements, while blue bars represent undamaged elements. In a real damage detection scenario, these indicators would be computed from measured frequency changes using the Iterative Modal Strain Energy (IMSE) method described by Khan et al. (2020). The visualization demonstrates that localized damage produces identifiable patterns in the damage indicator, enabling both damage localization and quantification.
+**Figure 4.2:** Three-way validation comparison between Gautam et al. (2016) ANSYS results, our Python FEM implementation, and theoretical Euler-Bernoulli solutions. All three sources show close agreement, with Mode 1 showing excellent correlation (0.42% error). The increasing error for higher modes (1.30% for Mode 2, 3.41% for Mode 3) is expected because Gautam et al. used 3D Solid185 elements in ANSYS that capture shear deformation effects neglected in Euler-Bernoulli theory. This validation establishes confidence in the FEM methodology.
+
+![Mode Shapes](docs/figures/gautam_validation/mode_shapes.png)
+
+**Figure 4.3:** Mode shapes computed from our Python FEM simulation for the first three vibration modes of the fixed-fixed beam. The shapes are extracted directly from the eigenvectors of the generalized eigenvalue problem [K]φ = ω²[M]φ. The deformed shapes are visualized with color gradients representing displacement magnitude (blue = minimum, red = maximum). Mode 1 shows a single half-wave with maximum deflection at mid-span (f₁ = 131.49 Hz). Mode 2 exhibits two half-waves with a node at the center (f₂ = 362.47 Hz). Mode 3 displays three half-waves (f₃ = 710.61 Hz). These mode shapes match the characteristic patterns for fixed-fixed boundary conditions as shown in Gautam et al. (2016) Figure 7, validating both the frequency values and deformation behavior computed by our implementation.
 
 **Validation Summary:**
 
-The validation against Khan et al. (2020) demonstrates excellent agreement:
+The validation against Gautam et al. (2016) demonstrates good agreement:
 
-1. **Intact beam:** All three modes show errors below 0.02%, confirming correct implementation of the eigenvalue solver, matrix assembly, and fixed-fixed boundary conditions.
+1. **Mode 1:** Error of 0.42% confirms correct implementation of the eigenvalue solver, matrix assembly, and fixed-fixed boundary conditions.
 
-2. **Single damage (DCI):** Near-perfect agreement (0.002% error) validates the element-level stiffness reduction approach for localized damage.
+2. **Modes 2 and 3:** Errors of 1.30% and 3.41% respectively are within acceptable engineering tolerances. The increasing error with mode number is characteristic of the difference between Euler-Bernoulli theory (used in our implementation) and 3D finite element analysis (used in ANSYS).
 
-3. **Multiple damage (DCII, DCIII):** Errors remain below 3%, which is acceptable given potential minor implementation differences in damage application methods.
+3. **Theoretical Agreement:** Near-perfect agreement between our FEM and theoretical Euler-Bernoulli values (< 0.01% difference) confirms correct implementation of the beam theory equations.
 
-The maximum error of 2.68% for the DCIII case (triple damage) falls within acceptable engineering tolerances and is likely attributable to differences in how stiffness reduction is distributed within damaged elements.
+**Understanding the Error Pattern:**
+
+The systematic increase in error with mode number is expected and well-understood:
+
+- Gautam et al. (2016) used ANSYS Solid185 elements, which are 3D solid elements that capture shear deformation and rotary inertia effects
+- Our implementation uses classical Euler-Bernoulli beam theory, which neglects these effects
+- Higher modes involve shorter wavelengths where shear effects become more significant
+- For the beam slenderness ratio L/h = 20, Euler-Bernoulli theory is appropriate for the first few modes
 
 **Justification for Using Steel Beam Validation for RC Beam Analysis:**
 
-Although Khan et al. (2020) used a steel beam, this validation remains appropriate for the RC beam analysis in this thesis for the following reasons:
+Although Gautam et al. (2016) used a steel beam, this validation remains appropriate for the RC beam analysis in this thesis for the following reasons:
 
-1. **Material-Independent FEM Formulation:** The Euler-Bernoulli beam finite element formulation is material-agnostic. The element stiffness and mass matrices depend only on the product EI (flexural rigidity), element length, cross-sectional area, and density. Whether these properties come from steel (E = 210 GPa) or concrete (E = 25-33 GPa), the mathematical formulation and eigenvalue solution procedure remain identical (Bathe, 2014; Zienkiewicz & Taylor, 2000).
+1. **Material-Independent FEM Formulation:** The Euler-Bernoulli beam finite element formulation is material-agnostic. The element stiffness and mass matrices depend only on the product EI (flexural rigidity), element length, cross-sectional area, and density. Whether these properties come from steel (E = 205 GPa) or concrete (E = 25-33 GPa), the mathematical formulation and eigenvalue solution procedure remain identical (Bathe, 2014; Zienkiewicz & Taylor, 2000).
 
 2. **Validation Target:** The validation confirms correct implementation of:
    - Global matrix assembly from element contributions
    - Boundary condition application (fixed-fixed constraints)
    - Eigenvalue solver accuracy (scipy.linalg.eigh)
-   - Stiffness reduction damage modeling approach
 
    These computational procedures are independent of material type.
 
-3. **RC Material Properties Validated Separately:** The concrete-specific aspects (ACI 318-19 elastic modulus formula, corrosion-stiffness relationship) are validated against Zhang et al. (2020) experimental RC beam data in Section 4.2.5. This separation of concerns—FEM methodology validated against Khan (steel) and material model validated against Zhang (RC)—provides comprehensive validation coverage.
+3. **RC Material Properties Validated Separately:** The concrete-specific aspects (ACI 318-19 elastic modulus formula, corrosion-stiffness relationship) are validated against Zhang et al. (2020) experimental RC beam data in Section 4.2.5. This separation of concerns provides comprehensive validation coverage.
 
-4. **Established Practice in Literature:** Similar validation approaches are common in structural engineering research. Das (2023) validated FEM for various materials using the same Euler-Bernoulli implementation, demonstrating that beam theory validation transfers across material types when the theory's underlying assumptions (slender beam, linear elastic behavior) are satisfied.
+4. **Damage Modeling Methodology:** Damage is modeled using the established stiffness reduction method, which has been extensively validated in the literature (Rodriguez et al., 1997; Cairns et al., 2005; Chondros et al., 1998). The effective moment of inertia is reduced proportionally to damage severity following Equation 6. This approach is well-established for both corrosion-induced degradation and localized crack damage.
 
-**Dual-Validation Framework:**
+**Validation Framework:**
 
-This thesis employs two complementary seed papers for validation:
+This thesis employs a comprehensive validation approach:
 
 | Validation Aspect | Reference | Purpose |
 |------------------|-----------|---------|
-| **Simulation Methodology** | Khan et al. (2020) | Validates FEM for fixed-fixed beams with damage |
-| **Machine Learning Performance** | Das (2023) | Benchmarks ML model accuracy against literature |
+| **FEM Methodology** | Gautam et al. (2016) | Validates FEM for fixed-fixed beams against ANSYS |
+| **RC Material Model** | Zhang et al. (2020) | Validates corrosion-frequency relationship |
+| **ML Performance** | Das (2023) | Benchmarks ML model accuracy against literature |
+| **Damage Modeling** | Rodriguez et al. (1997), Cairns et al. (2005) | Validates stiffness reduction approach |
 
-This dual-validation approach ensures both the simulation data quality and ML model performance meet established standards in the field. Khan et al. (2020) validates the fixed-fixed boundary condition directly relevant to this thesis, while Das (2023) provides ML accuracy benchmarks for beam frequency prediction.
+This computational validation approach follows standard practice in numerical methods research where analytical and validated software results serve as reference benchmarks.
 
 ### 4.2.4 Convergence Analysis
 
@@ -742,7 +748,7 @@ A mesh convergence study showed that 20 elements provide sufficient accuracy (er
 
 ### 4.2.5 Comparison with Literature Experimental Data (RC Beam Validation)
 
-While Section 4.2.3 validated the FEM methodology using Khan et al. (2020) steel beam data, this section validates the **reinforced concrete material model** against Zhang et al. (2020) experimental results. This is crucial because RC beams have material-specific behavior that must be captured accurately.
+While Section 4.2.3 validated the FEM methodology using Gautam et al. (2016) steel beam data, this section validates the **reinforced concrete material model** against Zhang et al. (2020) experimental results. This is crucial because RC beams have material-specific behavior that must be captured accurately.
 
 **Zhang et al. (2020) Experimental Study:**
 
@@ -764,7 +770,7 @@ Zhang et al. conducted accelerated corrosion tests on RC beams (2000 × 150 × 5
 
 ![Dual Validation Framework](docs/figures/rc_validation/dual_validation_framework.png)
 
-**Figure 4.5:** Overview of the dual-validation framework employed in this thesis. The left box shows FEM methodology validation against Khan et al. (2020), which used a steel beam with identical boundary conditions and beam theory. The right box shows RC material model validation against Zhang et al. (2020) experimental data and ML benchmarking against Das (2023). The combined approach ensures both simulation accuracy and ML model performance meet established standards in the field. This separation of concerns—validating computational methodology independently from material modeling—provides comprehensive quality assurance for the generated dataset.
+**Figure 4.5:** Overview of the validation framework employed in this thesis. The left box shows FEM methodology validation against Gautam et al. (2016), which used ANSYS 14.5 with Solid185 elements for a steel beam with fixed-fixed boundary conditions. The right box shows RC material model validation against Zhang et al. (2020) experimental data and ML benchmarking against Das (2023). The combined approach ensures both simulation accuracy and ML model performance meet established standards in the field. This separation of concerns—validating computational methodology independently from material modeling—provides comprehensive quality assurance for the generated dataset.
 
 **Key Observations from RC Validation:**
 
@@ -1375,7 +1381,7 @@ The results provide a solid foundation for developing machine learning models fo
 
 This chapter synthesizes findings from the investigation into machine learning-based prediction of natural frequencies for fixed reinforced concrete beams. The research addressed a specific gap: while ML models had proven successful for metallic beams, no comprehensive framework existed for RC structures under fixed-fixed boundary conditions. Through systematic FEM simulation and ML modeling, a validated approach has been developed that fills this gap and demonstrates practical value for structural health monitoring applications.
 
-The research employed a dual-validation framework using two primary seed papers: Khan et al. (2020) for validating the FEM simulation methodology (fixed-fixed beam with damage detection), and Das (2023) for benchmarking ML model performance (regression models for beam frequency prediction). This approach ensures both the simulation data quality and the ML model accuracy meet established standards in the field.
+The research employed a comprehensive validation framework: Gautam et al. (2016) for validating the FEM simulation methodology (fixed-fixed beam against ANSYS results), Zhang et al. (2020) for validating the RC material model and damage-frequency relationship, and Das (2023) for benchmarking ML model performance. This approach ensures both the simulation data quality and the ML model accuracy meet established standards in the field.
 
 The progression from research questions through methodology development, validation, and performance analysis yields insights applicable to both researchers and practicing engineers. This chapter summarizes key findings, evaluates achievement of research objectives, acknowledges limitations, and identifies directions for future investigation.
 
@@ -1389,7 +1395,7 @@ Assessment of the three research objectives established in Chapter 1 reveals the
 
 This objective targeted prediction accuracy of R² ≥ 0.95 on independent test data to determine whether ML can achieve performance comparable to existing work on metallic beams. This objective was achieved and exceeded. The best-performing model (CatBoost) achieved R² = 0.989 with MAE of 3.00 Hz—significantly exceeding the initial goal and matching Das (2023) who reported 98.78 percent accuracy for steel beams using Support Vector Machines.
 
-The dataset supporting this achievement comprises 3,000 samples from FEM simulations with comprehensive validation. The simulation methodology was validated against Khan et al. (2020) fixed-fixed beam results, achieving errors below 0.02% for intact beams and below 3% for damage cases. Additional three-way validation against theoretical Euler-Bernoulli solutions confirmed implementation accuracy. For ML benchmarking, results were compared to Das (2023), with CatBoost matching or exceeding their 98.78-98.88% accuracy achieved for metallic beams. The dataset encompasses a comprehensive parameter space: beam lengths from 3 to 8 meters, cross-sectional dimensions ranging from 0.2×0.3 m to 0.5×0.7 m, concrete strengths between 25 and 50 MPa, and damage severities up to 20 percent. Latin Hypercube Sampling ensured uniform coverage across this five-dimensional space, avoiding clustering problems that simple random sampling would create.
+The dataset supporting this achievement comprises 3,000 samples from FEM simulations with comprehensive validation. The simulation methodology was validated against Gautam et al. (2016) ANSYS results for fixed-fixed beams, achieving errors below 0.5% for Mode 1 and within acceptable tolerances for higher modes. Three-way validation against theoretical Euler-Bernoulli solutions confirmed implementation accuracy. For ML benchmarking, results were compared to Das (2023), with CatBoost matching or exceeding their 98.78-98.88% accuracy achieved for metallic beams. The dataset encompasses a comprehensive parameter space: beam lengths from 3 to 8 meters, cross-sectional dimensions ranging from 0.2×0.3 m to 0.5×0.7 m, concrete strengths between 25 and 50 MPa, and damage severities up to 20 percent. Latin Hypercube Sampling ensured uniform coverage across this five-dimensional space, avoiding clustering problems that simple random sampling would create.
 
 **Objective 2: Perform Comprehensive Comparative Analysis of Regression Algorithms (Addresses RQ2)**
 
@@ -1932,7 +1938,7 @@ Although focused on fixed-fixed RC beams, the methodology is generalizable to ot
 
 28. Inman, D. J. (2014). *Engineering Vibration* (4th ed.). Pearson.
 
-29. Khan, M. W., Din, N. A., & Haq, R. U. (2020). Damage detection in a fixed-fixed beam using natural frequency changes. *Vibroengineering Procedia*, 30, 38-43. https://doi.org/10.21595/vp.2019.21081
+29. Gautam, A., Sharma, J. K., & Gupta, P. (2016). Modal analysis of beam through analytically and FEM. In *International Conference on Innovative Trends in Science, Engineering and Management* (pp. 375-383). ICITSEM-16, New Delhi, India. IBSN: 978-81-932074-9-9.
 
 30. Laory, I., Trinh, T. N., Smith, I. F., & Brownjohn, J. M. (2018). Methodologies for predicting natural frequency variation of a suspension bridge. *Engineering Structures*, 80, 211-221.
 
@@ -1992,7 +1998,7 @@ Project/
 │   ├── damage_models.py     # Corrosion and crack damage modeling
 │   └── outputs/             # Generated datasets and figures
 ├── scripts/
-│   ├── validate_khan_2020.py    # Khan et al. validation script
+│   ├── validate_gautam_2016.py  # Gautam et al. validation script
 │   ├── validate_rc_beam.py      # RC material model validation
 │   └── hyperparameter_tuning.py # ML optimization scripts
 └── model_training.ipynb     # Jupyter notebook with ML pipeline
