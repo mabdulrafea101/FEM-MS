@@ -1,11 +1,271 @@
-.ipynb_checkpoints
-__pycache__
+# ============================================================================
+# MS Research FYP - Git Ignore Configuration
+# ============================================================================
+# This .gitignore file maintains only essential files for the thesis:
+# - Latest simulation code and models (CatBoost, scaler)
+# - Final figures used in documentation
+# - Core markdown documentation and DOCX output
+# - Configuration and plan files
+#
+# Excluded: Temporary files, old DOCX versions, debug outputs, notebooks,
+#           PDFs, draft files, and intermediate simulation data
+# ============================================================================
+
+# ============================================================================
+# PYTHON & DEPENDENCIES
+# ============================================================================
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
 .venv
 .venv12
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pytest
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# ============================================================================
+# NODE & JAVASCRIPT
+# ============================================================================
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+package-lock.json
+
+# ============================================================================
+# IDE & EDITOR
+# ============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.env.local
+.env.*.local
+
+# ============================================================================
+# TEMPORARY & INTERMEDIATE FILES
+# ============================================================================
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================================================
+# SIMULATION & ML OUTPUTS TO EXCLUDE
+# ============================================================================
+# Old training notebooks and exploration files
+model_training.ipynb
+simple_extract.py
+pdf_extract_helper.py
 extract_new_pdf.py
-help.pdf
-new_pdf_content.txt
+
+# Old conversion scripts (keeping only latest: generate_thesis_docx.js)
+convert_md_to_docx.js
+convert_md_to_docx_enhanced.js
+create_final_thesis.js
+
+# CatBoost training outputs
+catboost_info/
+*.catboost_info
+
+# Old and intermediate DOCX files (keeping only MS_FINAL_THESIS.docx)
+MS_Thesis_Document.docx
+MS_Thesis_ch_1_2_3.docx
+thesis_final_formatted.docx
+
+# Unpacked DOCX directories (intermediate processing)
+docx_unpacked/
+
+# Simulation logs and intermediate outputs
+simulation/logs/
+simulation/outputs/
+
+# Old markdown chapters (keeping only documentation_humanized.md)
+Chapters_1_2_3_Only.md
+
+# ============================================================================
+# DOCUMENTATION TO EXCLUDE
+# ============================================================================
+# Old specs and planning documents
+specs.md
+project-plan.md
 project_guideline.pdf
-help_content_extracted.txt
 help_extracted.txt
 new_pdf_content.txt
+
+# Old evaluation documents (keeping only CRITICAL_EVALUATION.md, RE_EVALUATION.md)
+# These are already in use
+
+# ============================================================================
+# RESEARCH MATERIALS TO EXCLUDE
+# ============================================================================
+# PDF files (too large, keep only essential ones)
+*.pdf
+# Exception: Reference PDFs (listed below as allowed)
+
+# Research papers and drafts
+refrences/
+draft/
+research_papers/
+
+# ============================================================================
+# DATA FILES TO EXCLUDE
+# ============================================================================
+# Old and intermediate data
+beam_vibration_dataset.csv
+*.csv
+*.xlsx
+*.xls
+*.json
+*.xml
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================================================
+# ARCHIVES & COMPRESSION
+# ============================================================================
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# ============================================================================
+# OS FILES
+# ============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+$RECYCLE.BIN/
+.AppleDouble
+.LSOverride
+
+# ============================================================================
+# KEEP: ESSENTIAL FILES (Whitelist)
+# ============================================================================
+# Add exceptions for files that should be tracked
+# (Git will ignore patterns above but not these)
+
+# Model files (keep latest)
+!simulation/models/
+!simulation/models/best_model_CatBoost.pkl
+!simulation/models/scaler.pkl
+
+# Validation figures (keep all - used in document)
+!docs/figures/
+!docs/figures/validation_studies/
+!docs/figures/validation_studies/mesh_convergence_study.png
+!docs/figures/validation_studies/mode_shape_validation.png
+!docs/figures/validation_studies/damage_factor_sensitivity.png
+!docs/figures/validation_studies/uncertainty_propagation.png
+!docs/figures/validation_studies/zhang_comparison.png
+
+# Gautam validation figures (used in document)
+!docs/figures/gautam_validation/
+!docs/figures/gautam_validation/fe_model_gautam.png
+!docs/figures/gautam_validation/validation_comparison.png
+!docs/figures/gautam_validation/mode_shapes.png
+
+# ML figures (used in document)
+!simulation/outputs/ml_figures/
+!simulation/outputs/ml_figures/parameter_distributions.png
+!simulation/outputs/ml_figures/correlation_matrix.png
+!simulation/outputs/ml_figures/damage_vs_frequency.png
+
+# Dataset figure (used in document)
+!simulation/outputs/figures/
+!simulation/outputs/figures/dataset_distribution.png
+
+# Core simulation code (keep latest)
+!simulation/src/
+!simulation/src/*.py
+
+# Test files
+!simulation/tests/
+!simulation/tests/validation.py
+
+# Latest scripts (keep only current versions)
+!scripts/
+!scripts/comprehensive_validation.py
+!scripts/validate_gautam_2016.py
+!scripts/generate_thesis_docx.js
+
+# Documentation files (keep)
+!documentation_humanized.md
+!CRITICAL_EVALUATION.md
+!RE_EVALUATION.md
+!REVISION_CHECKLIST.md
+!FINAL_SUBMISSION_SUMMARY.md
+
+# Thesis output (keep)
+!MS_FINAL_THESIS.docx
+
+# Configuration files
+!.claude/
+!.claude/CLAUDE.md
+!.claude/plans/
+
+# ============================================================================
+# NOTES
+# ============================================================================
+# This .gitignore configuration ensures minimal repository bloat while
+# maintaining all essential files needed for:
+# 1. Thesis defense and committee submission
+# 2. Reproducibility of ML models
+# 3. Validation studies and evidence
+# 4. Future publication/sharing
+#
+# Total tracked files: ~30 files
+# Approximate repo size: ~5-10 MB
+# ============================================================================

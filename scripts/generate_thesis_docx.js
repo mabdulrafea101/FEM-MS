@@ -76,8 +76,9 @@ function parseMarkdown(content) {
       tableRows = [];
     }
 
-    // Handle horizontal rules
+    // Handle horizontal rules (--- = page break after chapters)
     if (line.match(/^---+$/)) {
+      elements.push({ type: 'pagebreak' });
       i++;
       continue;
     }
@@ -195,7 +196,7 @@ function createParagraph(text, options = {}) {
 
   return new Paragraph({
     children: runs,
-    spacing: { after: 200, line: 360 },
+    spacing: { after: 240, line: 360, lineRule: "auto" }, // 1.5 line spacing
     alignment: options.alignment || AlignmentType.JUSTIFIED,
     indent: options.indent,
   });
@@ -218,7 +219,8 @@ function createHeading(text, level) {
       }),
     ],
     heading: headingLevel,
-    spacing: { before: level === 1 ? 480 : 360, after: 240, line: 360 },
+    spacing: { before: level === 1 ? 480 : 360, after: 240, line: 360, lineRule: "auto" },
+    pageBreakBefore: level === 1 && text.startsWith('Chapter'), // Page break before chapters
   });
 }
 
@@ -375,15 +377,14 @@ async function createThesisDocument() {
 
   // Build document children
   const children = [];
-  let pageBreakNeeded = false;
 
   for (const el of elements) {
-    // Add page break before major chapters
-    if (el.type === 'heading' && el.level === 1 && children.length > 0) {
-      children.push(new Paragraph({ children: [new PageBreak()] }));
-    }
-
     switch (el.type) {
+      case 'pagebreak':
+        // Add explicit page break after --- markers
+        children.push(new Paragraph({ children: [new PageBreak()] }));
+        break;
+
       case 'heading':
         children.push(createHeading(el.text, el.level));
         break;
@@ -536,12 +537,17 @@ async function createThesisDocument() {
   // Generate the document
   console.log("Generating DOCX file...");
   const buffer = await Packer.toBuffer(doc);
-  const outputPath = path.join(BASE_PATH, "MS_Thesis_Document.docx");
+  const outputPath = path.join(BASE_PATH, "MS_FINAL_THESIS.docx");
   fs.writeFileSync(outputPath, buffer);
 
   console.log(`\n✓ Document created successfully!`);
   console.log(`  Location: ${outputPath}`);
   console.log(`  Size: ${(buffer.length / 1024).toFixed(1)} KB`);
+  console.log(`\nFormatting applied:`);
+  console.log(`  - Line spacing: 1.5`);
+  console.log(`  - Font: Times New Roman, 12pt (24 half-points)`);
+  console.log(`  - Page breaks after --- markers`);
+  console.log(`  - Chapters start on new pages`);
 
   return outputPath;
 }
