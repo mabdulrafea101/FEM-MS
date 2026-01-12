@@ -8,9 +8,9 @@ Reinforced concrete beams form the structural backbone of buildings and bridges 
 
 This research addresses a gap in the literature: the absence of machine learning models developed specifically for fixed-fixed reinforced concrete beams. While previous studies have successfully predicted frequencies for steel and aluminum beams, reinforced concrete with fixed boundary conditions remains largely unexplored. This gap is significant because fixed supports are prevalent in building frames and bridge connections.
 
-The methodology combines finite element simulations based on Euler-Bernoulli beam theory with five machine learning algorithms. A dataset of 3,000 beam samples was generated using Latin Hypercube Sampling, covering beam lengths from 3 to 8 meters, widths from 0.2 to 0.5 meters, depths from 0.3 to 0.7 meters, concrete strengths between 25 and 50 MPa, and corrosion damage levels up to 20 percent. Damage was modeled using stiffness reduction methods validated by previous experimental studies.
+The methodology combines finite element simulations based on Euler-Bernoulli beam theory with five machine learning algorithms. A dataset of 3,000 beam samples was generated using Latin Hypercube Sampling, covering beam lengths from 3 to 8 meters, widths from 0.2 to 0.5 meters, depths from 0.3 to 0.7 meters, concrete strengths between 25 and 50 MPa, and corrosion damage levels up to 20 percent. Damage was modeled using the stiffness reduction method established by Rodriguez et al. (1997) and Cairns et al. (2005). The FEM implementation was validated against published ANSYS results from Gautam et al. (2016) for fixed-fixed steel beams, achieving errors below 0.01% compared to theoretical solutions. The corrosion-frequency relationship was validated by comparing sensitivity coefficients against Zhang et al. (2020) experimental data for RC beams.
 
-The results demonstrate that machine learning can predict frequencies with high accuracy for this structural type. CatBoost achieved the best performance with R² = 0.989 and MAE = 3.00 Hz. The developed methodology enables rapid structural assessments, allowing engineers to screen dozens or hundreds of beams in minutes rather than hours. This framework can be extended to other structural elements and damage scenarios.
+The results demonstrate that machine learning can predict frequencies with high accuracy on this simulation-generated dataset. CatBoost achieved the best performance with R² = 0.989 and MAE = 3.00 Hz. When material property uncertainties are considered (Monte Carlo analysis with ±10% elastic modulus and ±15% compressive strength variation), the combined FEM and ML prediction uncertainty is estimated at approximately ±7-8%. This simulation-based framework provides a foundation for rapid preliminary assessments, though field deployment would require additional experimental validation.
 
 **Keywords:** Machine Learning, Natural Frequency, Reinforced Concrete, Finite Element Method, Structural Health Monitoring, Damage Detection
 
@@ -121,9 +121,9 @@ The research objectives directly address the research questions posed in Section
 
 ## 1.5 Significance of the Research
 
-The practical significance of this research is evident in engineering applications. A structural engineer designing a building with dozens of beams faces a computational bottleneck: traditional FEM analysis requires several minutes per beam configuration. For preliminary design work where hundreds of variations require evaluation, this time cost becomes prohibitive. The trained ML models produce predictions in milliseconds.
+The practical significance of this research lies in developing a computational framework for RC beam frequency prediction. While the trained ML models produce predictions in milliseconds compared to approximately 2 milliseconds per simulation for our Python-based FEM implementation, the primary value is methodological: establishing a validated approach for generating large parametric datasets and demonstrating that gradient boosting methods (specifically CatBoost) outperform previously favored algorithms for this problem domain.
 
-This computational advantage is particularly valuable for structural health monitoring. Continuous frequency assessment supports early damage detection, and ML models make real-time monitoring feasible in ways that repeated FEM simulations cannot. The developed framework also provides a template that can be adapted for different structural elements.
+This framework has potential value for preliminary structural assessment scenarios. However, since this study relies entirely on simulation data without experimental validation on physical RC specimens, the practical applicability to field deployment remains to be demonstrated through future experimental work. The developed methodology provides a template that can be adapted for different structural elements once appropriate validation is completed.
 
 ## 1.6 Scope and Limitations
 
@@ -147,13 +147,29 @@ The parameter ranges in Table 1.1 reflect typical RC beam dimensions based on AC
 
 Several limitations apply to this research:
 
-**Boundary Conditions:** Fixed-fixed boundary conditions were selected because they represent the most common configuration in building frames and bridge connections. Other support types require separate models, representing a direction for future work.
+**Boundary Conditions:** Fixed-fixed boundary conditions were selected as they are common in building frames where beams connect rigidly to columns. However, other support configurations (simply supported, cantilever, continuous spans) are also prevalent in practice and would require separate models.
 
-**Validation Approach:** Physical experiments were not conducted. Instead, the FEM implementation was validated through three-way comparison: the Python code against published ANSYS results from Das (2023) and against theoretical closed-form solutions. This approach enabled generation of a large parametric dataset that would have been impractical through physical testing alone.
+**Simulation-Based Approach:** Physical experiments were not conducted. The FEM implementation was validated against published ANSYS results from Gautam et al. (2016) for steel beams and theoretical Euler-Bernoulli solutions. This validation confirms correct implementation of the numerical method but does not directly validate predictions for RC beams with their composite material behavior.
 
-**Temperature Effects:** Temperature effects, which Cai et al. (2021) found cause approximately 0.148 percent frequency change per degree Celsius, were not explicitly modeled. This exclusion is justified because temperature compensation is standard practice in monitoring systems, and the damage-induced frequency changes studied (approximately 0.8 percent per 1 percent corrosion) are substantially larger than typical temperature variations.
+**Material Model Simplification:** Reinforced concrete is modeled using a homogenized elastic modulus from ACI 318-19 (E_c = 4700√f'_c MPa). This simplification treats the composite RC section as homogeneous material, neglecting steel-concrete interaction, cracking behavior, and bond effects. The approach is standard practice but introduces uncertainty not captured in the validation against steel beam benchmarks.
 
-**Material Behavior:** Linear elastic material behavior is assumed throughout. This assumption is valid for service conditions where structures operate well below failure loads. Severely damaged structures approaching collapse would require nonlinear analysis, which falls outside this study's scope.
+**Damage Model Assumptions:** The stiffness reduction method uses a damage factor α = 1.6 × C/100 (where C is corrosion percentage), based on Rodriguez et al. (1997). Sensitivity analysis shows this factor introduces approximately ±1% uncertainty in frequency reduction predictions at moderate corrosion levels (10%). The factor may vary with beam geometry and reinforcement configuration.
+
+**Temperature Effects:** Temperature-induced frequency variations (approximately 0.148% per °C per Cai et al., 2021) were not modeled. Any field deployment would require temperature compensation, which the current ML model does not incorporate.
+
+**Linear Elastic Assumption:** Linear elastic material behavior is assumed throughout, limiting applicability to service conditions. At high damage levels approaching structural failure, nonlinear effects become significant.
+
+### 1.6.3 Implications of Limitations
+
+The limitations described above have specific implications for interpreting the results:
+
+**Validation Scope:** The FEM methodology validation uses steel beam data (Gautam et al., 2016), which confirms the numerical implementation is correct but does not directly validate RC-specific behavior. Extension to RC relies on the homogenized elastic modulus assumption (ACI 318-19), which is standard practice but introduces epistemic uncertainty estimated at ±5-10% based on Monte Carlo analysis with material property variations.
+
+**Uncertainty Quantification:** Monte Carlo analysis with ±10% elastic modulus uncertainty and ±15% compressive strength variation yields frequency predictions with coefficient of variation approximately 6.6%. Combined with ML prediction error, the total uncertainty on real RC beams is estimated at ±7-8%, compared to R² = 0.989 achieved on synthetic data.
+
+**Deployment Barriers:** The current framework is validated for simulation-to-simulation prediction only. Field deployment for actual structural health monitoring would require: (1) experimental validation on physical RC specimens, (2) temperature compensation integration, (3) sensor noise robustness verification, and (4) calibration procedures for site-specific conditions.
+
+**Parameter Range Applicability:** Results are strictly applicable within the studied parameter ranges (L = 3-8m, b = 0.2-0.5m, h = 0.3-0.7m, f'_c = 25-50 MPa, corrosion 0-20%). Extrapolation beyond these ranges is not recommended without additional validation.
 
 ## 1.7 Knowledge Contribution
 
@@ -207,7 +223,15 @@ Cai et al. (2021) studied temperature effects on simply supported RC beams and f
 
 Saha and Yang (2023) developed neural networks for damaged cantilever beams, achieving prediction errors of 0.2 to 3 percent for the first three modes. Their work showed that damage severities of 10 to 30 percent area reduction produced frequency changes from 8.65 Hz to 7.23 Hz, approximately a 16 percent shift.
 
-The relationship between damage and frequency shifts has been extensively studied in the literature. Damage is typically modeled using the stiffness reduction method, which has been validated against experimental studies (Rodriguez et al., 1997; Cairns et al., 2005; Chondros et al., 1998). This approach is well-established for both corrosion-induced degradation and localized crack damage, with the amplification factor derived from experimental observations reflecting bond deterioration and concrete cover degradation beyond simple steel area loss.
+The relationship between damage and frequency shifts has been extensively studied in the literature. Several researchers have developed and validated the stiffness reduction method for modeling corrosion effects:
+
+**Rodriguez et al. (1997)** conducted accelerated corrosion tests on RC beams and established that stiffness degradation exceeds simple steel area loss due to bond deterioration and concrete cover spalling. Their work on specimens with 0-25% corrosion levels established amplification factors relating corrosion percentage to effective stiffness loss.
+
+**Cairns et al. (2005)** extended this work to investigate the relationship between corrosion-induced cracking and structural performance. Their experiments confirmed that stiffness reduction factors of 1.5-1.8 times the corrosion percentage provide reasonable estimates for flexural stiffness loss.
+
+**Chondros et al. (1998)** developed theoretical frameworks for vibration of cracked structures, providing analytical basis for local stiffness reduction modeling.
+
+The stiffness reduction approach used in this thesis (α = 1.6 × C/100, where C is corrosion percentage) is based on these studies. However, it should be noted that this factor was derived from specific experimental conditions and may vary with beam geometry, reinforcement configuration, and corrosion pattern. Sensitivity analysis in this thesis (Section 4.2) examines how results change when α varies from 1.4 to 1.8.
 
 ## 2.3 Finite Element Method for Structural Analysis
 
@@ -231,11 +255,13 @@ For RC beams with length-to-depth ratios ranging from about 4.3 to 26.7, Euler-B
 
 ### 2.3.3 FEM Validation Studies in Literature
 
-Validating FEM implementations against analytical solutions and experimental data is essential. Das (2023) validated FEM code against Euler-Bernoulli theory with errors below 1 percent for various boundary conditions. Mesh convergence studies showed that 20 elements provide sufficient accuracy for beam vibration problems.
+Validating FEM implementations against analytical solutions and benchmark studies is essential for establishing confidence in numerical predictions. Das (2023) validated FEM code against Euler-Bernoulli theory with errors below 1 percent for various boundary conditions. Mesh convergence studies showed that 20 elements provide sufficient accuracy for beam vibration problems.
 
-Gautam et al. (2016) provided valuable validation data for fixed-fixed beam analysis using ANSYS 14.5. Their numerical study on a 2.0 m steel beam compared analytical solutions with finite element results using Solid185 elements. The published frequencies for fixed-fixed boundary condition (f₁ = 132.04 Hz, f₂ = 357.80 Hz, f₃ = 687.19 Hz) serve as reference values for validating fixed-fixed beam implementations. The study demonstrated excellent agreement between analytical Euler-Bernoulli theory and 3D finite element analysis for slender beams.
+Gautam et al. (2016) provided valuable validation data for fixed-fixed beam analysis using ANSYS 14.5. Their numerical study on a 2.0 m **steel** beam (E = 205 GPa, ρ = 7830 kg/m³) compared analytical solutions with finite element results using Solid185 elements. The published frequencies for fixed-fixed boundary condition (f₁ = 132.04 Hz, f₂ = 357.80 Hz, f₃ = 687.19 Hz) serve as reference values for validating the **numerical methodology** of fixed-fixed beam implementations.
 
-Luu (2024) used ABAQUS with the Concrete Damaged Plasticity model for RC beam analysis, demonstrating the importance of proper material modeling for capturing concrete behavior under loading.
+**Important distinction:** Gautam et al.'s validation uses steel (homogeneous, isotropic material), which validates the FEM matrix assembly, boundary condition application, and eigenvalue solver implementation. Extension to RC beams requires additional assumptions about material homogenization (using ACI 318-19 elastic modulus formula) that introduce uncertainties not captured in steel beam validation. This distinction is addressed in Section 4.2.3.
+
+Luu (2024) used ABAQUS with the Concrete Damaged Plasticity model for RC beam analysis, demonstrating that advanced material models exist for capturing nonlinear concrete behavior. However, such models require extensive material characterization and are computationally expensive for large parametric studies. The linear elastic approach adopted in this thesis trades some physical accuracy for computational efficiency suitable for ML dataset generation.
 
 ## 2.4 Machine Learning in Structural Engineering
 
@@ -712,75 +738,186 @@ The systematic increase in error with mode number is expected and well-understoo
 - Higher modes involve shorter wavelengths where shear effects become more significant
 - For the beam slenderness ratio L/h = 20, Euler-Bernoulli theory is appropriate for the first few modes
 
-**Justification for Using Steel Beam Validation for RC Beam Analysis:**
+**Scope and Limitations of Steel Beam Validation:**
 
-Although Gautam et al. (2016) used a steel beam, this validation remains appropriate for the RC beam analysis in this thesis for the following reasons:
+It is important to clearly state what this validation demonstrates and what it does not:
 
-1. **Material-Independent FEM Formulation:** The Euler-Bernoulli beam finite element formulation is material-agnostic. The element stiffness and mass matrices depend only on the product EI (flexural rigidity), element length, cross-sectional area, and density. Whether these properties come from steel (E = 205 GPa) or concrete (E = 25-33 GPa), the mathematical formulation and eigenvalue solution procedure remain identical (Bathe, 2014; Zienkiewicz & Taylor, 2000).
+**What This Validation Confirms:**
+- Correct implementation of Euler-Bernoulli element stiffness and mass matrices
+- Proper assembly of global matrices using the direct stiffness method
+- Correct application of fixed-fixed boundary conditions (eliminating appropriate DOFs)
+- Accurate eigenvalue solution using scipy.linalg.eigh
+- Agreement with established analytical solutions (error < 0.01% vs. theoretical)
 
-2. **Validation Target:** The validation confirms correct implementation of:
-   - Global matrix assembly from element contributions
-   - Boundary condition application (fixed-fixed constraints)
-   - Eigenvalue solver accuracy (scipy.linalg.eigh)
+**What This Validation Does NOT Confirm:**
+- Accuracy of the homogenized elastic modulus approach for RC (ACI 318-19 formula)
+- Validity of treating RC as a homogeneous material (neglecting steel-concrete interaction)
+- Accuracy of the stiffness reduction damage model for corroded RC beams
+- Performance on actual physical RC specimens
 
-   These computational procedures are independent of material type.
+**Extension to RC Beams:**
 
-3. **RC Material Properties Validated Separately:** The concrete-specific aspects (ACI 318-19 elastic modulus formula, corrosion-stiffness relationship) are validated against Zhang et al. (2020) experimental RC beam data in Section 4.2.5. This separation of concerns provides comprehensive validation coverage.
+The extension from validated steel beam methodology to RC beams relies on the following assumptions:
 
-4. **Damage Modeling Methodology:** Damage is modeled using the established stiffness reduction method, which has been extensively validated in the literature (Rodriguez et al., 1997; Cairns et al., 2005; Chondros et al., 1998). The effective moment of inertia is reduced proportionally to damage severity following Equation 6. This approach is well-established for both corrosion-induced degradation and localized crack damage.
+1. **Homogenized Material Model:** RC is treated as homogeneous with E_c = 4700√f'_c MPa (ACI 318-19). This is standard practice but introduces uncertainty because actual RC behavior includes steel-concrete interaction, cracking, and bond effects not captured by a single elastic modulus.
+
+2. **Density Assumption:** Concrete density is assumed as ρ = 2400 kg/m³, typical for normal-weight reinforced concrete (ACI 318-19).
+
+3. **Poisson's Ratio:** Not used in Euler-Bernoulli formulation but typically ν = 0.2 for concrete.
+
+**Uncertainty Estimate:** Monte Carlo analysis (Section 4.2.6) with ±10% elastic modulus and ±15% compressive strength variation shows FEM frequency predictions have coefficient of variation ≈ 6.6%. This represents the epistemic uncertainty introduced by material property assumptions.
 
 **Validation Framework:**
 
-This thesis employs a comprehensive validation approach:
+This thesis employs a layered validation approach:
 
-| Validation Aspect | Reference | Purpose |
-|------------------|-----------|---------|
-| **FEM Methodology** | Gautam et al. (2016) | Validates FEM for fixed-fixed beams against ANSYS |
-| **RC Material Model** | Zhang et al. (2020) | Validates corrosion-frequency relationship |
-| **ML Performance** | Das (2023) | Benchmarks ML model accuracy against literature |
-| **Damage Modeling** | Rodriguez et al. (1997), Cairns et al. (2005) | Validates stiffness reduction approach |
+| Validation Aspect | Reference | What It Validates | Limitation |
+|------------------|-----------|-------------------|------------|
+| **FEM Methodology** | Gautam et al. (2016) | Matrix assembly, BC application, eigenvalue solver | Uses steel, not RC |
+| **RC Material Trend** | Zhang et al. (2020) | Corrosion-frequency sensitivity (≈0.8%/1%) | Qualitative comparison, different BC |
+| **Damage Factor** | Rodriguez et al. (1997) | Stiffness reduction approach | Based on specific test conditions |
+| **ML Benchmark** | Das (2023) | ML model accuracy on beam frequency | Uses steel/aluminum beams |
 
-This computational validation approach follows standard practice in numerical methods research where analytical and validated software results serve as reference benchmarks.
+This approach validates the numerical methodology against steel beam benchmarks and the RC corrosion-frequency relationship against experimental trends. However, it does not constitute direct experimental validation of RC frequency predictions. The combined uncertainty from FEM assumptions and ML prediction error is estimated at ±7-8% for predictions on real RC beams.
 
-### 4.2.4 Convergence Analysis
+### 4.2.4 Mesh Convergence Analysis
 
-A mesh convergence study showed that 20 elements provide sufficient accuracy (error below 0.01%) while maintaining computational efficiency. Further refinement beyond 20 elements yielded negligible improvements.
+A systematic mesh convergence study was conducted to determine the minimum number of elements required for accurate frequency predictions.
 
-### 4.2.5 Comparison with Literature Experimental Data (RC Beam Validation)
+**Table 4.3: Mesh Convergence Results (Gautam Steel Beam Parameters)**
 
-While Section 4.2.3 validated the FEM methodology using Gautam et al. (2016) steel beam data, this section validates the **reinforced concrete material model** against Zhang et al. (2020) experimental results. This is crucial because RC beams have material-specific behavior that must be captured accurately.
+| Elements | Mode 1 (Hz) | Error % | Mode 2 (Hz) | Error % | Mode 3 (Hz) | Error % |
+|----------|-------------|---------|-------------|---------|-------------|---------|
+| 4 | 131.67 | 0.133 | 365.81 | 0.925 | 725.74 | 2.136 |
+| 8 | 131.50 | 0.008 | 362.69 | 0.063 | 712.25 | 0.237 |
+| 10 | 131.50 | 0.004 | 362.55 | 0.026 | 711.27 | 0.099 |
+| 20 | 131.49 | 0.0002 | 362.47 | 0.002 | 710.61 | 0.006 |
+| 40 | 131.49 | 0.0000 | 362.46 | 0.0001 | 710.57 | 0.0004 |
+| Theory | 131.49 | - | 362.46 | - | 710.57 | - |
+
+![Mesh Convergence Study](docs/figures/validation_studies/mesh_convergence_study.png)
+
+**Figure 4.3a:** Mesh convergence study showing frequency convergence and error reduction as element count increases. Left panel shows frequencies approaching theoretical values. Right panel shows error reduction on logarithmic scale, with 20 elements achieving errors below 0.01% for all three modes.
+
+**Conclusions from Convergence Study:**
+- 20 elements achieve errors below 0.01% compared to theoretical Euler-Bernoulli solutions
+- Further refinement provides negligible improvement (diminishing returns beyond 20 elements)
+- Computational cost increases linearly with element count while accuracy improvement is logarithmic
+- 20 elements selected as optimal balance between accuracy and computational efficiency for dataset generation
+
+### 4.2.4.1 Mode Shape Validation
+
+In addition to frequency validation, mode shapes were validated against analytical Euler-Bernoulli solutions using the Modal Assurance Criterion (MAC).
+
+![Mode Shape Validation](docs/figures/validation_studies/mode_shape_validation.png)
+
+**Figure 4.3b:** Mode shape validation comparing FEM-computed mode shapes (red points) against analytical Euler-Bernoulli solutions (blue lines) for the first three modes. Upper panels show direct comparison; lower panels show error distribution. MAC values of 1.000 for all three modes confirm perfect correlation between FEM and analytical mode shapes.
+
+**Table 4.3a: Modal Assurance Criterion (MAC) Values**
+
+| Mode | MAC Value | Interpretation |
+|------|-----------|----------------|
+| 1 | 1.000000 | Perfect correlation |
+| 2 | 1.000000 | Perfect correlation |
+| 3 | 1.000000 | Perfect correlation |
+
+The MAC = 1.0 results confirm that the FEM implementation correctly computes both eigenvalues (frequencies) and eigenvectors (mode shapes), providing comprehensive validation of the eigenvalue solver.
+
+### 4.2.5 Damage Factor Sensitivity Analysis
+
+The damage model uses α = 1.6 × C/100, where C is corrosion percentage. To quantify uncertainty from this parameter choice, sensitivity analysis was conducted with α = 1.4, 1.6, and 1.8.
+
+![Damage Factor Sensitivity](docs/figures/validation_studies/damage_factor_sensitivity.png)
+
+**Figure 4.3c:** Sensitivity of frequency reduction predictions to damage factor α. Left panel shows frequency reduction vs. corrosion for three α values. Right panel shows the uncertainty band resulting from α selection.
+
+**Table 4.3b: Frequency Reduction (%) for Different Damage Factors**
+
+| Corrosion % | α = 1.4 | α = 1.6 | α = 1.8 | Spread (±) |
+|-------------|---------|---------|---------|------------|
+| 5 | 3.5 | 4.1 | 4.6 | ±0.6 |
+| 10 | 7.3 | 8.4 | 9.5 | ±1.1 |
+| 15 | 11.2 | 12.8 | 14.5 | ±1.7 |
+| 20 | 15.2 | 17.5 | 20.0 | ±2.4 |
+
+**Conclusion:** Selection of α = 1.6 (based on Rodriguez et al., 1997) introduces approximately ±1% uncertainty in frequency reduction predictions at moderate corrosion levels (10%). This uncertainty is smaller than the combined FEM and ML prediction uncertainty (±7-8%) and does not significantly affect the overall conclusions.
+
+### 4.2.6 Uncertainty Propagation Analysis
+
+Monte Carlo simulation was conducted to propagate material property uncertainty through the FEM model.
+
+**Uncertainty Assumptions:**
+- Compressive strength f'_c: ±15% coefficient of variation
+- Elastic modulus E: ±10% coefficient of variation (in addition to f'_c variation through ACI formula)
+- Density ρ: ±5% coefficient of variation
+
+![Uncertainty Propagation](docs/figures/validation_studies/uncertainty_propagation.png)
+
+**Figure 4.3d:** Monte Carlo uncertainty propagation (n=1000 samples). Left and center panels show frequency distributions for Mode 1 and Mode 2. Right panel shows contribution of each parameter to frequency uncertainty.
+
+**Table 4.3c: Monte Carlo Results (n=1000 samples)**
+
+| Statistic | Mode 1 (Hz) | Mode 2 (Hz) |
+|-----------|-------------|-------------|
+| Nominal | 67.33 | 185.60 |
+| MC Mean | 67.20 | 185.25 |
+| MC Std Dev | 4.41 | 12.15 |
+| CV (%) | 6.56 | 6.56 |
+| 95% CI | [58.6, 76.1] | [161.5, 209.7] |
+
+**Implications:** The FEM frequency predictions have coefficient of variation ≈ 6.6% due to material property uncertainties. Combined with ML prediction error (MAE = 3 Hz, approximately 1-2% of mean frequency), the total uncertainty on real RC beams is estimated at approximately ±7-8%. This is significantly larger than the R² = 0.989 achieved on synthetic data would suggest, and should be considered when interpreting prediction reliability.
+
+### 4.2.7 Comparison with Zhang et al. (2020) Experimental Data
+
+While Section 4.2.3 validated the FEM methodology using Gautam et al. (2016) steel beam data, this section compares the corrosion-frequency relationship against Zhang et al. (2020) experimental observations on RC beams.
 
 **Zhang et al. (2020) Experimental Study:**
 
 Zhang et al. conducted accelerated corrosion tests on RC beams (2000 × 150 × 50 mm) with HRB335 steel reinforcement. Their key finding was that corrosion levels from 0-15% produced measurable frequency reductions following a predictable pattern, with the second mode being more sensitive to damage than the first. Importantly, frequency changes were detectable before visible surface cracking appeared.
 
-**Table 4.4: Validation of Corrosion-Frequency Relationship**
+**Quantitative Comparison with Zhang et al. (2020) Beam:**
 
-| Corrosion Level | Zhang et al. (2020) Experimental | FEM Prediction | Consistency |
-|-----------------|----------------------------------|----------------|-------------|
-| 0-5% | 2-5% frequency reduction | 3-4% reduction | ✓ Consistent |
-| 5-10% | 5-10% frequency reduction | 6-8% reduction | ✓ Consistent |
-| 10-15% | 10-15% frequency reduction | 10-13% reduction | ✓ Consistent |
+To provide a more rigorous comparison, the FEM model was applied to Zhang et al.'s beam geometry using simply-supported boundary conditions (matching their experimental setup).
 
-**Sensitivity Validation:** The FEM model predicts approximately 0.8% frequency reduction per 1% corrosion increase, which aligns with Zhang et al.'s experimental observations. This sensitivity coefficient is critical for damage detection applications—it determines the minimum detectable damage level given sensor precision.
+**Zhang Beam Parameters:**
+- Dimensions: L = 2000 mm, b = 150 mm, h = 50 mm
+- Material: Concrete (f'_c ≈ 30 MPa), HRB335 steel reinforcement (8mm bar)
 
-![RC Beam Corrosion Validation](docs/figures/rc_validation/rc_corrosion_validation.png)
+**Table 4.4: Frequency Comparison for Zhang Beam Geometry**
 
-**Figure 4.4:** Validation of RC beam material model against Zhang et al. (2020) experimental data. Left panel shows the frequency response to corrosion with damage stage regions identified from experimental observations (green: pre-crack, yellow: crack onset, orange: crack expansion, red: extensive damage). Center panel compares FEM predictions (blue line) with Zhang et al.'s experimental ranges (red points with error bars), showing consistent trends across all corrosion levels. Right panel summarizes the RC material model parameters and validation results, confirming that the ACI 318-19 elastic modulus formula and stiffness reduction approach accurately capture corrosion-induced frequency changes.
+| Source | Mode 1 (Hz) | Mode 2 (Hz) |
+|--------|-------------|-------------|
+| Theoretical EBT (SS, plain concrete) | 18.56 | 74.25 |
+| FEM SS (plain concrete) | 18.56 | 74.26 |
+| FEM SS (with steel - homogenized) | 18.40 | 73.58 |
 
-![Dual Validation Framework](docs/figures/rc_validation/dual_validation_framework.png)
+**Table 4.4a: Corrosion Sensitivity Comparison**
 
-**Figure 4.5:** Overview of the validation framework employed in this thesis. The left box shows FEM methodology validation against Gautam et al. (2016), which used ANSYS 14.5 with Solid185 elements for a steel beam with fixed-fixed boundary conditions. The right box shows RC material model validation against Zhang et al. (2020) experimental data and ML benchmarking against Das (2023). The combined approach ensures both simulation accuracy and ML model performance meet established standards in the field. This separation of concerns—validating computational methodology independently from material modeling—provides comprehensive quality assurance for the generated dataset.
+| Corrosion % | Zhang et al. Experimental Range | FEM Prediction | Within Range? |
+|-------------|--------------------------------|----------------|---------------|
+| 5 | 2-5% reduction | 4.08% | Yes |
+| 10 | 5-10% reduction | 8.35% | Yes |
+| 15 | 10-15% reduction | 12.82% | Yes |
 
-**Key Observations from RC Validation:**
+![Zhang Comparison](docs/figures/validation_studies/zhang_comparison.png)
 
-1. **Material Model Accuracy:** The ACI 318-19 formula for elastic modulus (E = 4700√f'c) combined with the stiffness reduction damage model produces frequency predictions consistent with experimental observations.
+**Figure 4.4:** Comparison with Zhang et al. (2020) experimental data. Left panel shows frequency values for the Zhang beam geometry under different modeling assumptions. Right panel compares FEM-predicted corrosion sensitivity against Zhang's experimental ranges, showing that predictions fall within the observed ranges at all corrosion levels tested.
 
-2. **Damage Sensitivity:** The approximately 0.8% frequency reduction per 1% corrosion matches Zhang et al.'s findings, validating the use of α = 1.6 × C/100 as the damage factor. This amplification factor (1.6×) accounts for bond deterioration and concrete cover degradation beyond simple steel area loss.
+**Important Notes on This Comparison:**
 
-3. **Early Detection Capability:** The FEM model confirms that frequency changes are detectable at low corrosion levels (2-3%), supporting the use of vibration-based methods for early damage identification before visual signs appear.
+1. **Boundary Condition Difference:** Zhang et al. used simply-supported beams, while this thesis focuses on fixed-fixed. The comparison above uses simply-supported FEM specifically to match Zhang's conditions. The corrosion sensitivity coefficient (≈0.8%/1% corrosion) is similar for both boundary conditions.
 
-The FEM model successfully captures the corrosion-frequency relationship observed in experiments, validating both the stiffness reduction approach and the RC-specific material parameters used in dataset generation.
+2. **Qualitative Nature:** Zhang et al. reported frequency reduction ranges, not absolute frequency values. The comparison therefore validates the sensitivity coefficient (slope of the corrosion-frequency relationship) rather than absolute frequency predictions.
+
+3. **Geometry Difference:** Zhang's beam (2000 × 150 × 50 mm) is smaller and more slender than the beams in this thesis (L = 3-8m). The comparison validates the damage model but does not directly validate predictions at different scales.
+
+**Key Observations:**
+
+1. **Sensitivity Coefficient Agreement:** The FEM predicts ≈0.8% frequency reduction per 1% corrosion, consistent with Zhang et al.'s experimental observations. This supports the use of α = 1.6 × C/100 as the damage factor.
+
+2. **Trend Consistency:** FEM predictions fall within Zhang et al.'s experimental ranges at all corrosion levels tested (5%, 10%, 15%), demonstrating that the stiffness reduction approach captures the corrosion-frequency relationship observed experimentally.
+
+3. **Limitation Acknowledgment:** This comparison validates the corrosion-frequency trend but does not constitute direct validation of absolute frequency predictions for fixed-fixed RC beams at the scales studied in this thesis.
 
 ---
 
@@ -1379,9 +1516,14 @@ The results provide a solid foundation for developing machine learning models fo
 
 ## 5.1 Introduction
 
-This chapter synthesizes findings from the investigation into machine learning-based prediction of natural frequencies for fixed reinforced concrete beams. The research addressed a specific gap: while ML models had proven successful for metallic beams, no comprehensive framework existed for RC structures under fixed-fixed boundary conditions. Through systematic FEM simulation and ML modeling, a validated approach has been developed that fills this gap and demonstrates practical value for structural health monitoring applications.
+This chapter synthesizes findings from the investigation into machine learning-based prediction of natural frequencies for fixed reinforced concrete beams. The research addressed a specific gap: while ML models had proven successful for metallic beams, no comprehensive simulation-based framework existed for RC structures under fixed-fixed boundary conditions. Through systematic FEM simulation and ML modeling, an approach has been developed that provides a foundation for future research in this area.
 
-The research employed a comprehensive validation framework: Gautam et al. (2016) for validating the FEM simulation methodology (fixed-fixed beam against ANSYS results), Zhang et al. (2020) for validating the RC material model and damage-frequency relationship, and Das (2023) for benchmarking ML model performance. This approach ensures both the simulation data quality and the ML model accuracy meet established standards in the field.
+The research employed a layered validation framework with clearly defined scope:
+- **FEM Methodology Validation:** Gautam et al. (2016) ANSYS results for steel beams validated the numerical implementation (matrix assembly, boundary conditions, eigenvalue solver)
+- **Corrosion-Frequency Trend Validation:** Zhang et al. (2020) experimental data validated the sensitivity coefficient (≈0.8%/1% corrosion)
+- **ML Performance Benchmarking:** Das (2023) provided accuracy benchmarks for beam frequency prediction
+
+**Important Clarification:** This validation approach confirms correct numerical implementation and consistency with experimental trends, but does not constitute direct experimental validation of RC frequency predictions. The extension from validated steel beam methodology to RC relies on homogenization assumptions (ACI 318-19 elastic modulus formula) that introduce additional uncertainty (estimated at ±7-8% combined with ML error) not captured in synthetic data performance metrics.
 
 The progression from research questions through methodology development, validation, and performance analysis yields insights applicable to both researchers and practicing engineers. This chapter summarizes key findings, evaluates achievement of research objectives, acknowledges limitations, and identifies directions for future investigation.
 
@@ -1395,7 +1537,9 @@ Assessment of the three research objectives established in Chapter 1 reveals the
 
 This objective targeted prediction accuracy of R² ≥ 0.95 on independent test data to determine whether ML can achieve performance comparable to existing work on metallic beams. This objective was achieved and exceeded. The best-performing model (CatBoost) achieved R² = 0.989 with MAE of 3.00 Hz—significantly exceeding the initial goal and matching Das (2023) who reported 98.78 percent accuracy for steel beams using Support Vector Machines.
 
-The dataset supporting this achievement comprises 3,000 samples from FEM simulations with comprehensive validation. The simulation methodology was validated against Gautam et al. (2016) ANSYS results for fixed-fixed beams, achieving errors below 0.5% for Mode 1 and within acceptable tolerances for higher modes. Three-way validation against theoretical Euler-Bernoulli solutions confirmed implementation accuracy. For ML benchmarking, results were compared to Das (2023), with CatBoost matching or exceeding their 98.78-98.88% accuracy achieved for metallic beams. The dataset encompasses a comprehensive parameter space: beam lengths from 3 to 8 meters, cross-sectional dimensions ranging from 0.2×0.3 m to 0.5×0.7 m, concrete strengths between 25 and 50 MPa, and damage severities up to 20 percent. Latin Hypercube Sampling ensured uniform coverage across this five-dimensional space, avoiding clustering problems that simple random sampling would create.
+The dataset supporting this achievement comprises 3,000 samples from FEM simulations. The simulation methodology was validated against Gautam et al. (2016) ANSYS results for fixed-fixed **steel** beams, achieving errors below 0.5% for Mode 1. This validates the numerical implementation but not RC-specific material behavior. For ML benchmarking, results were compared to Das (2023), with CatBoost matching or exceeding their 98.78-98.88% accuracy achieved for metallic beams.
+
+**Important Context:** The R² = 0.989 represents performance on synthetic FEM-generated data. When material property uncertainties are considered (Monte Carlo analysis: CV ≈ 6.6% for frequency predictions), the combined FEM and ML uncertainty on real RC beams is estimated at ±7-8%. The dataset encompasses beam lengths from 3 to 8 meters, cross-sectional dimensions ranging from 0.2×0.3 m to 0.5×0.7 m, concrete strengths between 25 and 50 MPa, and damage severities up to 20 percent. Latin Hypercube Sampling ensured uniform coverage across this five-dimensional space.
 
 **Objective 2: Perform Comprehensive Comparative Analysis of Regression Algorithms (Addresses RQ2)**
 
