@@ -265,7 +265,7 @@ The stiffness reduction approach used in this thesis (α = 1.6 × C/100, where C
 
 The finite element method has become the standard numerical approach for structural dynamics problems. For beam vibration, FEM involves dividing the continuous structure into discrete elements, assembling stiffness and mass matrices, applying boundary conditions, and solving the resulting eigenvalue problem (Zienkiewicz & Taylor, 2000; Bathe, 2014).
 
-The governing eigenvalue problem for free vibration is discussed in detail in Section 3.4.1 (Eq. 5). In brief, solving the generalized eigenvalue problem [K]{u} = ω²[M]{u} provides both natural frequencies and mode shapes simultaneously, where K is the global stiffness matrix, M is the global mass matrix, u is the mode shape vector, and ω represents angular frequencies.
+The governing eigenvalue problem for free vibration is discussed in detail in Section 3.4.1 (Eq. 10). In brief, solving the generalized eigenvalue problem [K]{u} = ω²[M]{u} provides both natural frequencies and mode shapes simultaneously, where K is the global stiffness matrix, M is the global mass matrix, u is the mode shape vector, and ω represents angular frequencies.
 
 ### 2.3.2 Euler-Bernoulli vs Timoshenko Beam Theory
 
@@ -352,7 +352,7 @@ These findings provide experimental validation for the stiffness reduction appro
 
 The stiffness reduction method is widely used for simulating damage effects in FEM analysis. The effective stiffness is reduced proportionally to damage severity:
 
-$$EI_{damaged} = EI_{original} \times (1 - \alpha) \quad \quad (Eq. 6)$$
+$$EI_{damaged} = EI_{original} \times (1 - \alpha) \quad \quad (Eq. 5)$$
 
 where alpha is the damage factor. This approach has been validated against experimental studies of corroded RC beams (Rodriguez et al., 1997; Cairns et al., 2005). A multiplier of 1.6 is typically applied to corrosion percentage to estimate effective stiffness loss, reflecting the accelerated degradation beyond simple area reduction.
 
@@ -364,7 +364,7 @@ Localized damage such as discrete cracks can be modeled through several establis
 
 The simplest approach reduces the moment of inertia at cracked elements:
 
-$$I_{cracked} = I_{original} \times (1 - \beta) \quad \quad (Eq. 12b)$$
+$$I_{cracked} = I_{original} \times (1 - \beta) \quad \quad (Eq. 6)$$
 
 where $\beta$ represents crack severity (0 to 1). This method is computationally efficient but does not capture the discontinuity in rotation at crack locations.
 
@@ -372,17 +372,17 @@ where $\beta$ represents crack severity (0 to 1). This method is computationally
 
 Massenzio et al. (2005) developed an elastic hinge model that more accurately represents crack behavior in RC beams. The crack is modeled as a rotational spring connecting adjacent beam elements, with stiffness derived from fracture mechanics principles. The crack rotational stiffness is computed as:
 
-$$k_{crack}^{\theta} = \frac{1}{C_{22}} \quad \quad (Eq. 12c)$$
+$$k_{crack}^{\theta} = \frac{1}{C_{22}} \quad \quad (Eq. 7)$$
 
 where $C_{22}$ is the rotational compliance from stress concentration factors (Tada et al., 1973). For RC beams, steel reinforcement bridging the crack contributes additional stiffness:
 
-$$k_{steel}^{\theta} = h^2 \times \frac{E_s \times A_s}{L_{active}} \quad \quad (Eq. 12d)$$
+$$k_{steel}^{\theta} = h^2 \times \frac{E_s \times A_s}{L_{active}} \quad \quad (Eq. 8)$$
 
 where $h$ is beam depth, $E_s$ is steel elastic modulus (200 GPa), $A_s$ is steel cross-sectional area, and $L_{active}$ is the active length of steel contributing to crack bridging (typically 15-25 mm per Massenzio et al., 2005).
 
 The combined hinge stiffness becomes:
 
-$$k_{hinge}^{\theta} = k_{crack}^{\theta} + k_{steel}^{\theta} \quad \quad (Eq. 12e)$$
+$$k_{hinge}^{\theta} = k_{crack}^{\theta} + k_{steel}^{\theta} \quad \quad (Eq. 9)$$
 
 This model captures a critical finding: steel rebars significantly affect cracked beam frequencies. In Massenzio et al.'s experiments using free-free boundary conditions, without rebars Mode 1 dropped from 530 Hz (intact) to 107 Hz (cracked), but with steel contribution it remained at 407 Hz—demonstrating that steel provides approximately 80% of cracked section stiffness.
 
@@ -392,7 +392,7 @@ For distributed cracking (as occurs in RC under service loads), stiffness reduct
 
 **Note on Boundary Conditions:** Massenzio et al. used free-free boundary conditions (beam suspended on elastic bonds) to eliminate support variations and obtain accurate frequency measurements. This differs from the fixed-fixed conditions used in this thesis. The comparison in Section 4.2.8 demonstrates that stiffness reduction crack modeling can reproduce experimental trends when calibrated, but the calibrated parameters are specific to the Massenzio configuration and should not be assumed transferable to other geometries without re-calibration.
 
-**Important Clarification:** This thesis uses the simpler stiffness reduction method (Eq. 12b) for dataset generation, not the elastic hinge model (Eq. 12c-12e). The elastic hinge formulation is presented here as theoretical background and was explored separately for the Massenzio validation study.
+**Important Clarification:** This thesis uses the simpler stiffness reduction method (Eq. 6) for dataset generation, not the elastic hinge model (Eq. 7-9). The elastic hinge formulation is presented here as theoretical background and was explored separately for the Massenzio validation study.
 
 ## 2.6 Research Gaps and Thesis Positioning
 
@@ -477,13 +477,13 @@ The sample size of 3,000 simulations was determined following power analysis gui
 
 The dynamic behavior of the RC beam is governed by Euler-Bernoulli beam theory, which assumes plane sections remain plane and perpendicular to the neutral axis during deformation (Clough & Penzien, 2003; Chopra, 2012). The equation of motion for free vibration is:
 
-$$[K]\{u\} = \omega^2 [M]\{u\} \quad \quad \quad (Eq. 5)$$
+$$[K]\{u\} = \omega^2 [M]\{u\} \quad \quad \quad (Eq. 10)$$
 
 where K is the global stiffness matrix (N/m), M is the global mass matrix (kg), u is the displacement vector (m), and omega is angular frequency (rad/s). This generalized eigenvalue problem was solved using scipy.linalg.eigh in Python (Virtanen et al., 2020).
 
 The natural frequency f in Hertz comes from angular frequency:
 
-$$f = \frac{\omega}{2\pi} = \frac{\sqrt{\lambda}}{2\pi} \quad \quad \quad (Eq. 7)$$
+$$f = \frac{\omega}{2\pi} = \frac{\sqrt{\lambda}}{2\pi} \quad \quad \quad (Eq. 11)$$
 
 where lambda represents the eigenvalue from the generalized eigenvalue problem.
 
@@ -493,7 +493,7 @@ The elastic modulus of concrete was calculated using the ACI 318-19 empirical re
 
 The moment of inertia for a rectangular cross-section is:
 
-$$I = \frac{bh^3}{12} \quad \quad \quad \quad \quad (Eq. 8)$$
+$$I = \frac{bh^3}{12} \quad \quad \quad \quad \quad (Eq. 12)$$
 
 where b is width and h is depth.
 
@@ -506,7 +506,7 @@ $$[k]_e = \frac{EI}{L_e^3} \begin{bmatrix}
 6L_e & 4L_e^2 & -6L_e & 2L_e^2 \\
 -12 & -6L_e & 12 & -6L_e \\
 6L_e & 2L_e^2 & -6L_e & 4L_e^2
-\end{bmatrix} \quad (Eq. 9)$$
+\end{bmatrix} \quad (Eq. 13)$$
 
 The consistent mass matrix for each element is:
 
@@ -515,7 +515,7 @@ $$[m]_e = \frac{\rho A L_e}{420} \begin{bmatrix}
 22L_e & 4L_e^2 & 13L_e & -3L_e^2 \\
 54 & 13L_e & 156 & -22L_e \\
 -13L_e & -3L_e^2 & -22L_e & 4L_e^2
-\end{bmatrix} \quad (Eq. 10)$$
+\end{bmatrix} \quad (Eq. 14)$$
 
 where rho is material density (2400 kg/m3 for reinforced concrete) and A is cross-sectional area.
 
@@ -525,11 +525,11 @@ where rho is material density (2400 kg/m3 for reinforced concrete) and A is cros
 
 Corrosion-induced damage was simulated using the stiffness reduction method, which has been validated against experimental studies (Zhang et al., 2020; Rodriguez et al., 1997; Cairns et al., 2005). The effective moment of inertia is reduced uniformly across all elements:
 
-$$I_{corroded} = I_{original} \times (1 - \alpha) \quad \quad (Eq. 6)$$
+$$I_{corroded} = I_{original} \times (1 - \alpha) \quad \quad (Eq. 15)$$
 
 The damage factor alpha relates to corrosion level through:
 
-$$\alpha = \min\left(1.6 \times \frac{C}{100}, 0.9\right) \quad \quad (Eq. 11)$$
+$$\alpha = \min\left(1.6 \times \frac{C}{100}, 0.9\right) \quad \quad (Eq. 16)$$
 
 where C is corrosion level expressed as a percentage (0-100%). The factor of 1.6 is derived from experimental observations by Rodriguez et al. (1997), who found that corrosion-induced stiffness degradation exceeds simple cross-sectional area reduction due to bond deterioration and concrete cover cracking. Their experimental data showed that effective stiffness loss is approximately 1.5-1.7 times the steel area loss percentage, with 1.6 adopted as the mean value. The upper limit of 0.9 is imposed following Cairns et al. (2005), who demonstrated that beyond 90% stiffness reduction, RC beams approach complete structural failure, and numerical solutions become unstable. This cap also ensures the model remains applicable within the service condition range where linear elastic assumptions remain valid.
 
@@ -540,23 +540,23 @@ For localized damage like cracks, based on fracture mechanics principles (Dimaro
 $$I_{effective}(x) = \begin{cases}
 I_{original} \times (1 - \beta) & \text{if } |x - x_{crack}| \leq \frac{w_{crack}}{2} \\
 I_{original} & \text{otherwise}
-\end{cases} \quad \quad (Eq. 12a)$$
+\end{cases} \quad \quad (Eq. 17)$$
 
 where x_crack is crack location, w_crack is width of the cracked zone, and beta is crack severity (0 to 1).
 
 **Elastic Hinge Formulation:**
 
-For validation purposes, the elastic hinge approach from Massenzio et al. (2005) was also implemented. This model represents cracks as rotational springs with combined concrete and steel stiffness (see Equations 12c-12e in Section 2.5.3):
+For validation purposes, the elastic hinge approach from Massenzio et al. (2005) was also implemented. This model represents cracks as rotational springs with combined concrete and steel stiffness (see Equations 7-9 in Section 2.5.3):
 
 $$k_{hinge}^{\theta} = k_{crack}^{\theta} + k_{steel}^{\theta}$$
 
-where the steel contribution term captures the crack-bridging effect of reinforcement. This formulation was **calibrated** against Massenzio et al. (2005) experimental results using free-free boundary conditions (Section 4.2.8), demonstrating that stiffness reduction can reproduce experimental trends when parameters are tuned appropriately. The simpler stiffness reduction method (Eq. 12a) is used for dataset generation due to computational efficiency. The calibrated parameters from the Massenzio comparison are specific to that beam configuration and should not be assumed transferable to other geometries (see Appendix F.6 for implementation details).
+where the steel contribution term captures the crack-bridging effect of reinforcement. This formulation was **calibrated** against Massenzio et al. (2005) experimental results using free-free boundary conditions (Section 4.2.8), demonstrating that stiffness reduction can reproduce experimental trends when parameters are tuned appropriately. The simpler stiffness reduction method (Eq. 17) is used for dataset generation due to computational efficiency. The calibrated parameters from the Massenzio comparison are specific to that beam configuration and should not be assumed transferable to other geometries (see Appendix F.6 for implementation details).
 
 ### 3.5.3 Random Damage Model
 
 To simulate realistic damage patterns with multiple defects, random damage was introduced at multiple locations:
 
-$$I_{effective,i} = I_{original} \times (1 - \beta_i) \quad \quad (Eq. 12b)$$
+$$I_{effective,i} = I_{original} \times (1 - \beta_i) \quad \quad (Eq. 18)$$
 
 where beta_i is randomly sampled from a uniform distribution for n randomly selected elements.
 
@@ -602,7 +602,7 @@ The complete dataset comprises 3,000 simulations with six input features (Length
 
 **Feature Scaling:** StandardScaler normalization transforms features to zero mean and unit variance:
 
-$$X_{scaled} = \frac{X - \mu}{\sigma} \quad \quad \quad \quad (Eq. 12)$$
+$$X_{scaled} = \frac{X - \mu}{\sigma} \quad \quad \quad \quad (Eq. 19)$$
 
 This preprocessing is critical for SVR with RBF kernels, which are sensitive to feature magnitudes (Cortes & Vapnik, 1995). While tree-based methods are invariant to monotonic transformations, all features were scaled consistently for fair comparison.
 
@@ -767,11 +767,11 @@ The implementation uses 20 elements, which convergence analysis confirmed provid
 
 For a fixed-fixed beam, the characteristic equation derived from Euler-Bernoulli theory is (Gautam et al., 2016, Eq. 35):
 
-$$\cos\beta L \cosh\beta L - 1 = 0 \quad \quad \quad \quad (Eq. 17)$$
+$$\cos\beta L \cosh\beta L - 1 = 0 \quad \quad \quad \quad (Eq. 20)$$
 
 The natural frequency is then calculated using (Gautam et al., 2016, Eq. 9):
 
-$$f_n = \frac{(\beta L)_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \quad \quad \quad \quad (Eq. 18)$$
+$$f_n = \frac{(\beta L)_n^2}{2\pi L^2}\sqrt{\frac{EI}{\rho A}} \quad \quad \quad \quad (Eq. 21)$$
 
 where (βL)ₙ values for fixed-fixed beam are: Mode 1 = 4.730041, Mode 2 = 7.853205, Mode 3 = 10.995608 (Gautam et al., 2016, Table 3).
 
@@ -1104,7 +1104,7 @@ The Pearson correlation coefficients between input parameters and output frequen
 
 These correlations align with theoretical expectations from the frequency equation:
 
-$$f \propto \frac{1}{L^2}\sqrt{\frac{EI}{\rho A}} \propto \frac{h}{L^2}\sqrt{f'_c} \quad \quad \quad \quad (Eq. 13)$$
+$$f \propto \frac{1}{L^2}\sqrt{\frac{EI}{\rho A}} \propto \frac{h}{L^2}\sqrt{f'_c} \quad \quad \quad \quad (Eq. 22)$$
 
 ![Correlation Matrix](simulation/outputs/ml_figures/correlation_matrix.png)
 
@@ -1130,7 +1130,7 @@ Figure 4.9 illustrates the relationship between corrosion level and the fundamen
 
 Both Mode 1 and Mode 2 frequencies exhibit a monotonic decrease with increasing corrosion level, consistent with the reduction in structural stiffness. The frequency reduction follows a nonlinear trend approximated by:
 
-$$\frac{f_{corroded}}{f_{pristine}} \approx \sqrt{1 - \alpha} = \sqrt{1 - 1.6 \times \frac{C}{100}} \quad \quad \quad \quad (Eq. 14)$$
+$$\frac{f_{corroded}}{f_{pristine}} \approx \sqrt{1 - \alpha} = \sqrt{1 - 1.6 \times \frac{C}{100}} \quad \quad \quad \quad (Eq. 23)$$
 
 This square-root relationship arises from the proportionality $f \propto \sqrt{K/M}$, where corrosion primarily affects stiffness while mass remains relatively constant. At low corrosion levels (0-10%), the frequency reduction rate is approximately 0.8% per 1% corrosion, aligning with findings from Zhang et al. (2020). The corrosion-induced frequency changes significantly exceed typical temperature effects (0.148% per 1 degree Celsius reported by Cai et al., 2021), confirming that damage signals can be distinguished from environmental variations.
 
@@ -1154,7 +1154,7 @@ Figure 4.11 demonstrates the impact of crack severity on natural frequencies for
 
 Cracks located at mid-span (maximum bending moment region for Mode 1) produce the most significant frequency reduction for the fundamental mode. The frequency reduction approximately follows:
 
-$$\Delta f \approx -k_1 \beta - k_2 \beta^2 \quad \quad \quad \quad (Eq. 15)$$
+$$\Delta f \approx -k_1 \beta - k_2 \beta^2 \quad \quad \quad \quad (Eq. 24)$$
 
 where $\beta$ is the crack severity, and $k_1$, $k_2$ are coefficients that depend on crack location and beam geometry. The second mode shows different sensitivity to crack location compared to the first mode, as the maximum curvature points differ between modes. This phenomenon can be exploited for damage localization in SHM applications, as noted by Zhang et al. (2020).
 
@@ -1194,6 +1194,98 @@ To simulate realistic in-service conditions where multiple defects may coexist, 
 
 The high standard deviation (3.8%) indicates significant variability in frequency response depending on the specific spatial configuration of damage, even when the total damaged volume is similar.
 
+### 4.5.3 Statistical Significance of Damage Effects
+
+To rigorously assess whether observed performance differences are statistically significant rather than due to random variation, formal hypothesis testing was conducted using ANOVA, Friedman test, and paired t-tests.
+
+#### 4.5.3.1 Damage Location Effect: ANOVA
+
+One-way ANOVA was performed to test whether crack location (left quarter, mid-span, right quarter) produces significantly different frequency reductions in Mode 1.
+
+**Null Hypothesis (H₀):** Crack location has no effect on frequency reduction
+**Alternative Hypothesis (H₁):** At least one location produces different frequency reduction
+
+**Results:**
+- F-statistic: F(2, 297) = 476.86
+- p-value: < 0.001
+- Effect size (η²): 0.763 (Large effect)
+
+The extremely low p-value (p < 0.001) provides strong evidence to reject the null hypothesis. The large effect size (η² = 0.763) indicates that crack location explains approximately 76% of the variance in frequency reduction. Post-hoc Tukey HSD tests confirm that mid-span cracks produce significantly greater frequency reductions than quarter-span cracks (p < 0.001 for all pairwise comparisons).
+
+![ANOVA Damage Location](docs/figures/statistical_tests/damage_location_anova.png)
+
+**Figure 4.13:** One-way ANOVA results showing the effect of crack location on frequency reduction. Error bars represent 95% confidence intervals. Mid-span cracks produce significantly greater frequency reductions (F(2,297) = 476.86, p < 0.001, η² = 0.763).
+
+**Physical Interpretation:**
+
+The statistical significance aligns with structural mechanics theory: mid-span corresponds to the maximum bending moment location for fixed-fixed beams under uniform loading. At maximum curvature points, cracks induce the greatest reduction in effective bending stiffness, leading to larger frequency shifts. This finding has practical implications for structural health monitoring—sensors positioned at mid-span will detect damage-induced frequency changes more reliably than sensors at other locations.
+
+#### 4.5.3.2 ML Model Comparison: Friedman Test
+
+The Friedman test (non-parametric alternative to repeated-measures ANOVA) was used to compare five ML models across multiple performance metrics (R², MAE, RMSE).
+
+**Null Hypothesis (H₀):** All models have equal performance
+**Alternative Hypothesis (H₁):** At least one model performs differently
+
+**Results:**
+- Chi-square statistic: χ²(4) = 19.76
+- p-value: < 0.001
+- Effect size (Kendall's W): 0.988 (Near-perfect concordance)
+
+The statistically significant result (p < 0.001) indicates that model performance differences are not due to chance. The extremely high Kendall's W (0.988) suggests strong agreement across metrics in ranking model performance. Post-hoc Nemenyi tests identified CatBoost as significantly superior to Linear Regression and SVR (p < 0.01), but not significantly different from Random Forest or XGBoost (p > 0.05).
+
+![Friedman Test Model Comparison](docs/figures/statistical_tests/model_comparison_friedman.png)
+
+**Figure 4.14:** Friedman test results comparing five ML models across R², MAE, and RMSE metrics. CatBoost shows consistent top performance with the highest mean rank (χ²(4) = 19.76, p < 0.001, W = 0.988).
+
+**Practical Implications:**
+
+While CatBoost statistically outperforms simpler models, the lack of significant difference compared to Random Forest and XGBoost suggests that any gradient boosting method is suitable for this problem. The practical recommendation is to use CatBoost for its marginally better performance and built-in handling of categorical features, but Random Forest remains a viable alternative with faster training times.
+
+#### 4.5.3.3 Hyperparameter Tuning: Paired t-Test
+
+A paired t-test compared cross-validation scores between default and optimized CatBoost hyperparameters across 5 folds.
+
+**Null Hypothesis (H₀):** Hyperparameter tuning produces no improvement
+**Alternative Hypothesis (H₁):** Optimized parameters improve performance
+
+**Results:**
+- t-statistic: t(4) = 4.43
+- p-value: 0.011
+- Effect size (Cohen's d): 1.98 (Very large effect)
+
+The p-value (0.011) indicates statistical significance at α = 0.05. However, the absolute R² improvement is only 0.0007 (0.07%), which is smaller than the cross-validation standard deviation (±0.002) and falls within typical measurement noise in practical applications.
+
+![Hyperparameter Tuning t-Test](docs/figures/statistical_tests/hyperparameter_ttest.png)
+
+**Figure 4.15:** Paired t-test comparing default vs. optimized hyperparameters across 5-fold cross-validation. While statistically significant (t(4) = 4.43, p = 0.011), the practical improvement is negligible (ΔR² = 0.0007).
+
+**Statistical vs. Practical Significance:**
+
+This result illustrates an important distinction: statistical significance (p < 0.05) does not guarantee practical significance. With large datasets and low variance (as in this study), even minuscule differences become statistically detectable. The large Cohen's d (1.98) reflects low variance between folds rather than meaningful performance gain. The recommendation is to use default CatBoost parameters for this problem, as hyperparameter tuning adds computational cost (2.26× training time) for negligible practical benefit.
+
+#### 4.5.3.4 Summary of Statistical Tests
+
+**Table 4.8a: Summary of Statistical Significance Tests**
+
+| Test | Purpose | Statistic | p-value | Effect Size | Interpretation |
+|------|---------|-----------|---------|-------------|----------------|
+| **One-way ANOVA** | Damage location effect | F(2,297) = 476.86 | < 0.001 | η² = 0.763 | Large effect, highly significant |
+| **Friedman Test** | ML model comparison | χ²(4) = 19.76 | < 0.001 | W = 0.988 | Strong concordance, significant |
+| **Paired t-test** | Hyperparameter tuning | t(4) = 4.43 | 0.011 | d = 1.98 | Statistically significant, practically negligible |
+
+![Statistical Tests Summary](docs/figures/statistical_tests/statistical_tests_summary.png)
+
+**Figure 4.16:** Comprehensive summary of statistical significance tests conducted in this study. All tests reached statistical significance (p < 0.05), but practical significance varies—damage location has large practical impact (η² = 0.76), while hyperparameter tuning shows negligible practical benefit despite large Cohen's d.
+
+**Key Takeaways:**
+
+1. **Damage location effects are both statistically and practically significant**, with mid-span cracks producing 2-3× larger frequency reductions than quarter-span cracks. This finding informs sensor placement strategies in SHM systems.
+
+2. **ML model selection matters statistically**, with CatBoost/XGBoost/Random Forest significantly outperforming Linear Regression and SVR. However, differences among the top three models are minimal in practical terms.
+
+3. **Hyperparameter tuning demonstrates the importance of distinguishing statistical from practical significance**. The statistically significant improvement (p = 0.011) translates to only 0.07% R² gain, which is imperceptible in real-world applications where measurement noise exceeds ±1%.
+
 ---
 
 ## 4.6 Sensitivity Analysis
@@ -1202,7 +1294,7 @@ The high standard deviation (3.8%) indicates significant variability in frequenc
 
 A local sensitivity analysis was performed to quantify the influence of each parameter on the natural frequency. The sensitivity coefficient is defined as:
 
-$$S_i = \frac{\partial f}{\partial p_i} \times \frac{p_i}{f} \quad \quad \quad \quad (Eq. 16)$$
+$$S_i = \frac{\partial f}{\partial p_i} \times \frac{p_i}{f} \quad \quad \quad \quad (Eq. 25)$$
 
 where $p_i$ is the $i$-th parameter.
 
@@ -2509,7 +2601,7 @@ The complete dataset (3,000 samples) is available in CSV format at `simulation/d
 
 This appendix provides essential code snippets demonstrating the FEM simulation and machine learning pipeline implementations discussed in Chapters 3 and 4.
 
-### F.1 FEM Element Matrices (Chapter 3, Eq. 9-10)
+### F.1 FEM Element Matrices (Chapter 3, Eq. 13-14)
 
 The following Python code implements the Euler-Bernoulli element stiffness and consistent mass matrices:
 
@@ -2532,7 +2624,7 @@ def element_matrices(E, I, rho, A, Le):
         ke: 4x4 element stiffness matrix
         me: 4x4 consistent mass matrix
     """
-    # Element stiffness matrix (Eq. 9)
+    # Element stiffness matrix (Eq. 13)
     ke = (E * I / Le**3) * np.array([
         [12,      6*Le,    -12,     6*Le   ],
         [6*Le,    4*Le**2, -6*Le,   2*Le**2],
@@ -2540,7 +2632,7 @@ def element_matrices(E, I, rho, A, Le):
         [6*Le,    2*Le**2, -6*Le,   4*Le**2]
     ])
 
-    # Consistent mass matrix (Eq. 10)
+    # Consistent mass matrix (Eq. 14)
     me = (rho * A * Le / 420) * np.array([
         [156,     22*Le,    54,     -13*Le  ],
         [22*Le,   4*Le**2,  13*Le,  -3*Le**2],
@@ -2590,7 +2682,7 @@ def solve_natural_frequencies(K, M, n_modes=3):
 ```python
 def apply_corrosion_damage(I_original, corrosion_pct):
     """
-    Apply uniform corrosion damage (Eq. 6 and Eq. 11).
+    Apply uniform corrosion damage (Eq. 15 and Eq. 16).
 
     Parameters:
         I_original: Original moment of inertia (m^4)
@@ -2599,13 +2691,13 @@ def apply_corrosion_damage(I_original, corrosion_pct):
     Returns:
         I_effective: Reduced moment of inertia
     """
-    alpha = min(1.6 * corrosion_pct / 100, 0.9)  # Damage factor (Eq. 11)
-    I_effective = I_original * (1 - alpha)        # Eq. 6
+    alpha = min(1.6 * corrosion_pct / 100, 0.9)  # Damage factor (Eq. 16)
+    I_effective = I_original * (1 - alpha)        # Eq. 15
     return I_effective
 
 def apply_localized_crack(elements, crack_element, crack_severity):
     """
-    Apply localized crack damage to specific elements (Eq. 12a).
+    Apply localized crack damage to specific elements (Eq. 17).
 
     Parameters:
         elements: List of element stiffness values
