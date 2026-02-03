@@ -72,3 +72,77 @@ Performing SHAP analysis for best model: CatBoost
 2025-11-26 21:36:38,189 - INFO - ML TRAINING COMPLETED SUCCESSFULLY
 2025-11-26 21:36:38,190 - INFO - ================================================================================
 2025-11-26 21:36:38,190 - INFO - Best Model: CatBoost (R² = 0.9891)
+2026-02-03 13:15:35,062 - INFO - ================================================================================
+2026-02-03 13:15:35,064 - INFO - ML MODEL TRAINING INITIALIZED
+2026-02-03 13:15:35,065 - INFO - ================================================================================
+2026-02-03 13:16:00,813 - INFO - Loading dataset from: simulation/data/beam_vibration_dataset.csv
+2026-02-03 13:16:00,825 - INFO - ✓ Dataset loaded successfully: 3000 samples, 9 features
+2026-02-03 13:16:18,697 - INFO - ✓ No missing values detected
+2026-02-03 13:16:23,580 - INFO - Output directory created: simulation/outputs/ml_figures
+2026-02-03 13:16:55,778 - INFO - ✓ Parameter distribution plot saved
+2026-02-03 13:17:22,512 - INFO - ✓ Correlation matrix saved
+2026-02-03 13:17:40,149 - INFO - ✓ Damage vs frequency plot saved
+2026-02-03 13:17:51,397 - INFO - Preparing features and target variables
+2026-02-03 13:17:51,400 - INFO - Features shape: (3000, 5)
+2026-02-03 13:17:51,401 - INFO - Target shape: (3000,)
+2026-02-03 13:17:51,402 - INFO - Feature columns: ['Length', 'Width', 'Depth', 'Conc_Strength', 'Damage_Severity']
+2026-02-03 13:17:57,026 - INFO - Splitting data into train and test sets (80/20)
+2026-02-03 13:17:57,030 - INFO - Train set: 2400 samples
+2026-02-03 13:17:57,030 - INFO - Test set: 600 samples
+2026-02-03 13:18:01,846 - INFO - Applying StandardScaler to features
+2026-02-03 13:18:01,851 - INFO - ✓ Feature scaling completed
+2026-02-03 13:18:17,146 - INFO - 
+================================================================================
+2026-02-03 13:18:17,147 - INFO - Training Linear Regression
+2026-02-03 13:18:17,148 - INFO - ================================================================================
+2026-02-03 13:18:17,157 - INFO - ✓ Linear Regression training completed
+2026-02-03 13:18:17,168 - INFO - Train MAE: 16.2090, RMSE: 21.3037, R²: 0.8333
+2026-02-03 13:18:17,168 - INFO - Test MAE: 16.7702, RMSE: 21.6459, R²: 0.8392
+2026-02-03 13:18:17,169 - INFO - CV R² Score: 0.8326 ± 0.0073
+2026-02-03 13:18:28,196 - INFO - 
+================================================================================
+2026-02-03 13:18:28,197 - INFO - Training Random Forest
+2026-02-03 13:18:28,198 - INFO - ================================================================================
+2026-02-03 13:18:28,394 - INFO - ✓ Random Forest training completed
+2026-02-03 13:18:29,798 - INFO - Train MAE: 1.8930, RMSE: 3.2081, R²: 0.9962
+2026-02-03 13:18:29,799 - INFO - Test MAE: 3.8705, RMSE: 6.8819, R²: 0.9837
+2026-02-03 13:18:29,800 - INFO - CV R² Score: 0.9832 ± 0.0025
+2026-02-03 13:18:37,681 - INFO - 
+================================================================================
+2026-02-03 13:18:37,682 - INFO - Training XGBoost
+2026-02-03 13:18:37,683 - INFO - ================================================================================
+2026-02-03 13:18:38,219 - INFO - ✓ XGBoost training completed
+2026-02-03 13:18:40,841 - INFO - Train MAE: 0.1814, RMSE: 0.2650, R²: 1.0000
+2026-02-03 13:18:40,844 - INFO - Test MAE: 3.2894, RMSE: 6.7244, R²: 0.9845
+2026-02-03 13:18:40,845 - INFO - CV R² Score: 0.9861 ± 0.0020
+2026-02-03 13:18:49,761 - INFO - 
+================================================================================
+2026-02-03 13:18:49,762 - INFO - Training CatBoost
+2026-02-03 13:18:49,763 - INFO - ================================================================================
+2026-02-03 13:18:50,078 - INFO - ✓ CatBoost training completed
+2026-02-03 13:18:51,174 - INFO - Train MAE: 1.4195, RMSE: 2.1193, R²: 0.9984
+2026-02-03 13:18:51,174 - INFO - Test MAE: 2.3572, RMSE: 4.1851, R²: 0.9940
+2026-02-03 13:18:51,174 - INFO - CV R² Score: 0.9921 ± 0.0018
+2026-02-03 13:18:59,514 - INFO - 
+================================================================================
+2026-02-03 13:18:59,517 - INFO - Training SVR
+2026-02-03 13:18:59,518 - INFO - ================================================================================
+2026-02-03 13:19:00,111 - INFO - ✓ SVR training completed
+2026-02-03 13:19:02,248 - INFO - Train MAE: 2.3627, RMSE: 4.9228, R²: 0.9911
+2026-02-03 13:19:02,248 - INFO - Test MAE: 2.7016, RMSE: 5.9577, R²: 0.9878
+2026-02-03 13:19:02,248 - INFO - CV R² Score: 0.9866 ± 0.0011
+2026-02-03 13:19:09,990 - INFO - ✓ Results saved to CSV
+2026-02-03 13:19:20,343 - INFO - ✓ Model comparison plot saved
+2026-02-03 13:19:35,301 - INFO - ✓ Prediction vs actual plot saved
+2026-02-03 13:19:50,575 - INFO - ✓ Residual plots saved
+2026-02-03 13:20:01,035 - INFO - ✓ Feature importance plot saved
+2026-02-03 13:20:11,683 - INFO - 
+Performing SHAP analysis for best model: CatBoost
+2026-02-03 13:20:12,376 - INFO - ✓ SHAP summary plot saved
+2026-02-03 13:20:21,269 - INFO - ✓ Best model (CatBoost) saved to simulation/models
+2026-02-03 13:20:21,270 - INFO - ✓ Scaler saved to simulation/models
+2026-02-03 13:20:43,267 - INFO - 
+================================================================================
+2026-02-03 13:20:43,269 - INFO - ML TRAINING COMPLETED SUCCESSFULLY
+2026-02-03 13:20:43,270 - INFO - ================================================================================
+2026-02-03 13:20:43,271 - INFO - Best Model: CatBoost (R² = 0.9940)

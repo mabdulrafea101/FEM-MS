@@ -34,10 +34,10 @@ def generate_dataset():
     # 600 Broken (Multiple Cracks)
     
     scenarios = [
-        {'type': 'none', 'count': 1000},
-        {'type': 'corrosion', 'count': 700},
-        {'type': 'crack', 'count': 700},
-        {'type': 'random', 'count': 600}
+        {'type': 'none', 'count': 1500},
+        {'type': 'corrosion', 'count': 500},
+        {'type': 'crack', 'count': 500},
+        {'type': 'random', 'count': 500}
     ]
     
     total_samples = sum(s['count'] for s in scenarios)
@@ -119,7 +119,7 @@ def generate_dataset():
 
     # Save to CSV
     df = pd.DataFrame(data)
-    output_path = os.path.join(os.path.dirname(__file__), '../data/beam_vibration_dataset.csv')
+    output_path = os.path.join(os.path.dirname(__file__), '../data/beam_vibration_dataset_new.csv')
     df.to_csv(output_path, index=False)
     
     print(f"Dataset saved to {output_path}")
