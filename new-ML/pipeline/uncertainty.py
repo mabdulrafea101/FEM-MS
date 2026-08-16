@@ -8,7 +8,8 @@ from pipeline.plots import save_fig
 
 
 def bootstrap_predictions(model, Xp_dev, y_dev, Xp_held, n=N_BOOTSTRAP, seed=SEED):
-    """Refit on n bootstrap resamples of the dev set; return 95% CI per point."""
+    """Refit on n bootstrap resamples of the dev set; return a 95% bootstrap-residual
+    prediction interval per point. The model is left holding the last bootstrap fit."""
     rng = np.random.default_rng(seed)
     n_dev = Xp_dev["num"].shape[0]
     y_dev = np.asarray(y_dev)
@@ -20,6 +21,7 @@ def bootstrap_predictions(model, Xp_dev, y_dev, Xp_held, n=N_BOOTSTRAP, seed=SEE
         fit_model(model, Xp_boot, y_dev[idx])
         base = predict_model(model, Xp_held)
         resid = y_dev[idx] - predict_model(model, Xp_boot)
+        resid = resid - resid.mean(axis=0)
         r_idx = rng.integers(0, n_dev, size=Xp_held["num"].shape[0])
         preds.append(base + resid[r_idx])
     arr = np.stack(preds)  # (n, n_held, 5)
