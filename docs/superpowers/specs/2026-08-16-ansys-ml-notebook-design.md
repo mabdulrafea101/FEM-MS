@@ -53,6 +53,7 @@ Replaces all old Python-FEM validation scripts (`validate_gautam_2016.py`, `vali
   - `bend_1_mode`…`bend_5_mode` — leakage (derived from the solved frequencies).
   - `frequency_source` — provenance only.
 - Crack locations/angles are **constant within each family** (500 identical pairs) and perfectly collinear with `family`; including them would make LR/SVR rank-deficient and corrupt feature importance. They are therefore represented by the family label only (per Ch. 3.10.1).
+- **Feature-decision documentation (in-notebook):** a dedicated markdown section ("Feature Selection — Skipped vs Added") documents, for the thesis: (a) the full 12-field raw matrix, (b) which fields were skipped and why (locations/angles = family constants, zero additional information; derived/QC/leakage fields), (c) which fields were added/retained (8-field matrix), and (d) the full preprocessing steps applied. This documentation lives in notebook markdown cells and is summarized in `DECISIONS.md`; no separate mapping CSV is produced.
 
 ### Stage 5 — Train/Test Split
 - 800 development / 200 held-out, stratified by family, `random_state=42` (Ch. 3.10.3).
@@ -61,6 +62,7 @@ Replaces all old Python-FEM validation scripts (`validate_gautam_2016.py`, `vali
 ### Stage 6 — Preprocessing
 - `StandardScaler` fitted on the 800 dev cases only (applied to the 7 continuous features).
 - `family` → one-hot for LR/RF/XGB/SVR; native categorical (`cat_features`) for CatBoost.
+- **Preprocessing documentation (in-notebook):** a markdown block records the exact step-by-step preprocessing pipeline for reproducibility and thesis text: (1) load 12-field raw matrix, (2) drop skipped fields with per-column reason (Stage 4), (3) retain 8-field matrix, (4) split 800/200 stratified by family (seed 42), (5) fit `StandardScaler` on dev only, (6) encode family per model type, (7) verify shapes/dtypes/no-NaN after each step.
 
 ### Stage 7 — Models (multi-output, all 5 targets jointly)
 | Model | Configuration |
@@ -173,3 +175,4 @@ Documented in `DECISIONS.md` at the project root (generated as part of this work
 - Notebook runs end-to-end with `.venv12`; all outputs land in `outputs/`.
 - Assertions: 1000 rows, 500/500 families, 0 missing, 800/200 split sizes, per-mode metrics match table CSVs, coverage ~95%.
 - After run: grep thesis for stale image paths; verify every thesis-referenced figure exists in `outputs/figures/`.
+- In-notebook documentation present: feature-selection (skipped vs added) section and step-by-step preprocessing record.
