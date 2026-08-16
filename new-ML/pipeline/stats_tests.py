@@ -35,7 +35,6 @@ def anova_family(drop_df, modes=("B1", "B2", "B3")):
         if len(ff) == 0 or len(ss) == 0:
             continue
         f, p = stats.f_oneway(ff, ss)
-        n, k = len(ff) + len(ss), 2
         grand = np.concatenate([ff, ss]).mean()
         ss_between = len(ff) * (ff.mean() - grand) ** 2 + len(ss) * (ss.mean() - grand) ** 2
         ss_total = np.sum((np.concatenate([ff, ss]) - grand) ** 2)
@@ -45,13 +44,19 @@ def anova_family(drop_df, modes=("B1", "B2", "B3")):
 
 
 def plot_anova_family(anova_result, drop_df, out_dir=None):
+    modes = list(anova_result)
+    x = np.arange(len(modes))
+    width = 0.35
     fig, ax = plt.subplots(figsize=(8, 5))
-    for fam in ["FF", "SS"]:
+    for i, fam in enumerate(["FF", "SS"]):
         means = [drop_df[(drop_df["family"] == fam) & (drop_df["mode"] == m)]["drop_pct"].mean()
-                 for m in anova_result]
-        ax.bar([f"{m} {fam}" for m in anova_result], means, alpha=0.7)
+                 for m in modes]
+        ax.bar(x + (i - 0.5) * width, means, width=width, label=fam, alpha=0.7)
+    ax.set_xticks(x)
+    ax.set_xticklabels(modes)
     ax.set_ylabel("Mean crack-induced drop (%)")
     ax.set_title("ANOVA: family effect on frequency drop (FF vs SS)")
+    ax.legend()
     fig.tight_layout()
     return save_fig(fig, "anova_family_drop.png", out_dir)
 
