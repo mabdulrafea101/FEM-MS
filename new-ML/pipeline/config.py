@@ -48,7 +48,6 @@ SKIPPED_FIELDS = {
     "bend_3_mode": "leakage: solver index derived from solved frequencies",
     "bend_4_mode": "leakage: solver index derived from solved frequencies",
     "bend_5_mode": "leakage: solver index derived from solved frequencies",
-    "frequency_source": "provenance only",
 }
 
 # Crack locations are not separate columns in the spreadsheet; they are

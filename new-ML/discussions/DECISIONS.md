@@ -28,6 +28,7 @@ See `docs/superpowers/specs/2026-08-16-ansys-ml-notebook-design.md` for the full
 - validate_rc_beam.py / rc_validation figures: superseded by ANSYS benchmark + dataset checks.
 - Monte Carlo FEM material-uncertainty propagation (old 4.2.6): FEM-side; ANSYS-side scope.
 - Leakage/solver/QC columns: removed from features (see SKIPPED_FIELDS in pipeline/config.py).
+- family is not a source column: Task 2 derives df["family"] = df["combination_code"] on load (500 FF + 500 SS).
 - Old simulation/ outputs: consolidated into outputs/ (kept in repo as reference).
 
 ## Open items
