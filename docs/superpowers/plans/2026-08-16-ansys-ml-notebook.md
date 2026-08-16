@@ -42,7 +42,7 @@
 cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 ../.venv12/bin/pip install pytest -q
 mkdir -p data pipeline tests discussions scripts outputs/figures outputs/tables outputs/models outputs/logs
-cp "../../new-chapters/RC_Beam_1000_Updated_Frequencies_Merged-CL.xlsx" data/rc_beam_ansys_dataset.xlsx
+cp "../new-chapters/RC_Beam_1000_Updated_Frequencies_Merged-CL.xlsx" data/rc_beam_ansys_dataset.xlsx
 ```
 
 - [ ] **Step 2: Create `pipeline/__init__.py`, `tests/__init__.py`, and `pipeline/config.py`**
@@ -102,7 +102,6 @@ SKIPPED_FIELDS = {
     "bend_3_mode": "leakage: solver index derived from solved frequencies",
     "bend_4_mode": "leakage: solver index derived from solved frequencies",
     "bend_5_mode": "leakage: solver index derived from solved frequencies",
-    "frequency_source": "provenance only",
 }
 
 # Crack locations are not separate columns in the spreadsheet; they are
