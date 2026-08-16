@@ -341,7 +341,7 @@ def test_crack_drop_pct_small_damage_small_drop():
     row = {"case_id": "X-001", "family": "FF", "L_mm": 5000.0, "b_mm": 300.0,
            "h_mm": 500.0, "fc_MPa": 35.0,
            "f1_hz": 52.0, "f2_hz": 143.0, "f3_hz": 261.0,
-           "f4_hz": 400.0, "f5_hz": 550.0}
+           "f4_hz": 400.0, "f5_hz": 570.0}
     df = pd.DataFrame([row])
     out = crack_drop_pct(df)
     assert list(out.columns) == ["case_id", "family", "mode", "ansys_hz", "ebt_hz", "drop_pct"]
@@ -362,7 +362,7 @@ def test_plots_and_table_created(tmp_path):
     df = pd.DataFrame([{"case_id": "X-001", "family": "FF", "L_mm": 5000.0,
                         "b_mm": 300.0, "h_mm": 500.0, "fc_MPa": 35.0,
                         "f1_hz": 52.0, "f2_hz": 143.0, "f3_hz": 261.0,
-                        "f4_hz": 400.0, "f5_hz": 550.0}])
+                        "f4_hz": 400.0, "f5_hz": 570.0}])
     drop_df = crack_drop_pct(df)
     assert plot_ebt_validation(drop_df, tmp_path).name == "ebt_validation.png"
     assert plot_mode_ratios(df, tmp_path).name == "mode_ratios.png"
@@ -508,7 +508,7 @@ cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 ../.venv12/bin/pytest tests/test_theory.py -v
 ```
 
-Expected: 7 PASS.
+Expected: 6 PASS.
 
 - [ ] **Step 6: Commit**
 
@@ -801,7 +801,7 @@ def pooled_metrics(y_true, y_pred):
 
 
 def macro_summary(mode_df):
-    return {col: float(mode_df[col].mean()) for col in ["MAE", "RMSE", "R2", "MAPE"]}
+    return {col: float(mode_df[col].mean()) for col in mode_df.columns}
 ```
 
 - [ ] **Step 4: Run tests to verify they pass**
@@ -1222,8 +1222,9 @@ def test_friedman_significant_for_clear_winner():
     ranks = np.array([[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4], [5, 5, 5]],
                      dtype=float)
     res = friedman_test(ranks)
-    assert res["p"] < 0.01
+    assert res["p"] < 0.05          # max attainable p for 5x3 perfect separation is 0.0173
     assert 0.9 < res["kendall_w"] <= 1.0
+    assert res["chi2"] == pytest.approx(12.0, abs=0.1)
 
 
 def test_friedman_trivial_ranks_no_signal():
@@ -1287,14 +1288,15 @@ def friedman_test(metric_matrix):
     same ranks so all outputs are consistent.
     """
     metric_matrix = np.asarray(metric_matrix, dtype=float)
-    stat, p = stats.friedmanchisquare(*metric_matrix.T)
     ranks = np.apply_along_axis(stats.rankdata, 0, metric_matrix)
     n_models, n_metrics = ranks.shape
     row_sums = ranks.sum(axis=1)
     mean_rank = n_metrics * (n_models + 1) / 2.0
     S = np.sum((row_sums - mean_rank) ** 2)
     w = 12.0 * S / (n_metrics**2 * (n_models**3 - n_models))
-    return {"chi2": float(stat), "p": float(p), "kendall_w": float(w)}
+    chi2 = n_metrics * (n_models - 1) * w
+    p = stats.chi2.sf(chi2, df=n_models - 1)
+    return {"chi2": float(chi2), "p": float(p), "kendall_w": float(w)}
 
 
 def anova_family(drop_df, modes=("B1", "B2", "B3")):
