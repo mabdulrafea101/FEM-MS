@@ -4,7 +4,7 @@ import pytest
 from pipeline.theory import (ebt_frequencies, crack_drop_pct, log_log_slope,
                              plot_ebt_validation, plot_mode_ratios,
                              plot_crack_drop, save_ebt_table)
-from pipeline.config import TABLES_DIR
+from pipeline.config import TABLES_DIR, FIGURES_DIR
 
 
 def test_ebt_mode1_reference_case():
@@ -57,3 +57,7 @@ def test_plots_and_table_created(tmp_path):
     assert plot_crack_drop(drop_df, tmp_path).name == "crack_drop_vs_depth.png"
     assert save_ebt_table(drop_df, tmp_path).name == "ebt_validation_summary.csv"
     assert (tmp_path / "ebt_validation_summary.csv").exists()
+    for name in ["ebt_validation.png", "mode_ratios.png", "crack_drop_vs_depth.png"]:
+        assert (tmp_path / name).exists()
+    plot_ebt_validation(drop_df)  # exercises the default out_dir path
+    assert (FIGURES_DIR / "ebt_validation.png").exists()

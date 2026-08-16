@@ -39,11 +39,22 @@ def log_log_slope(df):
 
 def plot_ebt_validation(drop_df, out_dir=None):
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    colors = {"FF": "tab:blue", "SS": "tab:orange"}
+    modes = ["B1", "B2", "B3", "B4", "B5"]
     for fam in ["FF", "SS"]:
         sub = drop_df[drop_df["family"] == fam]
-        axes[0].boxplot([sub.loc[sub["mode"] == m, "drop_pct"] for m in ["B1", "B2", "B3", "B4", "B5"]],
-                        labels=["B1", "B2", "B3", "B4", "B5"], widths=0.6)
-        axes[1].hist(sub["drop_pct"], bins=40, alpha=0.5, label=fam)
+        data = [sub.loc[sub["mode"] == m, "drop_pct"] for m in modes]
+        offset = -0.2 if fam == "FF" else 0.2
+        axes[0].boxplot(data, positions=np.arange(1, 6) + offset, widths=0.35,
+                        patch_artist=True,
+                        boxprops=dict(facecolor=colors[fam], alpha=0.6))
+        axes[1].hist(sub["drop_pct"], bins=40, alpha=0.5, label=fam,
+                     color=colors[fam])
+    import matplotlib.patches as mpatches
+    axes[0].set_xticks(np.arange(1, 6))
+    axes[0].set_xticklabels(modes)
+    axes[0].legend(handles=[mpatches.Patch(facecolor=colors["FF"], alpha=0.6, label="FF"),
+                            mpatches.Patch(facecolor=colors["SS"], alpha=0.6, label="SS")])
     axes[0].set_title("Crack-induced frequency drop by mode")
     axes[0].set_ylabel("Drop (%)")
     axes[1].set_title("Drop distribution per family")
