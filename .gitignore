@@ -269,3 +269,17 @@ $RECYCLE.BIN/
 # Total tracked files: ~30 files
 # Approximate repo size: ~5-10 MB
 # ============================================================================
+
+# ============================================================================
+# new-ML pipeline (revised thesis) — track notebook, tables, models, logs
+# ============================================================================
+!new-ML/model_training_ansys.ipynb
+!new-ML/outputs/
+!new-ML/outputs/figures/
+!new-ML/outputs/figures/*
+!new-ML/outputs/tables/
+!new-ML/outputs/tables/*
+!new-ML/outputs/models/
+!new-ML/outputs/models/*
+!new-ML/outputs/logs/
+!new-ML/outputs/logs/*
