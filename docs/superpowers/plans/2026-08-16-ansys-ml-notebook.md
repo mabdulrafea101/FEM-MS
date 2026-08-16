@@ -2,34 +2,35 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build `Project/model_training_ansys.ipynb` — one notebook covering dataset QC → EBT validation → preprocessing → 5 regression models → 5-fold CV → comparison → residuals → timing → bootstrap → hyperparameter tuning → importance → learning curves → Das benchmark → final model, writing everything into a single `Project/outputs/` folder.
+**Goal:** Build `Project/new-ML/model_training_ansys.ipynb` — one notebook covering dataset QC → EBT validation → preprocessing → 5 regression models → 5-fold CV → comparison → residuals → timing → bootstrap → hyperparameter tuning → importance → learning curves → Das benchmark → final model, writing everything into a single `Project/new-ML/outputs/` folder (isolated from the old `scripts/`, `simulation/`, and old notebook at `Project/`).
 
-**Architecture:** A testable `pipeline/` Python package holds all logic (data loading, theory checks, feature selection, models, metrics, statistics, bootstrap, tuning, plots, prediction interface). A `build_notebook.py` script assembles the notebook from stage cells via `nbformat`; the notebook is verified by executing it with `nbconvert`. Thesis image paths in `ful_thesis.md` are rewritten to point into `outputs/`.
+**Architecture:** A testable `pipeline/` Python package holds all logic (data loading, theory checks, feature selection, models, metrics, statistics, bootstrap, tuning, plots, prediction interface). A `build_notebook.py` script assembles the notebook from stage cells via `nbformat`; the notebook is verified by executing it with `nbconvert`. Thesis image paths in `ful_thesis.md` are rewritten to point into `new-ML/outputs/`.
 
-**Tech Stack:** Python 3.12 (`.venv12`), pandas, numpy, scipy, scikit-learn 1.7, CatBoost 1.2.8, XGBoost 3.1.2, SHAP 0.50, matplotlib, seaborn, openpyxl, joblib, nbformat, nbconvert, pytest.
+**Tech Stack:** Python 3.12 (`.venv12` at `Project/.venv12`), pandas, numpy, scipy, scikit-learn 1.7, CatBoost 1.2.8, XGBoost 3.1.2, SHAP 0.50, matplotlib, seaborn, openpyxl, joblib, nbformat, nbconvert, pytest.
 
 ## Global Constraints
 
-- All code runs with `./.venv12/bin/python` from `Project/` (working directory = `Project/`).
-- Tests run with `./.venv12/bin/pytest`.
+- **Everything for the new thesis lives under `Project/new-ML/`** (notebook, `pipeline/` package, `tests/`, `data/`, `outputs/`, `discussions/`, `scripts/`, `build_notebook.py`). The old `Project/scripts/`, `Project/simulation/`, and the old notebook stay untouched.
+- Working directory for all commands: `Project/new-ML/`; venv is `Project/.venv12`, invoked as `../.venv12/bin/python` (subagents MUST use this venv).
+- Tests run with `../.venv12/bin/pytest`.
 - Every random process uses `random_state=42` / `seed=42` (reproducibility).
-- All outputs go under `Project/outputs/` (`figures/`, `tables/`, `models/`, `logs/`). No script writes outside `outputs/` except `DECISIONS.md`, `pipeline/`, `build_notebook.py`, and the notebook itself.
+- All outputs go under `Project/new-ML/outputs/` (`figures/`, `tables/`, `models/`, `logs/`). No script writes outside `outputs/` except `discussions/`, `pipeline/`, `tests/`, `scripts/`, `build_notebook.py`, and the notebook itself.
 - Feature matrix (8 fields): `L_mm, b_mm, h_mm, fc_MPa, rho_percent, crack1_depth_mm, crack2_depth_mm, family`. Targets: `f1_hz, f2_hz, f3_hz, f4_hz, f5_hz`.
 - Split: 800 dev / 200 held-out, stratified by family, seed 42. Held-out evaluated only after model selection.
 - Multi-output: CatBoost `loss_function='MultiRMSE'` + native `family` categorical; XGBoost/SVR wrapped in `MultiOutputRegressor`; LR/RF native multi-output.
 - Dependency additions: `pytest` only (openpyxl already installed).
-- Input dataset copy: `Project/data/rc_beam_ansys_dataset.xlsx` (copied from `new-chapters/RC_Beam_1000_Updated_Frequencies_Merged-CL.xlsx`, sheet `ML Dataset`).
+- Input dataset copy: `Project/new-ML/data/rc_beam_ansys_dataset.xlsx` (copied from `new-chapters/RC_Beam_1000_Updated_Frequencies_Merged-CL.xlsx`, sheet `ML Dataset`).
 
 ---
 
 ### Task 1: Scaffold — venv deps, data copy, config, DECISIONS.md
 
 **Files:**
-- Create: `Project/data/rc_beam_ansys_dataset.xlsx` (copy)
-- Create: `Project/pipeline/__init__.py`
-- Create: `Project/pipeline/config.py`
-- Create: `Project/DECISIONS.md`
-- Create: `Project/tests/__init__.py`
+- Create: `Project/new-ML/data/rc_beam_ansys_dataset.xlsx` (copy)
+- Create: `Project/new-ML/pipeline/__init__.py`
+- Create: `Project/new-ML/pipeline/config.py`
+- Create: `Project/new-ML/discussions/DECISIONS.md`
+- Create: `Project/new-ML/tests/__init__.py`
 
 **Interfaces:**
 - Consumes: nothing.
@@ -38,10 +39,10 @@
 - [ ] **Step 1: Install pytest and copy the dataset**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pip install pytest -q
-mkdir -p data pipeline tests outputs/figures outputs/tables outputs/models outputs/logs
-cp "new-chapters/RC_Beam_1000_Updated_Frequencies_Merged-CL.xlsx" data/rc_beam_ansys_dataset.xlsx
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pip install pytest -q
+mkdir -p data pipeline tests discussions scripts outputs/figures outputs/tables outputs/models outputs/logs
+cp "../../new-chapters/RC_Beam_1000_Updated_Frequencies_Merged-CL.xlsx" data/rc_beam_ansys_dataset.xlsx
 ```
 
 - [ ] **Step 2: Create `pipeline/__init__.py`, `tests/__init__.py`, and `pipeline/config.py`**
@@ -114,7 +115,7 @@ SKIPPED_FIELDS = {
 
 - [ ] **Step 3: Create `DECISIONS.md`**
 
-`Project/DECISIONS.md` — the decisions ledger (summary for the thesis):
+`Project/new-ML/discussions/DECISIONS.md` — the decisions ledger (summary for the thesis):
 
 ```markdown
 # Decisions Ledger — Revised ML Pipeline (ANSYS dataset)
@@ -157,8 +158,8 @@ See `docs/superpowers/specs/2026-08-16-ansys-ml-notebook-design.md` for the full
 - [ ] **Step 4: Verify scaffold**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/python -c "import pipeline.config as c; print(c.DATA_PATH, c.OUTPUT_DIR); print(len(c.SKIPPED_FIELDS))"
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/python -c "import pipeline.config as c; print(c.DATA_PATH, c.OUTPUT_DIR); print(len(c.SKIPPED_FIELDS))"
 ```
 
 Expected: prints the data path, output path, and `28` (number of skipped fields).
@@ -166,8 +167,8 @@ Expected: prints the data path, output path, and `28` (number of skipped fields)
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-git add data/rc_beam_ansys_dataset.xlsx pipeline/__init__.py pipeline/config.py DECISIONS.md tests/__init__.py
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+git add data/rc_beam_ansys_dataset.xlsx pipeline/__init__.py pipeline/config.py discussions/DECISIONS.md tests/__init__.py
 git commit -m "feat: scaffold pipeline package, config, and decisions ledger for ANSYS ML notebook"
 ```
 
@@ -176,8 +177,8 @@ git commit -m "feat: scaffold pipeline package, config, and decisions ledger for
 ### Task 2: Data loading and QC (`pipeline/data.py`)
 
 **Files:**
-- Create: `Project/pipeline/data.py`
-- Test: `Project/tests/test_data.py`
+- Create: `Project/new-ML/pipeline/data.py`
+- Test: `Project/new-ML/tests/test_data.py`
 
 **Interfaces:**
 - Consumes: `pipeline.config.DATA_PATH`, `TARGET_COLS`.
@@ -228,8 +229,8 @@ def test_run_qc_raises_on_bad_data():
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_data.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_data.py -v
 ```
 
 Expected: FAIL — `ModuleNotFoundError: No module named 'pipeline.data'`.
@@ -270,8 +271,8 @@ def run_qc(df):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_data.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_data.py -v
 ```
 
 Expected: 4 PASS.
@@ -279,7 +280,7 @@ Expected: 4 PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/data.py tests/test_data.py
 git commit -m "feat: add dataset loading and QC audit for ANSYS dataset"
 ```
@@ -289,9 +290,9 @@ git commit -m "feat: add dataset loading and QC audit for ANSYS dataset"
 ### Task 3: EBT theoretical validation (`pipeline/theory.py`)
 
 **Files:**
-- Create: `Project/pipeline/theory.py`
-- Create: `Project/pipeline/plots.py` (shared `save_fig` helper used by all figure tasks)
-- Test: `Project/tests/test_theory.py`
+- Create: `Project/new-ML/pipeline/theory.py`
+- Create: `Project/new-ML/pipeline/plots.py` (shared `save_fig` helper used by all figure tasks)
+- Test: `Project/new-ML/tests/test_theory.py`
 
 **Interfaces:**
 - Consumes: `pipeline.config.TARGET_COLS`, `FIGURES_DIR`, `TABLES_DIR`.
@@ -374,8 +375,8 @@ def test_plots_and_table_created(tmp_path):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_theory.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_theory.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -504,8 +505,8 @@ Note: `test_crack_drop_pct_small_damage_small_drop` uses a manually chosen crack
 - [ ] **Step 5: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_theory.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_theory.py -v
 ```
 
 Expected: 7 PASS.
@@ -513,7 +514,7 @@ Expected: 7 PASS.
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/plots.py pipeline/theory.py tests/test_theory.py
 git commit -m "feat: add EBT theoretical validation with plots and tables"
 ```
@@ -523,8 +524,8 @@ git commit -m "feat: add EBT theoretical validation with plots and tables"
 ### Task 4: Feature selection, split, preprocessing (`pipeline/prepare.py`)
 
 **Files:**
-- Create: `Project/pipeline/prepare.py`
-- Test: `Project/tests/test_prepare.py`
+- Create: `Project/new-ML/pipeline/prepare.py`
+- Test: `Project/new-ML/tests/test_prepare.py`
 
 **Interfaces:**
 - Consumes: `pipeline.config.FEATURE_COLS, FAMILY_COL, TARGET_COLS, DEV_SIZE, SEED`.
@@ -623,8 +624,8 @@ def test_preprocessor_native():
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_prepare.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_prepare.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -693,8 +694,8 @@ class Preprocessor:
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_prepare.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_prepare.py -v
 ```
 
 Expected: 6 PASS.
@@ -702,7 +703,7 @@ Expected: 6 PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/prepare.py tests/test_prepare.py
 git commit -m "feat: add leakage-controlled feature selection, 800/200 split, preprocessing"
 ```
@@ -712,8 +713,8 @@ git commit -m "feat: add leakage-controlled feature selection, 800/200 split, pr
 ### Task 5: Metrics (`pipeline/metrics.py`)
 
 **Files:**
-- Create: `Project/pipeline/metrics.py`
-- Test: `Project/tests/test_metrics.py`
+- Create: `Project/new-ML/pipeline/metrics.py`
+- Test: `Project/new-ML/tests/test_metrics.py`
 
 **Interfaces:**
 - Consumes: `pipeline.config.TARGET_COLS`.
@@ -763,8 +764,8 @@ def test_macro_summary():
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_metrics.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_metrics.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -807,8 +808,8 @@ def macro_summary(mode_df):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_metrics.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_metrics.py -v
 ```
 
 Expected: 3 PASS.
@@ -816,7 +817,7 @@ Expected: 3 PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/metrics.py tests/test_metrics.py
 git commit -m "feat: add per-mode, pooled, and macro regression metrics"
 ```
@@ -826,8 +827,8 @@ git commit -m "feat: add per-mode, pooled, and macro regression metrics"
 ### Task 6: Model builders + fit/predict helpers + 5-fold CV (`pipeline/models.py`)
 
 **Files:**
-- Create: `Project/pipeline/models.py`
-- Test: `Project/tests/test_models.py`
+- Create: `Project/new-ML/pipeline/models.py`
+- Test: `Project/new-ML/tests/test_models.py`
 
 **Interfaces:**
 - Consumes: `pipeline.prepare.Preprocessor` output dict (`num`, `family`), `pipeline.metrics.pooled_metrics`, `pipeline.config` constants.
@@ -907,8 +908,8 @@ def test_fit_and_evaluate_returns_table(tmp_path, monkeypatch):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_models.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_models.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -1008,8 +1009,8 @@ Note: `test_catboost_and_linear_both_fit_synthetic_data` — on data with an exa
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_models.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_models.py -v
 ```
 
 Expected: 5 PASS. (SVR/boosting tests may take ~30-60 s.)
@@ -1017,7 +1018,7 @@ Expected: 5 PASS. (SVR/boosting tests may take ~30-60 s.)
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/models.py tests/test_models.py
 git commit -m "feat: add five multi-output models, fit/predict helpers, and 5-fold CV"
 ```
@@ -1027,8 +1028,8 @@ git commit -m "feat: add five multi-output models, fit/predict helpers, and 5-fo
 ### Task 7: Model comparison figures + residuals (`pipeline/compare.py`)
 
 **Files:**
-- Create: `Project/pipeline/compare.py`
-- Test: `Project/tests/test_compare.py`
+- Create: `Project/new-ML/pipeline/compare.py`
+- Test: `Project/new-ML/tests/test_compare.py`
 
 **Interfaces:**
 - Consumes: `pipeline.models.predict_model`, `pipeline.plots.save_fig`, `pipeline.metrics.mode_metrics`.
@@ -1089,8 +1090,8 @@ def test_plot_per_mode_metrics(tmp_path):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_compare.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_compare.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -1174,8 +1175,8 @@ def plot_per_mode_metrics(best_name, models, Xp_test, y_test, out_dir=None):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_compare.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_compare.py -v
 ```
 
 Expected: 4 PASS.
@@ -1183,7 +1184,7 @@ Expected: 4 PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/compare.py tests/test_compare.py
 git commit -m "feat: add model comparison, prediction-vs-actual, residual, per-mode figures"
 ```
@@ -1193,8 +1194,8 @@ git commit -m "feat: add model comparison, prediction-vs-actual, residual, per-m
 ### Task 8: Statistical tests — Friedman + family ANOVA (`pipeline/stats_tests.py`)
 
 **Files:**
-- Create: `Project/pipeline/stats_tests.py`
-- Test: `Project/tests/test_stats_tests.py`
+- Create: `Project/new-ML/pipeline/stats_tests.py`
+- Test: `Project/new-ML/tests/test_stats_tests.py`
 
 **Interfaces:**
 - Consumes: `pipeline.config.TABLES_DIR, FIGURES_DIR`.
@@ -1262,8 +1263,8 @@ def test_plots_and_table(tmp_path):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_stats_tests.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_stats_tests.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -1353,8 +1354,8 @@ def save_stats_summary(friedman_result, anova_result, out_dir=TABLES_DIR):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_stats_tests.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_stats_tests.py -v
 ```
 
 Expected: 4 PASS.
@@ -1362,7 +1363,7 @@ Expected: 4 PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/stats_tests.py tests/test_stats_tests.py
 git commit -m "feat: add Friedman test and FF-vs-SS family ANOVA"
 ```
@@ -1372,8 +1373,8 @@ git commit -m "feat: add Friedman test and FF-vs-SS family ANOVA"
 ### Task 9: Computational timing (`pipeline/timing.py`)
 
 **Files:**
-- Create: `Project/pipeline/timing.py`
-- Test: `Project/tests/test_timing.py`
+- Create: `Project/new-ML/pipeline/timing.py`
+- Test: `Project/new-ML/tests/test_timing.py`
 
 **Interfaces:**
 - Consumes: `pipeline.models.predict_model`, `pipeline.config.APDL_SOLVE_SECONDS`.
@@ -1423,8 +1424,8 @@ def test_timing_table_and_plot(tmp_path):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_timing.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_timing.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -1486,8 +1487,8 @@ def plot_timing(table_df, out_dir=None):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_timing.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_timing.py -v
 ```
 
 Expected: 2 PASS.
@@ -1495,7 +1496,7 @@ Expected: 2 PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/timing.py tests/test_timing.py
 git commit -m "feat: add inference timing and APDL speedup comparison"
 ```
@@ -1505,8 +1506,8 @@ git commit -m "feat: add inference timing and APDL speedup comparison"
 ### Task 10: Bootstrap uncertainty (`pipeline/uncertainty.py`)
 
 **Files:**
-- Create: `Project/pipeline/uncertainty.py`
-- Test: `Project/tests/test_uncertainty.py`
+- Create: `Project/new-ML/pipeline/uncertainty.py`
+- Test: `Project/new-ML/tests/test_uncertainty.py`
 
 **Interfaces:**
 - Consumes: `pipeline.models.fit_model, predict_model`, `pipeline.config.N_BOOTSTRAP, SEED, TARGET_COLS`.
@@ -1563,8 +1564,8 @@ def test_bootstrap_stats_and_plots(tmp_path):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_uncertainty.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_uncertainty.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -1655,8 +1656,8 @@ def plot_coverage(lo, hi, y_true, out_dir=None):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_uncertainty.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_uncertainty.py -v
 ```
 
 Expected: 2 PASS.
@@ -1664,7 +1665,7 @@ Expected: 2 PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/uncertainty.py tests/test_uncertainty.py
 git commit -m "feat: add bootstrap uncertainty and coverage calibration per Ch 3.10.6"
 ```
@@ -1674,8 +1675,8 @@ git commit -m "feat: add bootstrap uncertainty and coverage calibration per Ch 3
 ### Task 11: Hyperparameter tuning (`pipeline/tuning.py`)
 
 **Files:**
-- Create: `Project/pipeline/tuning.py`
-- Test: `Project/tests/test_tuning.py`
+- Create: `Project/new-ML/pipeline/tuning.py`
+- Test: `Project/new-ML/tests/test_tuning.py`
 
 **Interfaces:**
 - Consumes: `pipeline.models.run_cv, fit_model, predict_model`; CatBoost.
@@ -1738,8 +1739,8 @@ def test_plots_and_table(tmp_path):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_tuning.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_tuning.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -1829,8 +1830,8 @@ def save_hyperparam_table(grid_results, ttest_result, out_dir=TABLES_DIR):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_tuning.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_tuning.py -v
 ```
 
 Expected: 4 PASS.
@@ -1838,7 +1839,7 @@ Expected: 4 PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/tuning.py tests/test_tuning.py
 git commit -m "feat: add prespecified CatBoost candidate grid and paired t-test"
 ```
@@ -1848,8 +1849,8 @@ git commit -m "feat: add prespecified CatBoost candidate grid and paired t-test"
 ### Task 12: Feature importance — permutation + SHAP (`pipeline/importance.py`)
 
 **Files:**
-- Create: `Project/pipeline/importance.py`
-- Test: `Project/tests/test_importance.py`
+- Create: `Project/new-ML/pipeline/importance.py`
+- Test: `Project/new-ML/tests/test_importance.py`
 
 **Interfaces:**
 - Consumes: `pipeline.models.predict_model, fit_model`; `pipeline.metrics.pooled_metrics`; SHAP.
@@ -1907,8 +1908,8 @@ def test_plot_shap_runs(tmp_path):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_importance.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_importance.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -2000,8 +2001,8 @@ def plot_shap(model, Xp, out_dir=None, max_display=8):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_importance.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_importance.py -v
 ```
 
 Expected: 3 PASS. (If SHAP TreeExplainer fails for CatBoost in `test_plot_shap_runs`, the KernelExplainer fallback keeps the test passing; runtime may be ~30-60 s.)
@@ -2009,7 +2010,7 @@ Expected: 3 PASS. (If SHAP TreeExplainer fails for CatBoost in `test_plot_shap_r
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/importance.py tests/test_importance.py
 git commit -m "feat: add permutation importance and SHAP summary for selected model"
 ```
@@ -2019,8 +2020,8 @@ git commit -m "feat: add permutation importance and SHAP summary for selected mo
 ### Task 13: Learning curves + extrapolation (`pipeline/learning.py`)
 
 **Files:**
-- Create: `Project/pipeline/learning.py`
-- Test: `Project/tests/test_learning.py`
+- Create: `Project/new-ML/pipeline/learning.py`
+- Test: `Project/new-ML/tests/test_learning.py`
 
 **Interfaces:**
 - Consumes: `pipeline.models.run_cv, fit_model, predict_model`, `pipeline.config.SEED`.
@@ -2094,8 +2095,8 @@ def test_plots(tmp_path):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_learning.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_learning.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -2179,8 +2180,8 @@ def plot_extrapolation(result, out_dir=None):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_learning.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_learning.py -v
 ```
 
 Expected: 4 PASS.
@@ -2188,7 +2189,7 @@ Expected: 4 PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/learning.py tests/test_learning.py
 git commit -m "feat: add learning curves and SHORT->LONG extrapolation test"
 ```
@@ -2198,8 +2199,8 @@ git commit -m "feat: add learning curves and SHORT->LONG extrapolation test"
 ### Task 14: Das benchmark, final model, prediction interface (`pipeline/predict.py`)
 
 **Files:**
-- Create: `Project/pipeline/predict.py`
-- Test: `Project/tests/test_predict.py`
+- Create: `Project/new-ML/pipeline/predict.py`
+- Test: `Project/new-ML/tests/test_predict.py`
 
 **Interfaces:**
 - Consumes: `pipeline.config` constants; joblib; models/predict helpers.
@@ -2284,8 +2285,8 @@ def test_das_benchmark_table(tmp_path):
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_predict.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_predict.py -v
 ```
 
 Expected: FAIL — module import errors.
@@ -2373,8 +2374,8 @@ def das_benchmark_table(pooled_r2, per_mode_r2, out_dir=TABLES_DIR):
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_predict.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_predict.py -v
 ```
 
 Expected: 8 PASS (5 parametrized cases count as 5).
@@ -2382,7 +2383,7 @@ Expected: 8 PASS (5 parametrized cases count as 5).
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add pipeline/predict.py tests/test_predict.py
 git commit -m "feat: add Das benchmark table, artifact saving, and domain-enforced predictor"
 ```
@@ -2392,9 +2393,11 @@ git commit -m "feat: add Das benchmark table, artifact saving, and domain-enforc
 ### Task 15: Build and execute the single notebook (`build_notebook.py` → `model_training_ansys.ipynb`)
 
 **Files:**
-- Create: `Project/build_notebook.py`
-- Create: `Project/model_training_ansys.ipynb` (generated by the script)
-- Test: `Project/tests/test_notebook_build.py`
+- Create: `Project/new-ML/build_notebook.py`
+- Create: `Project/new-ML/model_training_ansys.ipynb` (generated by the script)
+
+All paths in the builder and tests are relative to `new-ML/` (the builder's `PROJECT = Path(__file__).resolve().parent` is `new-ML/`; the test's `parent.parent` is also `new-ML/`).
+- Test: `Project/new-ML/tests/test_notebook_build.py`
 
 **Interfaces:**
 - Consumes: every `pipeline.*` module from Tasks 1–14.
@@ -2413,7 +2416,7 @@ PROJECT = Path(__file__).resolve().parent.parent
 
 
 def test_build_script_generates_notebook():
-    result = subprocess.run(["./.venv12/bin/python", "build_notebook.py"],
+    result = subprocess.run(["../.venv12/bin/python", "build_notebook.py"],
                             cwd=PROJECT, capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
     nb_path = PROJECT / "model_training_ansys.ipynb"
@@ -2433,8 +2436,8 @@ def test_notebook_contains_all_stages():
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_notebook_build.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_notebook_build.py -v
 ```
 
 Expected: FAIL — `build_notebook.py` missing / notebook missing.
@@ -2849,8 +2852,8 @@ if __name__ == "__main__":
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_notebook_build.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_notebook_build.py -v
 ```
 
 Expected: 2 PASS.
@@ -2858,8 +2861,8 @@ Expected: 2 PASS.
 - [ ] **Step 5: Execute the notebook end-to-end (verify all outputs)**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/jupyter nbconvert --to notebook --execute --inplace \
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/jupyter nbconvert --to notebook --execute --inplace \
   --ExecutePreprocessor.timeout=3600 model_training_ansys.ipynb
 ```
 
@@ -2878,7 +2881,7 @@ If any cell raises, fix the `pipeline.*` code in place and re-run. Note: Stage 1
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 git add build_notebook.py model_training_ansys.ipynb tests/test_notebook_build.py outputs/
 git commit -m "feat: build and execute single ANSYS ML notebook with consolidated outputs"
 ```
@@ -2888,9 +2891,9 @@ git commit -m "feat: build and execute single ANSYS ML notebook with consolidate
 ### Task 16: Rewrite thesis paths to the consolidated output folder
 
 **Files:**
-- Create: `Project/scripts/update_thesis_paths.py`
-- Test: `Project/tests/test_update_thesis_paths.py`
-- Modify: `Project/ful_thesis.md` (paths + old values marked for regeneration)
+- Create: `Project/new-ML/scripts/update_thesis_paths.py`
+- Test: `Project/new-ML/tests/test_update_thesis_paths.py`
+- Modify: `Project/new-ML/ful_thesis.md` (paths + old values marked for regeneration)
 
 **Interfaces:**
 - Consumes: nothing.
@@ -2922,8 +2925,8 @@ def test_rewrite_paths_maps_old_prefixes():
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/test_update_thesis_paths.py -v
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/test_update_thesis_paths.py -v
 ```
 
 Expected: FAIL — module import error (`scripts` package missing).
@@ -2936,13 +2939,13 @@ import re
 import sys
 from pathlib import Path
 
-PROJECT = Path(__file__).resolve().parent.parent
-THESIS = PROJECT / "ful_thesis.md"
+PROJECT = Path(__file__).resolve().parent.parent  # new-ML/
+THESIS = PROJECT.parent / "ful_thesis.md"            # thesis at Project root
 
 PREFIX_MAP = [
-    ("docs/figures/", "outputs/figures/"),
-    ("simulation/outputs/ml_figures/", "outputs/figures/"),
-    ("simulation/outputs/figures/", "outputs/figures/"),
+    ("docs/figures/", "new-ML/outputs/figures/"),
+    ("simulation/outputs/ml_figures/", "new-ML/outputs/figures/"),
+    ("simulation/outputs/figures/", "new-ML/outputs/figures/"),
 ]
 
 
@@ -2957,7 +2960,7 @@ def main():
     updated = rewrite_paths(text)
     THESIS.write_text(updated)
     n = len(re.findall(r"outputs/figures/", updated))
-    print(f"Updated {THESIS}: {n} references now point to outputs/figures/")
+    print(f"Updated {THESIS}: {n} references now point to new-ML/outputs/figures/")
 
 
 if __name__ == "__main__":
@@ -2967,9 +2970,9 @@ if __name__ == "__main__":
 - [ ] **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
 touch scripts/__init__.py
-./.venv12/bin/pytest tests/test_update_thesis_paths.py -v
+../.venv12/bin/pytest tests/test_update_thesis_paths.py -v
 ```
 
 Expected: 1 PASS.
@@ -2978,25 +2981,26 @@ Expected: 1 PASS.
 
 ```bash
 cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/python scripts/update_thesis_paths.py
+./.venv12/bin/python new-ML/scripts/update_thesis_paths.py
 ./.venv12/bin/python -c "
 from pathlib import Path
 text = Path('ful_thesis.md').read_text()
 assert 'docs/figures' not in text and 'simulation/outputs' not in text
+    assert 'new-ML/outputs/figures/' in text
 missing = [m for m in __import__('re').findall(r'\]\(([^)]+)\)', text)
-           if m.startswith('outputs')
-           and not (Path('outputs') / m.replace('outputs/', '')).exists()]
+           if m.startswith('new-ML/outputs')
+           and not (Path('new-ML') / m.replace('new-ML/', '')).exists()]
 print('stale refs:', missing)
 "
 ```
 
-Expected: `Updated ful_thesis.md` and `stale refs: []` (figures generated in Task 15 exist).
+Expected: `Updated ful_thesis.md` and `stale refs: []` (figures generated in Task 15 exist in `new-ML/outputs/figures/`).
 
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-git add scripts/__init__.py scripts/update_thesis_paths.py tests/test_update_thesis_paths.py ful_thesis.md
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+git add scripts/__init__.py scripts/update_thesis_paths.py tests/test_update_thesis_paths.py ../ful_thesis.md
 git commit -m "docs: rewrite thesis figure paths to consolidated outputs folder"
 ```
 
@@ -3005,11 +3009,11 @@ git commit -m "docs: rewrite thesis figure paths to consolidated outputs folder"
 ## Final Verification (run after all tasks)
 
 ```bash
-cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project
-./.venv12/bin/pytest tests/ -v
-./.venv12/bin/jupyter nbconvert --to notebook --execute --inplace \
+cd /Users/mabdulrafea/Projects/hareem_tasks/MS_Research_FYP/Project/new-ML
+../.venv12/bin/pytest tests/ -v
+../.venv12/bin/jupyter nbconvert --to notebook --execute --inplace \
   --ExecutePreprocessor.timeout=3600 model_training_ansys.ipynb
 ls outputs/figures outputs/tables outputs/models
 ```
 
-Expected: all tests PASS; notebook executes cleanly; outputs/ contains figures, tables, models, and logs. The thesis (ful_thesis.md) tables are then updated by the author from the CSVs in `outputs/tables/` (values from the new run replace the old run's numbers).
+Expected: all tests PASS; notebook executes cleanly; `new-ML/outputs/` contains figures, tables, models, and logs. The thesis (ful_thesis.md) tables are then updated by the author from the CSVs in `new-ML/outputs/tables/` (values from the new run replace the old run's numbers).
