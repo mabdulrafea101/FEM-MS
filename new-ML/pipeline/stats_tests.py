@@ -12,7 +12,7 @@ def friedman_test(metric_matrix):
 
     Models are ranked within each metric column; the Friedman chi2 is computed
     from those ranks as chi2 = n_metrics*(n_models-1)*Kendall's W, with
-    n_metrics-1 degrees of freedom, so all outputs are mutually consistent.
+    n_models-1 degrees of freedom, so all outputs are mutually consistent.
     """
     metric_matrix = np.asarray(metric_matrix, dtype=float)
     ranks = np.apply_along_axis(stats.rankdata, 0, metric_matrix)
@@ -22,7 +22,7 @@ def friedman_test(metric_matrix):
     S = np.sum((row_sums - mean_rank) ** 2)
     w = 12.0 * S / (n_metrics**2 * (n_models**3 - n_models))
     chi2 = n_metrics * (n_models - 1) * w
-    p = stats.chi2.sf(chi2, df=n_metrics - 1)
+    p = stats.chi2.sf(chi2, df=n_models - 1)
     return {"chi2": float(chi2), "p": float(p), "kendall_w": float(w)}
 
 
