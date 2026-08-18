@@ -22,7 +22,7 @@ def evaluate_candidates(grid, Xp, y, n_folds=5, seed=SEED):
     for cand in grid:
         model = CatBoostRegressor(loss_function="MultiRMSE", random_state=seed,
                                   verbose=False, allow_writing_files=False,
-                                  **cand["params"])
+                                  thread_count=2, **cand["params"])
         cv = run_cv(model, Xp, y, n_folds=n_folds, seed=seed)
         rows.append({"name": cand["name"], "RMSE_mean": cv["RMSE_mean"],
                      "RMSE_std": cv["RMSE_std"], "folds": cv["folds"],

@@ -1,0 +1,6 @@
+Model,Train_Time_s,Inference_us_per_case,Speedup_vs_APDL
+Linear Regression,0.0007,0.3646,987437600.6724
+Random Forest,0.185,48.3163,7450909.373
+XGBoost,1.0335,20.7152,17378539.0976
+CatBoost,0.1021,5.34,67415730.3351
+SVR,1.0477,301.6269,1193527.5993

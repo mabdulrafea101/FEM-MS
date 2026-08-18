@@ -119,6 +119,7 @@ thesis_final_formatted.docx
 
 # Unpacked DOCX directories (intermediate processing)
 docx_unpacked/
+new-chapters/
 
 # Simulation logs and intermediate outputs
 simulation/logs/

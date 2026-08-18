@@ -24,7 +24,7 @@ def build_models(seed=SEED):
         "CatBoost": CatBoostRegressor(
             iterations=100, learning_rate=0.1, depth=6,
             loss_function="MultiRMSE", random_state=seed, verbose=False,
-            allow_writing_files=False),
+            allow_writing_files=False, thread_count=2),
         "SVR": MultiOutputRegressor(SVR(kernel="rbf", C=100, gamma="scale")),
     }
 
